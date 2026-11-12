@@ -1,0 +1,26 @@
+---
+// Comando que muda por sistema. Sem JS aparecem os três, rotulados.
+interface Props {
+  mac?: string;
+  win?: string;
+  linux?: string;
+  unix?: string;
+}
+const { mac, win, linux, unix } = Astro.props;
+const linhas = [
+  { so: 'mac', nome: 'Mac', cmd: mac ?? unix },
+  { so: 'win', nome: 'Windows', cmd: win },
+  { so: 'linux', nome: 'Linux', cmd: linux ?? unix },
+].filter((l) => l.cmd);
+---
+
+<div class="so">
+  {
+    linhas.map((l) => (
+      <div class="so__linha" data-so-de={l.so}>
+        <span class="so__nome rotulo">{l.nome}</span>
+        <pre><code>{l.cmd}</code></pre>
+      </div>
+    ))
+  }
+</div>

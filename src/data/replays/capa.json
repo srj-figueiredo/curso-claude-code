@@ -1,0 +1,10 @@
+{
+  "titulo": "terminal",
+  "versao": "2.1.323",
+  "data": "12/11/2026",
+  "origem": "transcripts/capa-versao.txt",
+  "linhas": [
+    { "t": "cmd", "texto": "claude --version" },
+    { "t": "nota", "texto": "2.1.323 (Claude Code)" }
+  ]
+}

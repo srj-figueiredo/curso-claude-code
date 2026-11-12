@@ -1,0 +1,19 @@
+---
+// Camadas de profundidade: orelhas de livro que abrem. A camada Essencial é o texto corrido.
+interface Props {
+  tipo: 'capo' | 'armadilhas';
+  titulo?: string;
+}
+const { tipo, titulo } = Astro.props;
+const nome = tipo === 'capo' ? 'Por baixo do capô' : 'Armadilhas';
+const padrao = tipo === 'capo' ? 'Como funciona de verdade' : 'Erros que realmente acontecem';
+---
+
+<details class={`camada camada--${tipo}`}>
+  <summary>
+    <span class="camada__orelha rotulo">{nome}</span>
+    <span class="camada__titulo">{titulo ?? padrao}</span>
+    <span class="camada__sinal" aria-hidden="true"></span>
+  </summary>
+  <div class="camada__corpo"><slot /></div>
+</details>

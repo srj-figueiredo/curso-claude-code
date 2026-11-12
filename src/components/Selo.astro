@@ -1,0 +1,21 @@
+---
+// Carimbos do manual. "verificado" é o único que usa verde.
+interface Props {
+  tipo?: 'verificado' | 'beta' | 'plano' | 'nao-testado' | 'ilustrativo' | 'removido' | 'oculto';
+  versao?: string;
+  data?: string;
+  texto?: string;
+}
+const { tipo = 'verificado', versao, data, texto } = Astro.props;
+const ROTULOS: Record<string, string> = {
+  verificado: `Verificado${versao ? ` v${versao}` : ''}${data ? ` · ${data}` : ''}`,
+  beta: texto ?? 'Beta',
+  plano: `Plano: ${texto ?? 'pago'}`,
+  'nao-testado': `Não testado localmente${data ? ` · doc de ${data}` : ''}`,
+  ilustrativo: texto ?? 'Ilustrativo',
+  removido: texto ?? 'Removido',
+  oculto: texto ?? 'Oculto',
+};
+---
+
+<span class={`selo selo--${tipo}`}>{ROTULOS[tipo]}</span>

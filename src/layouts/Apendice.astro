@@ -1,0 +1,27 @@
+---
+import Base from './Base.astro';
+import Selo from '../components/Selo.astro';
+
+interface Props {
+  dados: { id: string; titulo: string; resumo: string; verificado_em_versao: string; verificado_em_data: string };
+}
+const { dados } = Astro.props;
+---
+
+<Base titulo={`Apêndice ${dados.id.toUpperCase()} · ${dados.titulo}`} descricao={dados.resumo} corrente={`Apêndice ${dados.id.toUpperCase()}`}>
+  <article class="pagina">
+    <header class="placa">
+      <div class="placa__reticula reticula" aria-hidden="true"></div>
+      <p class="placa__numero" aria-hidden="true">{dados.id.toUpperCase()}</p>
+      <p class="placa__parte rotulo">Apêndice {dados.id.toUpperCase()}</p>
+      <h1>{dados.titulo}</h1>
+      <ul class="placa__meta">
+        <li>{dados.resumo}</li>
+        <li><Selo versao={dados.verificado_em_versao} data={dados.verificado_em_data} /></li>
+      </ul>
+    </header>
+    <div class="prosa">
+      <slot />
+    </div>
+  </article>
+</Base>

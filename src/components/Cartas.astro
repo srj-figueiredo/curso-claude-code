@@ -1,0 +1,21 @@
+---
+// Cartas de uma seção do menu (R1–R8), geradas de commands.json.
+import { getCollection } from 'astro:content';
+import Carta from './Carta.astro';
+
+interface Props {
+  cat: string;
+}
+const { cat } = Astro.props;
+const comandos = (await getCollection('comandos'))
+  .map((c) => c.data)
+  .filter((c) => c.categoria === cat)
+  .sort((a, b) => a.nome.localeCompare(b.nome));
+---
+
+<div class="mesa mesa--secao" data-baralho>
+  <p class="mesa__conta">{comandos.length} cartas nesta seção · <span data-cartas-contador></span></p>
+  <div class="mesa__cartas">
+    {comandos.map((c) => <Carta comando={c} />)}
+  </div>
+</div>

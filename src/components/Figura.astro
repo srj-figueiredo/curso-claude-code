@@ -1,0 +1,34 @@
+---
+// Anatomia: figura SVG autoral com chamadas numeradas ligadas à legenda.
+// Com `passos`, vira animação controlável (play/pausa/barra) com fallback estático.
+import Controles from './Controles.astro';
+interface Props {
+  id: string;
+  titulo: string;
+  chamadas?: string[];
+  passos?: number;
+  legendas?: string[];
+  intervalo?: number;
+  autoplay?: boolean;
+}
+const { id, titulo, chamadas = [], passos = 0, legendas = [], intervalo = 1400, autoplay = false } = Astro.props;
+const player = passos > 0 ? { 'data-player': '', 'data-passos': passos, 'data-intervalo': intervalo } : {};
+---
+
+<figure class="figura" id={id} {...player} {...autoplay ? { 'data-autoplay': '' } : {}}>
+  <div class="figura__arte"><slot /></div>
+  {passos > 0 && <Controles passos={passos} rotulo={titulo} />}
+  {legendas.map((l, i) => <span hidden data-legenda={i}>{l}</span>)}
+  <figcaption>
+    <p class="figura__titulo"><span class="rotulo">Fig.</span> {titulo}</p>
+    {
+      chamadas.length > 0 && (
+        <ol class="figura__chamadas">
+          {chamadas.map((c) => (
+            <li set:html={c} />
+          ))}
+        </ol>
+      )
+    }
+  </figcaption>
+</figure>

@@ -1,0 +1,158 @@
+---
+// Mapa do Metrô (grande): o curso inteiro num só desenho. Linhas = partes, estações = módulos.
+// A geometria é calculada a partir de src/data/curso.ts; nada é posicionado à mão.
+import { PARTES, ESTACOES, TRILHAS, rotulo } from '../data/curso';
+import { pagina } from '../lib/url';
+import { paginasEscritas } from '../lib/paginas';
+import Controles from './Controles.astro';
+
+interface Props {
+  autoplay?: boolean;
+}
+const { autoplay = false } = Astro.props;
+const escritas = await paginasEscritas();
+
+// Fileiras em serpentina. Cada fileira lista as partes que ela carrega.
+const FILEIRAS: string[][] = [['p0', 'p1'], ['p2'], ['p3', 'p4'], ['p5'], ['p6'], ['p7']];
+const X0 = 120;
+const X1 = 1120;
+const Y0 = 96;
+const DY = 158;
+const RAIO = 70;
+const LARGURA = 1240;
+const ALTURA = Y0 + DY * (FILEIRAS.length - 1) + 110;
+
+type Ponto = { x: number; y: number };
+type No = Ponto & { id: string; parte: number; titulo: string; curto: string; fileira: number };
+
+const nos: No[] = [];
+FILEIRAS.forEach((partes, f) => {
+  const daFileira = ESTACOES.filter((s) => partes.includes(s.parte));
+  const n = daFileira.length;
+  const paraDireita = f % 2 === 0;
+  daFileira.forEach((s, i) => {
+    const t = n === 1 ? 0 : i / (n - 1);
+    const x = paraDireita ? X0 + t * (X1 - X0) : X1 - t * (X1 - X0);
+    nos.push({ ...s, x, y: Y0 + f * DY, parte: PARTES.findIndex((p) => p.id === s.parte), fileira: f });
+  });
+});
+
+// Trecho entre duas estações: reto na mesma fileira; curva chanfrada a 45° ao trocar de fileira.
+function trecho(a: No, b: No): string {
+  if (a.fileira === b.fileira) return `M${a.x} ${a.y}L${b.x} ${b.y}`;
+  const lado = a.fileira % 2 === 0 ? 1 : -1;
+  const borda = (lado === 1 ? X1 : X0) + lado * 30;
+  const c = RAIO / 2;
+  return [
+    `M${a.x} ${a.y}`,
+    `L${borda} ${a.y}`,
+    `L${borda + lado * c} ${a.y + c}`,
+    `L${borda + lado * c} ${b.y - c}`,
+    `L${borda} ${b.y}`,
+    `L${b.x} ${b.y}`,
+  ].join('');
+}
+
+const trechos = nos.slice(1).map((b, i) => ({ d: trecho(nos[i], b), parte: b.parte, de: nos[i].id, ate: b.id }));
+const trilhasDe = (id: string) =>
+  Object.entries(TRILHAS)
+    .filter(([, t]) => t.ids.includes(id))
+    .map(([k]) => k)
+    .join(' ');
+const primeiraDaParte = (n: No) => nos.find((m) => m.parte === n.parte)?.id === n.id;
+const passos = PARTES.length;
+---
+
+<figure class="metro" data-player data-passos={passos} data-intervalo="520" {...autoplay ? { 'data-autoplay': '' } : {}}>
+  <div class="metro__rolagem" tabindex="0" role="group" aria-label="Mapa do curso, com rolagem horizontal">
+    <svg class="metro__svg" viewBox={`0 0 ${LARGURA} ${ALTURA}`} role="img" aria-labelledby="metro-t metro-d">
+      <title id="metro-t">Mapa do Metrô do curso</title>
+      <desc id="metro-d">
+        Oito linhas, uma por parte do curso, ligando {ESTACOES.length} estações em ordem: do M0 ao projeto final.
+      </desc>
+
+      <g class="metro__trilhos" fill="none">
+        {
+          trechos.map((t) => (
+            <g class={`metro__trecho metro__trecho--${t.parte % 4}`} data-de={t.parte + 1}>
+              <path class="metro__fundo" d={t.d} />
+              <path class="metro__fio" d={t.d} pathLength="1" />
+            </g>
+          ))
+        }
+      </g>
+
+      <g class="metro__estacoes">
+        {
+          nos.map((n) => {
+            const p = escritas.get(n.id);
+            const baixo = true;
+            const conteudo = (
+              <>
+                <title>
+                  {rotulo(n.id)} · {n.titulo}
+                  {p ? ` · ${p.data.minutos} min · pré-requisitos: ${p.data.pre_requisitos.join(', ') || 'nenhum'}` : ' · em obras'}
+                </title>
+                <circle class="metro__alvo" cx={n.x} cy={n.y} r="24" />
+                {primeiraDaParte(n) && <circle class="metro__anel" cx={n.x} cy={n.y} r="15" />}
+                <circle class="metro__ponto" cx={n.x} cy={n.y} r="9" />
+                <rect class="metro__trem" x={n.x - 11} y={n.y - 11} width="22" height="22" rx="4" />
+                <text class="metro__id" x={n.x} y={n.y + (baixo ? 36 : -24)} text-anchor="middle">
+                  {rotulo(n.id)}
+                </text>
+                <text class="metro__nome" x={n.x} y={n.y + (baixo ? 53 : -40)} text-anchor="middle">
+                  {n.curto}
+                </text>
+              </>
+            );
+            return p ? (
+              <a
+                class="metro__estacao"
+                href={pagina(n.id)}
+                data-estacao={n.id}
+                data-trilhas={trilhasDe(n.id)}
+                data-de={n.parte + 1}
+              >
+                {conteudo}
+              </a>
+            ) : (
+              <g class="metro__estacao metro__estacao--obras" data-estacao={n.id} data-trilhas={trilhasDe(n.id)} data-de={n.parte + 1}>
+                {conteudo}
+              </g>
+            );
+          })
+        }
+      </g>
+
+      <g class="metro__placas">
+        {
+          PARTES.map((parte, i) => {
+            const primeira = nos.find((n) => n.parte === i)!;
+            // Nas bordas, a placa cresce para dentro da fileira e não cruza a curva.
+            const ancora = primeira.x <= X0 ? 'start' : primeira.x >= X1 ? 'end' : 'middle';
+            const dx = ancora === 'start' ? -14 : ancora === 'end' ? 14 : 0;
+            return (
+              <g data-de={i + 1} transform={`translate(${primeira.x + dx} ${primeira.y - 46})`}>
+                <text class="metro__placa" text-anchor={ancora}>
+                  {parte.rotulo.toUpperCase()}
+                </text>
+                <text class="metro__placa-nome" y="16" text-anchor={ancora}>
+                  {parte.titulo}
+                </text>
+              </g>
+            );
+          })
+        }
+      </g>
+    </svg>
+  </div>
+  <figcaption class="metro__legenda">
+    <span class="metro__chave"><i class="metro__amostra metro__amostra--feita"></i> concluída</span>
+    <span class="metro__chave"><i class="metro__amostra"></i> a fazer</span>
+    <span class="metro__chave"><i class="metro__amostra metro__amostra--trem"></i> você está aqui</span>
+    <span class="metro__chave" data-progresso-texto></span>
+  </figcaption>
+  <Controles passos={passos} rotulo="Abertura do mapa" />
+  {PARTES.map((p, i) => <span hidden data-legenda={i + 1}>{`${p.rotulo}: ${p.titulo}`}</span>)}
+  <span hidden data-legenda="0">O mapa do curso, linha por linha.</span>
+</figure>

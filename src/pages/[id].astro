@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from 'astro:content';
+import Pagina from '../layouts/Pagina.astro';
+import Apendice from '../layouts/Apendice.astro';
+import { componentes } from '../lib/mdx';
+
+export async function getStaticPaths() {
+  const [modulos, menu, cases, apendices] = await Promise.all([
+    getCollection('modulos'),
+    getCollection('menu'),
+    getCollection('cases'),
+    getCollection('apendices'),
+  ]);
+  return [
+    ...[...modulos, ...menu, ...cases].map((entrada) => ({
+      params: { id: entrada.data.id },
+      props: { entrada, tipo: 'estacao' as const },
+    })),
+    ...apendices.map((entrada) => ({ params: { id: entrada.data.id }, props: { entrada, tipo: 'apendice' as const } })),
+  ];
+}
+
+const { entrada, tipo } = Astro.props;
+const { Content } = await render(entrada);
+---
+
+{
+  tipo === 'estacao' ? (
+    <Pagina dados={entrada.data as any}>
+      <Content components={componentes} />
+    </Pagina>
+  ) : (
+    <Apendice dados={entrada.data as any}>
+      <Content components={componentes} />
+    </Apendice>
+  )
+}

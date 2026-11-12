@@ -1,0 +1,88 @@
+---
+// Baralho de Comandos: todas as cartas do menu "/", geradas de commands.json.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Carta from '../components/Carta.astro';
+import { ESTACOES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
+import { pagina } from '../lib/url';
+import { paginasEscritas } from '../lib/paginas';
+
+const comandos = (await getCollection('comandos')).map((c) => c.data).sort((a, b) => a.nome.localeCompare(b.nome));
+const secoes = ESTACOES.filter((s) => s.parte === 'p2');
+const escritas = await paginasEscritas();
+---
+
+<Base
+  titulo="Baralho de Comandos"
+  descricao={`Os ${comandos.length} comandos do menu / do Claude Code, um por carta, conferidos na v${VERSAO_CLI}.`}
+  corrente="Parte II · Baralho de Comandos"
+>
+  <div class="pagina">
+    <header class="placa">
+      <div class="placa__reticula reticula" aria-hidden="true"></div>
+      <p class="placa__numero" aria-hidden="true">/</p>
+      <p class="placa__parte rotulo">Parte II · O menu / dissecado</p>
+      <h1>Baralho de Comandos</h1>
+      <ul class="placa__meta">
+        <li>{comandos.length} cartas</li>
+        <li>conferidas na página oficial em {DATA_VERIFICACAO}</li>
+        <li data-cartas-contador></li>
+      </ul>
+    </header>
+
+    <div class="mesa" data-baralho>
+      <div class="mesa__filtros nao-imprimir">
+        <label class="mesa__busca">
+          <span class="mono" aria-hidden="true">/</span>
+          <span class="sr">Filtrar cartas por texto</span>
+          <input type="search" placeholder="filtrar: nome, alias ou o que faz" data-baralho-busca autocomplete="off" />
+        </label>
+        <div class="mesa__grupo" role="group" aria-label="Filtrar por seção">
+          {
+            secoes.map((s) => (
+              <button class="ficha-filtro" type="button" data-filtro={`categoria:${s.id.toUpperCase()}`} aria-pressed="false">
+                {s.id.toUpperCase()} {s.curto}
+              </button>
+            ))
+          }
+        </div>
+        <div class="mesa__grupo" role="group" aria-label="Filtrar por disponibilidade e tipo">
+          <button class="ficha-filtro" type="button" data-filtro="plano:todos" aria-pressed="false">Todos os planos</button>
+          <button class="ficha-filtro" type="button" data-filtro="plano:restrito" aria-pressed="false">Depende de plano</button>
+          <button class="ficha-filtro" type="button" data-filtro="tipo:skill-embutida" aria-pressed="false">Skills</button>
+          <button class="ficha-filtro" type="button" data-filtro="tipo:removido" aria-pressed="false">Removidos</button>
+          <p class="mesa__conta"><span data-baralho-total>{comandos.length}</span> na mesa</p>
+        </div>
+      </div>
+
+      <div class="mesa__cartas">
+        {comandos.map((c) => <Carta comando={c} />)}
+      </div>
+    </div>
+
+    <nav class="secoes" aria-label="Seções do dissecado">
+      <h2>As oito seções</h2>
+      <ul>
+        {
+          secoes.map((s) => (
+            <li>
+              {escritas.has(s.id) ? <a href={pagina(s.id)}>{s.id.toUpperCase()} · {s.titulo}</a> : <span>{s.id.toUpperCase()} · {s.titulo} (em obras)</span>}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</Base>
+
+<style>
+  .secoes {
+    max-width: 78rem;
+    margin: var(--e-6) auto 0;
+  }
+
+  .secoes ul {
+    columns: 2 18rem;
+    padding-left: 1.2em;
+  }
+</style>

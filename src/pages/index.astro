@@ -1,0 +1,332 @@
+---
+import Base from '../layouts/Base.astro';
+import MetroMapa from '../components/MetroMapa.astro';
+import MetroMini from '../components/MetroMini.astro';
+import Replay from '../components/Replay.astro';
+import Icone from '../components/Icone.astro';
+import { TRILHAS, ESTACOES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
+import { pagina, u } from '../lib/url';
+import { paginasEscritas } from '../lib/paginas';
+
+const escritas = await paginasEscritas();
+const minutos = [...escritas.values()].reduce((s, p) => s + p.data.minutos, 0);
+const exercicios = [...escritas.values()].reduce((s, p) => s + p.data.exercicios.length, 0);
+---
+
+<Base titulo="Manual de Bordo do Claude Code" buscavel={false}>
+  <section class="capa">
+    <div class="capa__texto">
+      <p class="capa__edicao rotulo">Curso independente · edição v{VERSAO_CLI} · {DATA_VERIFICACAO}</p>
+      <h1 class="capa__titulo">
+        <span class="capa__barra" aria-hidden="true">/</span>
+        <span class="capa__l1">Manual</span>
+        <span class="capa__l2">de Bordo</span>
+        <span class="capa__l3">do Claude Code</span>
+      </h1>
+      <p class="capa__lide">
+        Um livro que se folheia com as mãos no teclado. Do primeiro <code>claude</code> ao projeto entregue para
+        cliente, com tudo conferido na documentação oficial e na versão instalada.
+      </p>
+      <p class="capa__acoes">
+        <a class="botao" href={pagina('m0')}>Começar pelo M0 <Icone nome="seta" tamanho={18} /></a>
+        <a class="botao botao--vazado" href="#" data-retomar hidden>
+          Retomar: <span data-retomar-titulo></span>
+        </a>
+      </p>
+    </div>
+    <div class="capa__terminal">
+      <Replay id="capa" autoplay legenda="O primeiro comando do curso." />
+    </div>
+  </section>
+
+  <section class="mapa" id="mapa" aria-labelledby="mapa-t">
+    <header class="mapa__topo">
+      <h2 id="mapa-t">O mapa</h2>
+      <p>
+        {ESTACOES.length} estações em oito linhas. Ande na ordem ou pule de linha: nada é trancado. Escolher uma
+        trilha só apaga do mapa o que você pode deixar para depois.
+      </p>
+    </header>
+
+    <div class="trilhas" role="group" aria-label="Escolha de trilha">
+      {
+        Object.entries(TRILHAS).map(([id, t]) => (
+          <button class="trilha" type="button" data-trilha-escolha={id} aria-pressed="false">
+            <span class="trilha__nome">{t.titulo}</span>
+            <span class="trilha__resumo">{t.resumo}</span>
+            <span class="trilha__conta mono">{t.ids.length} estações</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="mapa__grande"><MetroMapa autoplay /></div>
+    <div class="mapa__pequeno"><MetroMini comApendices={false} /></div>
+  </section>
+
+  <section class="colofao" aria-labelledby="colofao-t">
+    <h2 id="colofao-t">Regras da casa</h2>
+    <dl>
+      <div>
+        <dt>Custa</dt>
+        <dd>
+          O acesso ao Claude Code: plano pago ou créditos de API. Não há como fugir, e o <a href={pagina('m0')}>M0</a> mostra
+          as opções.
+        </dd>
+      </div>
+      <div>
+        <dt>Não custa</dt>
+        <dd>
+          Todo o resto. Cada exercício tem trilha grátis; onde o pago faz sentido, uma fita amarela diz o que trocar e
+          quanto sai.
+        </dd>
+      </div>
+      <div>
+        <dt>Vale até</dt>
+        <dd>
+          A próxima versão. Cada página leva o selo da versão em que foi conferida, e a lista de mudanças fica em{' '}
+          <a href={u('/f/')}>O que mudou</a>.
+        </dd>
+      </div>
+      <div>
+        <dt>Já no ar</dt>
+        <dd>
+          {escritas.size} de {ESTACOES.length} estações, {exercicios} fichas de campo, cerca de {Math.round(minutos / 60)} horas
+          de prática.
+        </dd>
+      </div>
+    </dl>
+  </section>
+</Base>
+
+<style>
+  .capa {
+    display: grid;
+    gap: var(--e-6);
+    align-items: end;
+    max-width: 84rem;
+    margin: 0 auto;
+    padding: clamp(var(--e-6), 7vw, var(--e-8)) clamp(var(--e-4), 5vw, var(--e-7)) var(--e-7);
+  }
+
+  @media (min-width: 64rem) {
+    .capa {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    }
+  }
+
+  .capa__edicao {
+    margin: 0 0 var(--e-5);
+    color: var(--tinta-2);
+  }
+
+  .capa__titulo {
+    position: relative;
+    display: grid;
+    margin: 0 0 var(--e-5);
+    font-size: var(--t-capa);
+    font-weight: 900;
+    font-variation-settings: 'opsz' 144;
+    line-height: 0.82;
+    letter-spacing: -0.045em;
+  }
+
+  .capa__barra {
+    position: absolute;
+    right: 0;
+    top: -0.16em;
+    font-size: 2.3em;
+    font-style: italic;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--sinal);
+    opacity: 0.9;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .capa__l1,
+  .capa__l2,
+  .capa__l3 {
+    position: relative;
+  }
+
+  .capa__l2 {
+    font-style: italic;
+    font-weight: 500;
+    padding-left: 0.5em;
+  }
+
+  .capa__l3 {
+    margin-top: 0.7em;
+    font-family: var(--f-mono);
+    font-size: clamp(0.85rem, 0.6rem + 1vw, 1.25rem);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--sinal);
+  }
+
+  .capa__lide {
+    max-width: 34rem;
+    font-size: var(--t-md);
+    line-height: 1.42;
+  }
+
+  .capa__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-4);
+    margin: var(--e-5) 0 0;
+  }
+
+  .capa__terminal :global(.replay) {
+    margin: 0;
+  }
+
+  .capa__terminal :global(.terminal__tela) {
+    min-height: 9rem;
+  }
+
+  .mapa,
+  .colofao {
+    max-width: 84rem;
+    margin: 0 auto;
+    padding: var(--e-6) clamp(var(--e-4), 5vw, var(--e-7));
+  }
+
+  .mapa {
+    border-top: var(--traco) solid var(--tinta);
+  }
+
+  .mapa__topo {
+    display: grid;
+    gap: var(--e-2) var(--e-6);
+    margin-bottom: var(--e-5);
+  }
+
+  .mapa__topo h2,
+  .colofao h2 {
+    margin: 0;
+    font-size: var(--t-xl);
+    font-variation-settings: 'opsz' 96;
+  }
+
+  .mapa__topo p {
+    max-width: 52ch;
+    margin: 0;
+    color: var(--tinta-2);
+  }
+
+  @media (min-width: 56rem) {
+    .mapa__topo {
+      grid-template-columns: auto 1fr;
+      align-items: end;
+    }
+  }
+
+  .trilhas {
+    display: grid;
+    gap: var(--e-3);
+    margin-bottom: var(--e-6);
+  }
+
+  @media (min-width: 48rem) {
+    .trilhas {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .trilha {
+    display: grid;
+    gap: var(--e-1);
+    padding: var(--e-3) var(--e-4);
+    text-align: left;
+    font: inherit;
+    color: var(--tinta);
+    background: transparent;
+    border: var(--traco) solid var(--tinta);
+    cursor: pointer;
+  }
+
+  .trilha__nome {
+    font-family: var(--f-display);
+    font-size: var(--t-md);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .trilha__resumo {
+    font-size: var(--t-sm);
+    line-height: 1.35;
+  }
+
+  .trilha__conta {
+    font-size: 0.7rem;
+    opacity: 0.8;
+  }
+
+  .trilha[aria-pressed='true'] {
+    color: var(--papel);
+    background: var(--tinta);
+    box-shadow: 5px 5px 0 var(--sinal);
+  }
+
+  .mapa__grande {
+    display: none;
+  }
+
+  .mapa__pequeno :global(.mini) {
+    padding: 0;
+  }
+
+  @media (min-width: 56rem) {
+    .mapa__grande {
+      display: block;
+    }
+
+    .mapa__pequeno {
+      display: none;
+    }
+  }
+
+  .colofao {
+    border-top: var(--traco) solid var(--tinta);
+  }
+
+  .colofao dl {
+    display: grid;
+    gap: var(--e-5);
+    margin: var(--e-5) 0 0;
+  }
+
+  @media (min-width: 48rem) {
+    .colofao dl {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .colofao dl {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .colofao dt {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sinal);
+    padding-top: var(--e-2);
+    border-top: 5px solid var(--tinta);
+  }
+
+  .colofao dd {
+    margin: var(--e-2) 0 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+</style>

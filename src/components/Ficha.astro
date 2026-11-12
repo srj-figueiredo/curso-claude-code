@@ -1,0 +1,40 @@
+---
+// Ficha de Campo: formato fixo de exercício (BRIEFING, seção 12).
+import Icone from './Icone.astro';
+import Selo from './Selo.astro';
+import { VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
+interface Props {
+  id: string;
+  n: number | string;
+  titulo: string;
+  objetivo: string;
+  minutos: number;
+  pre?: string;
+  custo?: 'gratis' | 'opcional-pago';
+  verificacao?: 'executado' | 'nao-testado' | 'ilustrativo';
+}
+const { id, n, titulo, objetivo, minutos, pre = 'nenhum', custo = 'gratis', verificacao = 'executado' } = Astro.props;
+---
+
+<section class="ficha" id={id} aria-labelledby={`${id}-t`}>
+  <header class="ficha__topo">
+    <p class="ficha__numero rotulo">Ficha de campo <span>{n}</span></p>
+    <h3 class="ficha__titulo" id={`${id}-t`}>{titulo}</h3>
+    <dl class="ficha__dados">
+      <div><dt>Objetivo</dt><dd>{objetivo}</dd></div>
+      <div><dt>Tempo</dt><dd>{minutos} min</dd></div>
+      <div><dt>Antes</dt><dd>{pre}</dd></div>
+      <div><dt>Custo</dt><dd>{custo === 'gratis' ? 'grátis' : 'grátis, com opção paga'}</dd></div>
+    </dl>
+  </header>
+  <div class="ficha__corpo"><slot /></div>
+  <footer class="ficha__pe">
+    {verificacao === 'executado' && <Selo versao={VERSAO_CLI} data={DATA_VERIFICACAO} />}
+    {verificacao === 'nao-testado' && <Selo tipo="nao-testado" data={DATA_VERIFICACAO} />}
+    {verificacao === 'ilustrativo' && <Selo tipo="ilustrativo" />}
+    <button class="ficha__marca nao-imprimir" type="button" data-marca={id} aria-pressed="false">
+      <span class="ficha__caixa"><Icone nome="feito" tamanho={18} /></span>
+      <span data-marca-rotulo>Marcar como feito</span>
+    </button>
+  </footer>
+</section>

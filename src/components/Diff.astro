@@ -1,0 +1,12 @@
+---
+// Diff leve: envolve um bloco ```diff; o CSS pinta as linhas + e -.
+interface Props {
+  arquivo?: string;
+}
+const { arquivo } = Astro.props;
+---
+
+<figure class="diff">
+  {arquivo && <figcaption class="diff__arquivo mono">{arquivo}</figcaption>}
+  <slot />
+</figure>

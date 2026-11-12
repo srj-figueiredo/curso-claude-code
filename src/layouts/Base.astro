@@ -1,0 +1,135 @@
+---
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/fraunces/opsz-italic.css';
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/base.css';
+import '../styles/componentes.css';
+import Icone from '../components/Icone.astro';
+import MetroMini from '../components/MetroMini.astro';
+import { u } from '../lib/url';
+import { ESTACOES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
+
+interface Props {
+  titulo: string;
+  descricao?: string;
+  corrente?: string;
+  estacaoId?: string;
+  buscavel?: boolean;
+}
+const {
+  titulo,
+  descricao = 'Curso prático e interativo de Claude Code, em português. Estilo livro, grátis primeiro, verificado na versão instalada.',
+  corrente,
+  estacaoId,
+  buscavel = true,
+} = Astro.props;
+const nomeSite = 'Manual de Bordo do Claude Code';
+const tituloCompleto = titulo === nomeSite ? titulo : `${titulo} · ${nomeSite}`;
+const canonica = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descricao} />
+    <link rel="canonical" href={canonica} />
+    <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)" />
+    <script is:inline>
+      // Antes da primeira pintura: aplica tema e sistema salvos (sem piscar).
+      try {
+        var s = JSON.parse(localStorage.getItem('mdb:v1') || '{}');
+        if (s.tema) document.documentElement.dataset.tema = s.tema;
+        if (s.so) document.documentElement.dataset.so = s.so;
+      } catch (e) {}
+      document.documentElement.dataset.js = '';
+    </script>
+  </head>
+  <body data-estacao-atual={estacaoId} data-estacoes={ESTACOES.map((s) => s.id).join(',')}>
+    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="cabeca nao-imprimir">
+      <a class="cabeca__marca" href={u('/')} aria-label={`${nomeSite}: início`}>
+        <span class="cabeca__barra" aria-hidden="true">/</span>
+        <span class="cabeca__nome">Manual de Bordo</span>
+      </a>
+      {corrente && <p class="cabeca__corrente rotulo">{corrente}</p>}
+      <nav class="cabeca__acoes" aria-label="Ferramentas">
+        <a class="acao" href={u('/sumario/')} data-abre="gaveta">
+          <Icone nome="menu" /><span class="acao__texto">Sumário</span>
+        </a>
+        <a class="acao" href={u('/busca/')} data-abre="busca" aria-keyshortcuts="/">
+          <Icone nome="busca" /><span class="acao__texto">Busca</span><kbd class="acao__tecla">/</kbd>
+        </a>
+        <button class="acao" type="button" data-alterna-tema hidden>
+          <Icone nome="tema" /><span class="sr">Alternar entre modo Papel e modo Console</span>
+        </button>
+      </nav>
+      <div class="fita" aria-hidden="true"><span class="fita__valor" data-progresso-pct></span></div>
+    </header>
+
+    <main id="conteudo" {...buscavel ? { 'data-pagefind-body': '' } : {}}>
+      <slot />
+    </main>
+
+    <footer class="rodape">
+      <div class="rodape__grade">
+        <p class="rodape__selo rotulo">
+          Verificado em v{VERSAO_CLI} · {DATA_VERIFICACAO}
+        </p>
+        <p>
+          Curso <strong>independente</strong>. Não é afiliado, patrocinado nem endossado pela Anthropic. “Claude” e
+          “Claude Code” são citados apenas para identificar o produto de que o curso trata.
+        </p>
+        <p class="nao-imprimir">
+          <a href={u('/sumario/')}>Sumário</a> · <a href={u('/progresso/')}>Seu progresso</a> ·
+          <a href={u('/f/')}>O que mudou</a> · <a href={u('/h/')}>Fontes</a>
+        </p>
+        <p class="rodape__fino">Sem cookies, sem rastreamento. Seu progresso fica só neste navegador.</p>
+      </div>
+    </footer>
+
+    <dialog class="gaveta" id="gaveta" aria-label="Sumário do curso">
+      <form method="dialog" class="gaveta__topo">
+        <p class="rotulo">Sumário</p>
+        <button class="acao" aria-label="Fechar sumário"><Icone nome="fechar" /></button>
+      </form>
+      <div class="gaveta__so">
+        <p class="rotulo" id="rotulo-so">Seu sistema</p>
+        <div class="segmentado" role="group" aria-labelledby="rotulo-so">
+          <button type="button" data-define-so="mac" aria-pressed="false">Mac</button>
+          <button type="button" data-define-so="win" aria-pressed="false">Windows</button>
+          <button type="button" data-define-so="linux" aria-pressed="false">Linux</button>
+        </div>
+      </div>
+      <MetroMini atual={estacaoId} />
+    </dialog>
+
+    <dialog class="busca" id="busca" aria-label="Busca no curso">
+      <form method="dialog" class="busca__topo">
+        <label class="busca__campo">
+          <span class="busca__barra" aria-hidden="true">/</span>
+          <span class="sr">Buscar no curso</span>
+          <input type="search" id="busca-campo" placeholder="buscar no manual…" autocomplete="off" spellcheck="false" />
+        </label>
+        <button class="acao" aria-label="Fechar busca"><Icone nome="fechar" /></button>
+      </form>
+      <ol class="busca__resultados" id="busca-resultados" aria-live="polite"></ol>
+      <p class="busca__dica rotulo">Enter abre · Esc fecha · a tecla / chama a busca de qualquer página</p>
+    </dialog>
+
+    <script>
+      import '../scripts/app.ts';
+    </script>
+  </body>
+</html>

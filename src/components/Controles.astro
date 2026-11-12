@@ -1,0 +1,21 @@
+---
+// Controles do player: tocar/pausar e barra de passos. Só aparecem com JS.
+import Icone from './Icone.astro';
+interface Props {
+  passos: number;
+  rotulo: string;
+}
+const { passos, rotulo } = Astro.props;
+---
+
+<div class="controles nao-imprimir">
+  <button type="button" class="controles__toca" data-player-toca aria-pressed="false" aria-label="Reproduzir">
+    <span class="controles__play"><Icone nome="play" tamanho={18} /></span>
+    <span class="controles__pausa"><Icone nome="pausa" tamanho={18} /></span>
+  </button>
+  <label class="controles__faixa">
+    <span class="sr">{rotulo}: passo</span>
+    <input type="range" min="0" max={passos} step="1" value={passos} />
+  </label>
+  <p class="controles__legenda" data-player-legenda aria-live="polite"></p>
+</div>

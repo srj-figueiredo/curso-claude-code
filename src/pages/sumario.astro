@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import MetroMini from '../components/MetroMini.astro';
+---
+
+<Base titulo="Sumário" corrente="Sumário" buscavel={false}>
+  <div class="folha">
+    <h1>Sumário</h1>
+    <p class="folha__lide">O curso inteiro, linha por linha. Estações pontilhadas ainda estão em obras.</p>
+    <MetroMini />
+  </div>
+</Base>
+
+<style>
+  .folha {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--e-7) clamp(var(--e-4), 5vw, var(--e-6)) 0;
+  }
+
+  h1 {
+    font-size: var(--t-xl);
+  }
+
+  .folha__lide {
+    margin-top: var(--e-3);
+    color: var(--tinta-2);
+  }
+
+  .folha :global(.mini) {
+    padding: 0;
+  }
+</style>

@@ -1,0 +1,105 @@
+// Estrutura aprovada do curso (BRIEFING, seção 7). Fonte única para mapa, navegação e trilhas.
+
+export const VERSAO_CLI = '2.1.323';
+export const DATA_VERIFICACAO = '12/11/2026';
+
+export type Parte = { id: string; rotulo: string; titulo: string };
+export type Estacao = { id: string; parte: string; titulo: string; curto: string };
+export type TrilhaId = 'rapida' | 'completa' | 'empresa';
+
+export const PARTES: Parte[] = [
+  { id: 'p0', rotulo: 'Parte 0', titulo: 'Antes de começar' },
+  { id: 'p1', rotulo: 'Parte I', titulo: 'Fundamentos' },
+  { id: 'p2', rotulo: 'Parte II', titulo: 'O menu / dissecado' },
+  { id: 'p3', rotulo: 'Parte III', titulo: 'Do zero ao ar' },
+  { id: 'p4', rotulo: 'Parte IV', titulo: 'Personalizar' },
+  { id: 'p5', rotulo: 'Parte V', titulo: 'Escalar' },
+  { id: 'p6', rotulo: 'Parte VI', titulo: 'Construir produtos de verdade' },
+  { id: 'p7', rotulo: 'Parte VII', titulo: 'Cases de mercado' },
+];
+
+const e = (id: string, parte: string, titulo: string, curto = titulo): Estacao => ({ id, parte, titulo, curto });
+
+export const ESTACOES: Estacao[] = [
+  e('m0', 'p0', 'Mapa do Claude Code e regras do jogo', 'Mapa e regras'),
+  e('m1', 'p1', 'Instalação e primeiro contato', 'Instalação'),
+  e('m2', 'p1', 'Como o Claude Code pensa', 'Como pensa'),
+  e('m3', 'p1', 'Conduzindo no dia a dia', 'Dia a dia'),
+  e('r1', 'p2', 'Configurar e personalizar', 'Configurar'),
+  e('r2', 'p2', 'Permissões e segurança', 'Permissões'),
+  e('r3', 'p2', 'Conduzir a sessão', 'Conduzir'),
+  e('r4', 'p2', 'Paralelo e agentes', 'Paralelo'),
+  e('r5', 'p2', 'Estender', 'Estender'),
+  e('r6', 'p2', 'Qualidade e entrega', 'Qualidade'),
+  e('r7', 'p2', 'Todo lugar', 'Todo lugar'),
+  e('r8', 'p2', 'Conta, custos e suporte', 'Conta e custos'),
+  e('m4', 'p3', 'Git e GitHub do zero', 'Git e GitHub'),
+  e('m5', 'p3', 'Do computador para a internet', 'No ar'),
+  e('m6', 'p4', 'Memória e CLAUDE.md', 'Memória'),
+  e('m7', 'p4', 'Configurações, permissões e segurança', 'Segurança'),
+  e('m8', 'p4', 'Skills', 'Skills'),
+  e('m9', 'p4', 'Hooks', 'Hooks'),
+  e('m10', 'p4', 'MCP', 'MCP'),
+  e('m11', 'p4', 'Planejar e verificar', 'Planejar'),
+  e('m12', 'p5', 'Subagentes e trabalho paralelo', 'Subagentes'),
+  e('m13', 'p5', 'Plugins, marketplaces e mods', 'Plugins'),
+  e('m14', 'p5', 'Automação sem você', 'Automação'),
+  e('m15', 'p5', 'Claude Code em todo lugar', 'Todo lugar'),
+  e('m16', 'p5', 'Revisão e segurança de código', 'Revisão'),
+  e('m17', 'p5', 'Agent SDK', 'Agent SDK'),
+  e('m18', 'p5', 'Custos e uso', 'Custos'),
+  e('m19', 'p5', 'Claude Code na empresa', 'Empresa'),
+  e('m20', 'p6', 'Backend, banco, webhooks e hospedagem', 'Backend'),
+  e('m21', 'p6', 'Claude API dentro do seu produto', 'Claude API'),
+  e('m22', 'p6', 'Claude Code além do código', 'Além do código'),
+  e('c0', 'p7', 'Do briefing à entrega', 'Briefing'),
+  e('c1', 'p7', 'Chatbot de IA para WhatsApp', 'Chatbot'),
+  e('c2', 'p7', 'Sistema/painel sob medida', 'Painel'),
+  e('c3', 'p7', 'Automação com IA e relatórios', 'Automação'),
+  e('c4', 'p7', 'Landing page de conversão', 'Landing'),
+  e('c5', 'p7', 'Conteúdo em escala com IA', 'Conteúdo'),
+  e('c6', 'p7', 'Edição de vídeo com Claude Code', 'Vídeo'),
+  e('pf', 'p7', 'Projeto final', 'Projeto final'),
+];
+
+export const APENDICES = [
+  { id: 'a', titulo: 'Glossário' },
+  { id: 'b', titulo: 'Cheat sheet' },
+  { id: 'c', titulo: 'Troubleshooting e erros' },
+  { id: 'd', titulo: 'Settings e variáveis de ambiente' },
+  { id: 'e', titulo: 'Custos: do zero ao profissional' },
+  { id: 'f', titulo: 'O que mudou' },
+  { id: 'g', titulo: 'Radar de demanda' },
+  { id: 'h', titulo: 'Fontes e como verificar' },
+  { id: 'i', titulo: 'Próximos passos' },
+];
+
+const faixa = (prefixo: string, de: number, ate: number) =>
+  Array.from({ length: ate - de + 1 }, (_, i) => `${prefixo}${de + i}`);
+
+export const TRILHAS: Record<TrilhaId, { titulo: string; resumo: string; ids: string[] }> = {
+  rapida: {
+    titulo: 'Rápida para Cases',
+    resumo: 'O mínimo para entregar um projeto de cliente.',
+    ids: [...faixa('m', 0, 3), 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)],
+  },
+  completa: {
+    titulo: 'Completa',
+    resumo: 'Tudo, na ordem. Para quem quer maestria.',
+    ids: ESTACOES.map((s) => s.id),
+  },
+  empresa: {
+    titulo: 'Empresa',
+    resumo: 'Adoção em time: governança, segurança e custo.',
+    ids: [...faixa('m', 0, 3), 'm6', 'm7', 'm12', 'm16', 'm18', 'm19'],
+  },
+};
+
+export const estacao = (id: string) => ESTACOES.find((s) => s.id === id);
+export const parteDe = (id: string) => PARTES.find((p) => p.id === estacao(id)?.parte);
+export const rotulo = (id: string) => id.toUpperCase();
+
+export function vizinhos(id: string) {
+  const i = ESTACOES.findIndex((s) => s.id === id);
+  return { anterior: ESTACOES[i - 1], proximo: ESTACOES[i + 1] };
+}

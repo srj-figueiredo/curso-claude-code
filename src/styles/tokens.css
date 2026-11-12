@@ -1,0 +1,107 @@
+/* Tokens do "Manual de Bordo". Impressão em duas cores: tinta + vermelho-sinal.
+   Amarelo marca-texto com parcimônia; verde só em selos de verificação. */
+
+:root {
+  /* Tipografia */
+  --f-display: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --f-texto: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --f-mono: 'JetBrains Mono Variable', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+
+  --t-xs: 0.78rem;
+  --t-sm: 0.9rem;
+  --t-base: 1.125rem;
+  --t-md: 1.3rem;
+  --t-lg: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --t-xl: clamp(2rem, 1.4rem + 2.6vw, 3.4rem);
+  --t-capa: clamp(3rem, 1.2rem + 9vw, 9rem);
+  --t-placa: clamp(7rem, 3rem + 20vw, 19rem);
+
+  /* Espaço e medida */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-5: 1.5rem;
+  --e-6: 2.25rem;
+  --e-7: 3.5rem;
+  --e-8: 5.5rem;
+  --medida: 66ch;
+  --margem-nota: 15rem;
+  --toque: 44px;
+  --traco: 1.5px;
+
+  /* Modo Papel */
+  --papel: #f4efe4;
+  --papel-2: #ebe4d3;
+  --papel-3: #dfd6c1;
+  --tinta: #16202b;
+  --tinta-2: #47525e;
+  --tinta-3: #6b7480;
+  --sinal: #b92c1a;
+  --sinal-fundo: #f3ddd4;
+  --marca: #f2d44a;
+  --ok: #1f6b46;
+  --ok-fundo: #dbe8dc;
+  --foco: #16202b;
+
+  /* O terminal é sempre escuro, nos dois modos */
+  --term-fundo: #17130f;
+  --term-texto: #e9e0cf;
+  --term-fraco: #a3988a;
+  --term-acento: #e0a13a;
+  --term-verde: #8fbf8a;
+  --term-vermelho: #ec6a56;
+  --term-borda: #3a3229;
+
+  /* Código (tema css-variables do Shiki) */
+  --astro-code-foreground: var(--tinta);
+  --astro-code-background: var(--papel-2);
+  --astro-code-token-constant: var(--sinal);
+  --astro-code-token-string: var(--tinta);
+  --astro-code-token-comment: var(--tinta-3);
+  --astro-code-token-keyword: var(--sinal);
+  --astro-code-token-parameter: var(--tinta-2);
+  --astro-code-token-function: var(--tinta);
+  --astro-code-token-string-expression: #3d5a45;
+  --astro-code-token-punctuation: var(--tinta-2);
+  --astro-code-token-link: var(--sinal);
+
+  color-scheme: light;
+}
+
+/* Modo Console: por escolha explícita, ou pelo sistema quando não há escolha. */
+:root[data-tema='console'] {
+  --papel: #15120f;
+  --papel-2: #1f1b16;
+  --papel-3: #2e2820;
+  --tinta: #e9e0cf;
+  --tinta-2: #bdb3a2;
+  --tinta-3: #988e7f;
+  --sinal: #f0705c;
+  --sinal-fundo: #3a1e18;
+  --marca: #e0a13a;
+  --ok: #8fc79a;
+  --ok-fundo: #1c2f22;
+  --foco: #e0a13a;
+  --astro-code-token-string-expression: #a9cfa4;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema]) {
+    --papel: #15120f;
+    --papel-2: #1f1b16;
+    --papel-3: #2e2820;
+    --tinta: #e9e0cf;
+    --tinta-2: #bdb3a2;
+    --tinta-3: #988e7f;
+    --sinal: #f0705c;
+    --sinal-fundo: #3a1e18;
+    --marca: #e0a13a;
+    --ok: #8fc79a;
+    --ok-fundo: #1c2f22;
+    --foco: #e0a13a;
+    --astro-code-token-string-expression: #a9cfa4;
+    color-scheme: dark;
+  }
+}

@@ -1,0 +1,81 @@
+---
+// Mapa do Metrô em versão vertical: navegação (gaveta), sumário e home no celular.
+import { PARTES, ESTACOES, APENDICES, TRILHAS, rotulo } from '../data/curso';
+import { pagina, u } from '../lib/url';
+import { paginasEscritas } from '../lib/paginas';
+
+interface Props {
+  atual?: string;
+  comApendices?: boolean;
+}
+const { atual, comApendices = true } = Astro.props;
+const escritas = await paginasEscritas();
+const trilhasDe = (id: string) =>
+  Object.entries(TRILHAS)
+    .filter(([, t]) => t.ids.includes(id))
+    .map(([k]) => k)
+    .join(' ');
+---
+
+<nav class="mini" aria-label="Estações do curso">
+  {
+    PARTES.map((parte, i) => (
+      <section class={`mini__linha mini__linha--${i % 4}`}>
+        <h2 class="mini__parte">
+          <span class="rotulo">{parte.rotulo}</span> {parte.titulo}
+        </h2>
+        <ol class="mini__estacoes">
+          {ESTACOES.filter((s) => s.parte === parte.id).map((s) => {
+            const p = escritas.get(s.id);
+            return (
+              <li
+                class="mini__estacao"
+                data-estacao={s.id}
+                data-trilhas={trilhasDe(s.id)}
+                aria-current={s.id === atual ? 'page' : undefined}
+              >
+                <span class="mini__ponto" aria-hidden="true" />
+                {p ? (
+                  <a href={pagina(s.id)}>
+                    <span class="mini__id mono">{rotulo(s.id)}</span>
+                    <span class="mini__titulo">{s.titulo}</span>
+                    <span class="mini__min mono">{p.data.minutos} min</span>
+                  </a>
+                ) : (
+                  <span class="mini__breve">
+                    <span class="mini__id mono">{rotulo(s.id)}</span>
+                    <span class="mini__titulo">{s.titulo}</span>
+                    <span class="mini__min mono">em obras</span>
+                  </span>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+        {parte.id === 'p2' && (
+          <p class="mini__extra">
+            <a href={u('/baralho/')}>Baralho de Comandos: todas as cartas</a>
+          </p>
+        )}
+      </section>
+    ))
+  }
+  {
+    comApendices && (
+      <section class="mini__linha mini__linha--ap">
+        <h2 class="mini__parte">
+          <span class="rotulo">Apêndices</span>
+        </h2>
+        <ol class="mini__apendices">
+          {APENDICES.map((a) => (
+            <li>
+              <a href={pagina(a.id)}>
+                <span class="mini__id mono">{a.id.toUpperCase()}</span> {a.titulo}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+</nav>

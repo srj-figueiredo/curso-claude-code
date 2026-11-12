@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import { u } from '../lib/url';
+---
+
+<Base titulo="Busca" corrente="Busca" buscavel={false}>
+  <div class="folha">
+    <h1>Busca</h1>
+    <p>
+      A busca roda inteira no seu navegador e precisa de JavaScript. Com ele ligado, aperte <kbd>/</kbd> em qualquer
+      página ou use o botão abaixo.
+    </p>
+    <p><a class="botao" href={u('/busca/')} data-abre="busca">Abrir a busca</a></p>
+    <p>Sem JavaScript, o <a href={u('/sumario/')}>sumário</a> leva a tudo.</p>
+  </div>
+</Base>
+
+<style>
+  .folha {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: var(--e-7) clamp(var(--e-4), 5vw, var(--e-6)) 0;
+  }
+
+  h1 {
+    font-size: var(--t-xl);
+    margin-bottom: var(--e-4);
+  }
+</style>

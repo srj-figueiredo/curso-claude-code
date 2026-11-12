@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import { u } from '../lib/url';
+---
+
+<Base titulo="Estação não encontrada" buscavel={false}>
+  <div class="folha">
+    <p class="numero" aria-hidden="true">404</p>
+    <h1>Esta estação não existe</h1>
+    <p>Ou ainda está em obras. O trem volta para o <a href={u('/sumario/')}>sumário</a>.</p>
+  </div>
+</Base>
+
+<style>
+  .folha {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: var(--e-7) clamp(var(--e-4), 5vw, var(--e-6)) 0;
+  }
+
+  .numero {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: var(--t-placa);
+    font-weight: 900;
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--tinta);
+    text-shadow: 0.045em 0.045em 0 var(--sinal);
+  }
+
+  h1 {
+    font-size: var(--t-xl);
+    margin: var(--e-4) 0;
+  }
+</style>

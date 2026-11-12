@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import MetroMini from '../components/MetroMini.astro';
+import Icone from '../components/Icone.astro';
+---
+
+<Base titulo="Seu progresso" corrente="Progresso" buscavel={false}>
+  <div class="folha">
+    <h1>Seu progresso</h1>
+    <p class="folha__numero"><span data-progresso-pct>0%</span></p>
+    <p class="mono" data-progresso-texto></p>
+    <p>
+      O progresso mora só neste navegador (<code>localStorage</code>). Nada vai para servidor nenhum. Para levar a outro
+      aparelho, exporte o arquivo aqui e importe lá.
+    </p>
+    <noscript><p><strong>Com JavaScript desligado, o progresso não é guardado.</strong> O curso continua legível.</p></noscript>
+    <div class="folha__acoes">
+      <button class="botao" type="button" data-exportar><Icone nome="baixar" tamanho={18} /> Exportar JSON</button>
+      <label class="botao botao--vazado">
+        Importar JSON
+        <input class="sr" type="file" accept="application/json,.json" data-importar />
+      </label>
+      <button class="botao botao--vazado" type="button" data-apagar>Apagar tudo</button>
+    </div>
+    <p class="mono" role="status" data-importar-aviso></p>
+    <MetroMini comApendices={false} />
+  </div>
+</Base>
+
+<style>
+  .folha {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--e-7) clamp(var(--e-4), 5vw, var(--e-6)) 0;
+  }
+
+  h1 {
+    font-size: var(--t-xl);
+  }
+
+  .folha__numero {
+    margin: var(--e-4) 0 0;
+    font-family: var(--f-display);
+    font-size: var(--t-placa);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--tinta);
+    text-shadow: 0.045em 0.045em 0 var(--sinal);
+  }
+
+  .folha__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-4);
+    margin: var(--e-5) 0;
+  }
+
+  .folha__acoes label:focus-within {
+    outline: 3px solid var(--foco);
+    outline-offset: 3px;
+  }
+
+  .folha :global(.mini) {
+    padding: var(--e-5) 0 0;
+  }
+</style>

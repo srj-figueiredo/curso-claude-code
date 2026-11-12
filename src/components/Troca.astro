@@ -1,0 +1,22 @@
+---
+// Fita TROCA POR PAGO (BRIEFING, seção 10): o quê, gatilho, custo datado e como trocar.
+interface Props {
+  oque: string;
+  gatilho: string;
+  custo: string;
+  data: string;
+  como: string;
+}
+const { oque, gatilho, custo, data, como } = Astro.props;
+---
+
+<aside class="troca" aria-label="Troca por pago">
+  <p class="troca__fita rotulo">Troca por pago</p>
+  <dl class="troca__dados">
+    <div><dt>O que trocar</dt><dd>{oque}</dd></div>
+    <div><dt>Quando</dt><dd>{gatilho}</dd></div>
+    <div><dt>Custo</dt><dd>{custo} <span class="troca__data">(conferido em {data})</span></dd></div>
+    <div><dt>Como</dt><dd>{como}</dd></div>
+  </dl>
+  <slot />
+</aside>

@@ -1,0 +1,17 @@
+---
+// Bloco de conteúdo que só vale para um ou mais sistemas: <Para so="win"> … </Para>
+interface Props {
+  so: string;
+}
+const { so } = Astro.props;
+const NOMES: Record<string, string> = { mac: 'Mac', win: 'Windows', linux: 'Linux' };
+const nome = so
+  .split(' ')
+  .map((s) => NOMES[s])
+  .join(' e ');
+---
+
+<div class="para" data-so-de={so}>
+  <p class="para__nome rotulo">{nome}</p>
+  <slot />
+</div>

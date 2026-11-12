@@ -1,0 +1,114 @@
+---
+// Página de estação (módulo, seção do menu ou case): placa de capítulo, resumo, prosa e navegação.
+import Base from './Base.astro';
+import Selo from '../components/Selo.astro';
+import Icone from '../components/Icone.astro';
+import { estacao, parteDe, rotulo, vizinhos, TRILHAS } from '../data/curso';
+import { pagina } from '../lib/url';
+import { paginasEscritas, type Pagina } from '../lib/paginas';
+
+interface Props {
+  dados: Pagina['data'];
+}
+const { dados } = Astro.props;
+const parte = parteDe(dados.id)!;
+const { anterior, proximo } = vizinhos(dados.id);
+const escritas = await paginasEscritas();
+const numeral = /^m\d+$/.test(dados.id) ? dados.id.slice(1).padStart(2, '0') : rotulo(dados.id);
+const nomesTrilhas = dados.trilhas.map((t) => TRILHAS[t].titulo).join(' · ');
+---
+
+<Base
+  titulo={`${rotulo(dados.id)} · ${dados.titulo}`}
+  descricao={dados.tldr.join(' ')}
+  corrente={`${parte.rotulo} · ${rotulo(dados.id)} · v${dados.verificado_em_versao}`}
+  estacaoId={dados.id}
+>
+  <article class="pagina" data-exercicios={dados.exercicios.map((e) => e.id).join(',')}>
+    <header class="placa">
+      <div class="placa__reticula reticula" aria-hidden="true"></div>
+      <p class="placa__numero" aria-hidden="true">{numeral}</p>
+      <p class="placa__parte rotulo">{parte.rotulo} · {parte.titulo}</p>
+      <h1>{dados.titulo}</h1>
+      <ul class="placa__meta">
+        <li><Icone nome="relogio" tamanho={18} /> {dados.minutos} min</li>
+        <li>
+          Antes:
+          {
+            dados.pre_requisitos.length === 0
+              ? ' nada'
+              : dados.pre_requisitos.map((p, i) => (
+                  <>
+                    {i > 0 && ', '}
+                    {escritas.has(p) ? <a href={pagina(p)}>{rotulo(p)}</a> : rotulo(p)}
+                  </>
+                ))
+          }
+        </li>
+        <li>Trilhas: {nomesTrilhas}</li>
+        <li>
+          <Selo versao={dados.verificado_em_versao} data={dados.verificado_em_data} />
+          {dados.status === 'beta' && <Selo tipo="beta" />}
+          {dados.status === 'depende-de-plano' && <Selo tipo="plano" texto="varia" />}
+        </li>
+      </ul>
+    </header>
+
+    <div class="resumo">
+      <section class="tldr" aria-labelledby="tldr-t">
+        <h2 id="tldr-t">Em três linhas</h2>
+        <ol>
+          {dados.tldr.map((l) => <li>{l}</li>)}
+        </ol>
+      </section>
+      <section class="objetivos" aria-labelledby="obj-t">
+        <h2 id="obj-t">Ao final você consegue</h2>
+        <ul>
+          {dados.objetivos.map((o) => <li>{o}</li>)}
+        </ul>
+      </section>
+    </div>
+
+    <div class="prosa">
+      <slot />
+    </div>
+
+    <div class="conclusao nao-imprimir">
+      <button
+        class="botao"
+        type="button"
+        data-marca={dados.id}
+        data-rotulo-pendente={`Concluí ${rotulo(dados.id)}`}
+        data-rotulo-feito={`${rotulo(dados.id)} concluído`}
+        aria-pressed="false"
+      >
+        <Icone nome="feito" tamanho={18} />
+        <span data-marca-rotulo>Concluí {rotulo(dados.id)}</span>
+      </button>
+      <button class="botao botao--vazado" type="button" onclick="window.print()">
+        <Icone nome="imprimir" tamanho={18} /> Imprimir ou salvar em PDF
+      </button>
+    </div>
+
+    <nav class="proximo nao-imprimir" aria-label="Estações vizinhas">
+      {
+        anterior && escritas.has(anterior.id) ? (
+          <a href={pagina(anterior.id)} rel="prev">
+            <span class="rotulo">Anterior · {rotulo(anterior.id)}</span>
+            <strong>{anterior.titulo}</strong>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        proximo && escritas.has(proximo.id) && (
+          <a href={pagina(proximo.id)} rel="next">
+            <span class="rotulo">Próxima estação · {rotulo(proximo.id)}</span>
+            <strong>{estacao(proximo.id)!.titulo}</strong>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</Base>

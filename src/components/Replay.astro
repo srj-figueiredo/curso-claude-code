@@ -1,0 +1,111 @@
+---
+// Terminal-Replay: mockup do Claude Code gerado a partir de uma transcrição real (transcripts/).
+// Cada linha é um passo do player. Sem JS, a sessão inteira aparece estática.
+import Controles from './Controles.astro';
+
+type Linha =
+  | { t: 'cmd'; texto: string }
+  | { t: 'prompt'; texto: string }
+  | { t: 'texto'; texto: string }
+  | { t: 'ferramenta'; nome: string; arg?: string; saida?: string }
+  | { t: 'permissao'; titulo: string; corpo?: string; opcoes: string[]; escolha: number }
+  | { t: 'diff'; arquivo: string; linhas: { s: '+' | '-' | ' '; texto: string }[] }
+  | { t: 'nota'; texto: string };
+
+type Dados = { titulo: string; versao: string; data: string; origem: string; reconstruido?: string; linhas: Linha[] };
+
+interface Props {
+  id: string;
+  autoplay?: boolean;
+  legenda?: string;
+}
+const { id, autoplay = false, legenda } = Astro.props;
+const arquivos = import.meta.glob<{ default: Dados }>('../data/replays/*.json', { eager: true });
+const achado = arquivos[`../data/replays/${id}.json`];
+if (!achado) throw new Error(`Replay "${id}" não existe em src/data/replays/`);
+const dados = achado.default;
+const passos = dados.linhas.length;
+---
+
+<figure class="replay" data-player data-passos={passos} data-intervalo="950" {...autoplay ? { 'data-autoplay': '' } : {}}>
+  <div class="terminal">
+    <div class="terminal__barra" aria-hidden="true">
+      <span class="terminal__luzes"><i></i><i></i><i></i></span>
+      <span class="terminal__titulo">{dados.titulo}</span>
+    </div>
+    <div class="terminal__tela" tabindex="0" role="group" aria-label={`Sessão de terminal: ${dados.titulo}`}>
+      {
+        dados.linhas.map((l, i) => (
+          <div class={`tl tl--${l.t}`} data-de={i + 1}>
+            {l.t === 'cmd' && (
+              <p>
+                <span class="tl__cifrao" aria-hidden="true">$ </span>
+                {l.texto}
+              </p>
+            )}
+            {l.t === 'prompt' && (
+              <p class="tl__caixa">
+                <span class="tl__seta" aria-hidden="true">&gt; </span>
+                <span class="sr">Você: </span>
+                {l.texto}
+              </p>
+            )}
+            {l.t === 'texto' && (
+              <p>
+                <span class="tl__bola" aria-hidden="true">● </span>
+                <span class="sr">Claude: </span>
+                {l.texto}
+              </p>
+            )}
+            {l.t === 'ferramenta' && (
+              <>
+                <p>
+                  <span class="tl__bola tl__bola--ok" aria-hidden="true">● </span>
+                  <strong>{l.nome}</strong>
+                  {l.arg && <span class="tl__arg">({l.arg})</span>}
+                </p>
+                {l.saida && (
+                  <p class="tl__saida">
+                    <span aria-hidden="true">⎿  </span>
+                    {l.saida}
+                  </p>
+                )}
+              </>
+            )}
+            {l.t === 'permissao' && (
+              <div class="tl__permissao">
+                <p class="tl__permissao-titulo">{l.titulo}</p>
+                {l.corpo && <p class="tl__permissao-corpo">{l.corpo}</p>}
+                <ol>
+                  {l.opcoes.map((o, k) => (
+                    <li class={k === l.escolha ? 'escolhida' : undefined}>
+                      <span aria-hidden="true">{k === l.escolha ? '❯ ' : '  '}</span>
+                      {k + 1}. {o}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+            {l.t === 'diff' && (
+              <div class="tl__diff">
+                <p class="tl__saida">
+                  <span aria-hidden="true">⎿  </span>
+                  {l.arquivo}
+                </p>
+                <pre>{l.linhas.map((d) => <span class={d.s === '+' ? 'mais' : d.s === '-' ? 'menos' : undefined}>{`${d.s} ${d.texto}\n`}</span>)}</pre>
+              </div>
+            )}
+            {l.t === 'nota' && <p class="tl__nota">{l.texto}</p>}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <Controles passos={passos} rotulo={dados.titulo} />
+  <figcaption class="replay__legenda">
+    {legenda && <span>{legenda} </span>}
+    <span class="replay__origem">
+      {dados.reconstruido ?? 'Sessão real'} · v{dados.versao} · {dados.data} · <code>{dados.origem}</code>
+    </span>
+  </figcaption>
+</figure>

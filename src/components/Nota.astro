@@ -1,0 +1,12 @@
+---
+// Nota lateral (Tufte): na margem em telas largas, recolhível no celular.
+interface Props {
+  rotulo?: string;
+}
+const { rotulo = 'Nota' } = Astro.props;
+---
+
+<details class="nota">
+  <summary class="rotulo">{rotulo}</summary>
+  <div class="nota__corpo"><slot /></div>
+</details>

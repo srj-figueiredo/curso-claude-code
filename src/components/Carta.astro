@@ -1,0 +1,84 @@
+---
+// Carta do Baralho de Comandos. Gerada de commands.json; frente = resumo, verso = detalhe.
+import type { CollectionEntry } from 'astro:content';
+import Selo from './Selo.astro';
+import Icone from './Icone.astro';
+
+interface Props {
+  comando: CollectionEntry<'comandos'>['data'];
+}
+const { comando: c } = Astro.props;
+const semBarra = c.nome.slice(1);
+const texto = [c.nome, ...c.aliases, c.o_que_faz, c.quando_usar].join(' ').toLowerCase();
+const plano = /todos|qualquer/i.test(c.disponibilidade.plano) ? 'todos' : 'restrito';
+const apagada = c.tipo === 'removido';
+---
+
+<article
+  class:list={['carta', `carta--${c.tipo.replace(' ', '-')}`, { 'carta--apagada': apagada }]}
+  id={`carta-${c.id}`}
+  data-categoria={c.categoria}
+  data-plano={plano}
+  data-tipo={c.tipo.replace(' ', '-')}
+  data-texto={texto}
+>
+  <div class="carta__frente">
+    <header class="carta__topo">
+      <span class="carta__cat rotulo">{c.categoria}</span>
+      <span class="carta__tipo rotulo">{c.tipo}</span>
+    </header>
+    <p class="carta__glifo" aria-hidden="true">/</p>
+    <h3 class="carta__nome mono">
+      <span class="sr">/</span>{semBarra}
+    </h3>
+    {c.aliases.length > 0 && <p class="carta__aliases mono">também: {c.aliases.join(' ')}</p>}
+    <p class="carta__faz">{c.o_que_faz}</p>
+    <footer class="carta__pe">
+      <button class="carta__vira" type="button" data-vira aria-expanded="false" aria-controls={`verso-${c.id}`}>
+        Detalhes <Icone nome="seta" tamanho={16} />
+      </button>
+      <button class="carta__carimbo nao-imprimir" type="button" data-carimbo={c.id} aria-pressed="false">
+        <span class="carta__carimbo-marca" aria-hidden="true">já usei</span>
+        <span class="sr">Marcar {c.nome} como já usado</span>
+      </button>
+    </footer>
+  </div>
+
+  <div class="carta__verso" id={`verso-${c.id}`}>
+    <p class="carta__sintaxe mono">
+      {c.nome}
+      {c.argumentos && <span> {c.argumentos}</span>}
+    </p>
+    <dl class="carta__dados">
+      <div><dt>Quando usar</dt><dd>{c.quando_usar}</dd></div>
+      <div><dt>Exemplo</dt><dd><code>{c.exemplo}</code></dd></div>
+      <div><dt>Armadilha</dt><dd>{c.armadilha}</dd></div>
+      <div>
+        <dt>Disponível</dt>
+        <dd>
+          {c.disponibilidade.plano} · {c.disponibilidade.plataforma}
+          {c.disponibilidade.requisitos && ` · ${c.disponibilidade.requisitos}`}
+          {c.versao_minima && ` · desde v${c.versao_minima}`}
+        </dd>
+      </div>
+    </dl>
+    <p class="carta__selos">
+      {
+        c.testado_localmente ? (
+          <Selo versao={c.verificado_em_versao} data={c.verificado_em_data} />
+        ) : (
+          <Selo tipo="nao-testado" data={c.verificado_em_data} />
+        )
+      }
+      {c.status === 'beta' && <Selo tipo="beta" />}
+      {c.tipo === 'removido' && <Selo tipo="removido" />}
+      {c.tipo === 'oculto' && <Selo tipo="oculto" />}
+    </p>
+    <p class="carta__fonte">
+      <a href={c.fonte} rel="noopener">Fonte oficial</a>
+      <button class="carta__vira" type="button" data-vira aria-expanded="false" aria-controls={`verso-${c.id}`}>
+        <Icone nome="volta" tamanho={16} /> Frente
+      </button>
+    </p>
+  </div>
+</article>
