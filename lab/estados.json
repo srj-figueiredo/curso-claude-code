@@ -1,0 +1,4 @@
+{
+  "m3-inicio": ["base"],
+  "m3-gabarito": ["base", "m3-gabarito"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "pendencias",
+  "version": "0.1.0",
+  "description": "Lista de pendências de linha de comando. Projeto-laboratório do Manual de Bordo.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "start": "node src/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "titulo": "pendencias · modo plano",
+  "data": "12/11/2026",
+  "comando": "claude --permission-mode plan",
+  "prompt": "Quero marcar pendências com prioridade alta ou normal (normal é o padrão). A CLI deve aceitar: add \"texto\" --prioridade alta. A listagem mostra ! antes das de prioridade alta. Pronto quando npm test passar com testes novos para isso. Não instale dependências.",
+  "ocultar": ["ToolSearch"],
+  "corta": 1400,
+  "notas": ["⏸ plan mode on · nenhum arquivo do projeto foi alterado (git status limpo)"]
+}

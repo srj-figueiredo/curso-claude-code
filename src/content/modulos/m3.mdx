@@ -1,0 +1,551 @@
+---
+id: m3
+titulo: Conduzindo no dia a dia
+parte: p1
+ordem: 3
+minutos: 75
+pre_requisitos: [m1, m2]
+objetivos:
+  - Escrever um pedido com objetivo, restrições e critério de pronto.
+  - Entregar ao Claude arquivos, imagens e saídas de comando sem redigitar nada.
+  - Planejar antes de editar com o modo plano e aprovar o plano com consciência.
+  - Desfazer uma mudança ruim com o rewind e saber o que ele não desfaz.
+  - Nomear, retomar e ramificar sessões.
+tldr:
+  - Um bom pedido diz o que você quer, o que não pode mudar e como saber que acabou.
+  - Shift+Tab troca o modo de permissão; Esc interrompe; Esc duas vezes volta no tempo.
+  - Sessões ficam gravadas. Dê nome às que importam e retome quando quiser.
+verificado_em_versao: 2.1.323
+verificado_em_data: 12/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: m3-e1, titulo: Uma tarefa em modo plano, minutos: 20, custo: gratis }
+  - { id: m3-e2, titulo: Desfazer um erro de propósito, minutos: 10, custo: gratis }
+  - { id: m3-e3, titulo: Retomar a sessão de ontem, minutos: 10, custo: gratis }
+  - { id: m3-e4, titulo: Prompt ruim contra prompt bom, minutos: 15, custo: gratis }
+---
+
+import CicloModos from '../../components/figuras/CicloModos.astro';
+
+## Essencial
+
+Conduzir o Claude Code é parecido com orientar um colega muito rápido que acabou de chegar. Ele lê o projeto inteiro em segundos, mas não leu a sua cabeça. O dia a dia se resume a quatro gestos: **pedir bem, escolher quanta rédea dar, corrigir cedo e guardar a conversa**.
+
+### O pedido: três coisas que ele não tem como adivinhar
+
+O Claude descobre sozinho a estrutura de pastas, as convenções e o framework de testes. O que ele não descobre é o que nunca esteve no repositório. Um bom pedido entrega exatamente isso:
+
+1. **Objetivo.** O que deve existir no final, com o nome do arquivo ou o sintoma quando houver.
+2. **Restrições.** O que não pode mudar, o que não pode ser instalado, qual de dois caminhos razoáveis você prefere.
+3. **Critério de pronto.** Algo que o Claude consiga executar e que responda passou ou falhou.
+
+<Nota rotulo="Por que o item 3 pesa tanto">
+Sem nada para rodar, o Claude para quando o trabalho *parece* pronto. Com um teste, ele mesmo fecha o ciclo: muda, roda, lê o erro, corrige.
+</Nota>
+
+Compare os dois pedidos abaixo. São do nosso laboratório, e os dois foram executados de verdade (os números estão na Ficha 4).
+
+| Pedido vago | Pedido específico |
+|---|---|
+| `adiciona data nas pendências` | `Cada pendência deve guardar a data de criação no campo criadaEm, em ISO 8601. A listagem não muda. Pronto quando npm test passar com um teste novo que fixa a data. Não mexa na CLI nem no README.` |
+| O Claude escolheu o formato, mudou a listagem e alterou 51 linhas. | O Claude alterou 11 linhas, no formato pedido, sem tocar na listagem. |
+
+O pedido vago não deu errado. Deu **outra coisa**, e você só descobre lendo o diff. Quando estiver explorando ("o que você melhoraria neste arquivo?"), ser vago é legítimo. Quando souber o que quer, diga.
+
+Frases como "pense passo a passo" ou "seja minucioso" são texto comum, não palavras mágicas. Quem controla quanto o Claude raciocina é o nível de esforço, assunto do [M2](../m2/).
+
+### Entregue o material em vez de descrevê-lo
+
+Se a coisa existe, não a descreva. Entregue.
+
+| Você tem | Faça assim |
+|---|---|
+| Um arquivo | Digite `@` e o caminho: `explique @src/cli.js`. O conteúdo entra na conversa. |
+| Uma pasta | `@src/` entra como listagem de arquivos, sem o conteúdo. |
+| Um print ou mockup | Cole no prompt (tabela abaixo) ou arraste a imagem para a janela. |
+| A saída de um comando | Comece a linha com `!` para rodar o comando ali mesmo e mandar a saída. |
+| Um log, fora da sessão | `cat erro.log \| claude -p "o que está acontecendo aqui?"` |
+
+Para colar imagem da área de transferência:
+
+<SO mac="Ctrl+V   (Cmd+V no iTerm2)" win="Alt+V" linux="Ctrl+V" />
+
+<Nota>
+`@arquivo` inclui o texto quando ele cabe no limite da ferramenta de leitura, 25 mil tokens por padrão. Arquivo de texto acima de 256 KB não entra.
+</Nota>
+
+### Quanta rédea: os modos de permissão
+
+O modo de permissão decide **o que roda sem perguntar**. Você troca de modo com <kbd>Shift</kbd>+<kbd>Tab</kbd>, e a barra de status mostra o modo ativo.
+
+<Figura
+  id="fig-ciclo"
+  titulo="O ciclo do Shift+Tab e o que cada modo deixa passar sem pergunta"
+  chamadas={[
+    '<strong>Manual</strong> (valor <code>default</code>): só leitura passa direto. Para trabalho sensível e código desconhecido.',
+    '<strong>Aceitar edições</strong> (<code>acceptEdits</code>): edita arquivos e roda comandos simples de arquivo, como <code>mkdir</code> e <code>mv</code>, dentro da pasta de trabalho.',
+    '<strong>Plano</strong> (<code>plan</code>): pesquisa e propõe; a edição fica bloqueada até você aprovar.',
+    '<strong>Auto</strong>: tudo roda, com um classificador revisando em segundo plano. Só aparece no ciclo quando está disponível para a sua conta.',
+  ]}
+>
+  <CicloModos />
+</Figura>
+
+Dois modos ficam fora do ciclo normal: `dontAsk`, feito para scripts e CI, e `bypassPermissions`, que só faz sentido dentro de contêiner ou máquina virtual. O [M7](../m7/) trata dos dois com o cuidado que merecem.
+
+<Nota rotulo="Em que modo começo?">
+Depende do plano e da organização. A partir da v2.1.283, o modo inicial embutido pode ser o auto. Olhe a barra de status antes da primeira mensagem.
+</Nota>
+
+### Modo plano: pense antes, edite depois
+
+No modo plano o Claude lê arquivos, roda comandos de exploração e escreve um plano. Não toca no seu código. É a rédea certa para tarefa que mexe em vários arquivos, ou para código que você não conhece.
+
+Três jeitos de entrar:
+
+```text
+Shift+Tab                        durante a sessão, até aparecer "plan mode on"
+/plan adicione prioridade        só para este pedido
+claude --permission-mode plan    já na abertura
+```
+
+Quando o plano fica pronto, o Claude pergunta como seguir. As opções dependem da sua conta; as três de base são:
+
+- **Sim, e usar o modo auto** (ou "aceitar edições", quando o auto não está disponível).
+- **Sim, aprovar cada edição manualmente.**
+- **Não, continuar planejando**: você diz o que mudar no plano.
+
+<kbd>Ctrl</kbd>+<kbd>G</kbd> abre o plano no seu editor de texto para você ajustar à mão antes de aprovar.
+
+<Replay id="m3-plano" legenda="O pedido da Ficha 1, em modo plano. O Claude lê seis arquivos, escreve o plano e para." />
+
+Repare na última resposta do replay. A sessão rodou sem tela interativa (`-p`), onde não existe quem aprove um plano. O Claude percebeu, não editou nada e disse isso. No terminal interativo, nesse ponto aparece a pergunta de aprovação.
+
+### Corrigir cedo: Esc, rewind e recomeço
+
+Assista ao primeiro minuto. É nele que você vê se o Claude entendeu.
+
+| Tecla ou comando | O que acontece |
+|---|---|
+| <kbd>Esc</kbd> | Interrompe na hora. O que já foi feito fica. Redirecione e siga. |
+| <kbd>Esc</kbd> <kbd>Esc</kbd> com o prompt vazio, ou `/rewind` | Abre o menu de rewind: a lista dos seus pedidos na sessão. |
+| `/clear` | Conversa nova. A anterior continua gravada e pode ser retomada. |
+
+No menu de rewind, você escolhe um pedido e uma ação:
+
+- **Restaurar código e conversa**: volta tudo àquele ponto.
+- **Restaurar conversa**: volta a conversa, mantém os arquivos como estão.
+- **Restaurar código**: desfaz as edições, mantém a conversa.
+- **Resumir daqui em diante** ou **Resumir até aqui**: compacta um trecho para liberar contexto.
+
+Isso funciona porque o Claude Code tira um **checkpoint** dos arquivos antes de cada pedido seu. Vale a regra de bolso da documentação: errou duas correções seguidas, não tente a terceira. `/clear` e um pedido novo, com o que você aprendeu, rendem mais.
+
+### Guardar a conversa: sessões
+
+Toda sessão é gravada em disco enquanto você trabalha. Fechar o terminal não perde nada.
+
+| Quero | Comando |
+|---|---|
+| Voltar à última sessão desta pasta | `claude --continue` |
+| Escolher numa lista | `claude --resume` (ou `/resume` dentro de uma sessão) |
+| Voltar por nome | `claude --resume prioridade` |
+| Dar nome agora | `/rename prioridade` |
+| Já abrir com nome | `claude -n prioridade` |
+| Tentar outro caminho sem perder este | `/branch tentativa-b` |
+
+`/branch` copia a conversa até ali e leva você para a cópia. A original fica intacta na lista. É o "salvar como" da conversa.
+
+### No teclado
+
+| Tecla | Efeito |
+|---|---|
+| <kbd>\\</kbd> + <kbd>Enter</kbd> | Quebra de linha no prompt. Funciona em qualquer terminal. |
+| <kbd>Ctrl</kbd>+<kbd>J</kbd> | Idem, também sem configurar nada. |
+| <kbd>Shift</kbd>+<kbd>Enter</kbd> | Idem, nos terminais que suportam (Windows Terminal, iTerm2, Terminal da Apple e outros). |
+| <kbd>↑</kbd> | Histórico dos seus pedidos. |
+| <kbd>Ctrl</kbd>+<kbd>R</kbd> | Busca no histórico. |
+| <kbd>Ctrl</kbd>+<kbd>C</kbd> | Interrompe; sem nada rodando, limpa o prompt; de novo, sai. |
+| <kbd>?</kbd> com o prompt vazio | Painel de atalhos. |
+
+**Mensagens na fila.** Pode digitar e dar <kbd>Enter</kbd> enquanto o Claude trabalha. A mensagem entra na fila, em cinza, e ele a lê assim que terminar as chamadas de ferramenta em curso. Serve para corrigir o rumo sem interromper.
+
+**Pergunta lateral.** `/btw qual era mesmo o nome daquele arquivo?` responde com o que já está na conversa e **não entra no histórico**. Não lê arquivo nem roda comando: só consulta a memória da sessão.
+
+### Pedir o commit
+
+O Claude opera o git pela ferramenta de shell. Peça em português:
+
+```text
+Leia o diff, faça um commit só com as mudanças de prioridade e escreva a mensagem em português, no imperativo.
+```
+
+No modo Manual ele pede permissão antes de cada `git add` e `git commit`. Leia o que ele vai commitar antes de dizer sim. O [M4](../m4/) aprofunda git do zero.
+
+<Camada tipo="capo" titulo="Checkpoints, fila e sessões por dentro">
+
+### O que um checkpoint guarda
+
+- Um checkpoint nasce a cada pedido seu que inicia um turno. Ficam os 100 mais recentes da sessão.
+- Os checkpoints são salvos junto com a conversa. Por isso `/rewind` funciona depois de retomar uma sessão.
+- Os retratos dos arquivos são apagados na limpeza automática, por padrão cerca de 30 dias depois do último salvo. A configuração `cleanupPeriodDays` muda esse prazo.
+
+### Quando a mensagem da fila chega
+
+- **Mensagem comum:** chega ao Claude quando as chamadas de ferramenta em andamento terminam, ainda no mesmo turno.
+- **Comando com `/` ou `!`:** espera o turno acabar e roda em ordem.
+- <kbd>Ctrl</kbd>+<kbd>Enter</kbd> manda a fila na hora (v2.1.275 ou mais nova). Se o terminal não distingue a combinação, <kbd>Ctrl</kbd>+<kbd>X</kbd> <kbd>Ctrl</kbd>+<kbd>S</kbd> faz o mesmo.
+- <kbd>↑</kbd> na primeira linha do prompt devolve a fila para a caixa de texto.
+- `/model`, `/effort` e `/fast` não entram na fila: valem assim que enviados.
+
+### O que uma sessão retomada traz de volta
+
+Histórico de mensagens, chamadas de ferramenta e resultados, além do modelo em uso. Uma ferramenta que estava rodando quando o processo morreu **não** roda de novo sozinha.
+
+Sessão sem nome ganha um título gerado a partir do primeiro pedido, e esse título também serve em `claude --resume`.
+
+### O plano no modo `-p`
+
+Rodando com `-p`, o plano é escrito num arquivo em `~/.claude/plans/` e a sessão termina. Observamos isso na transcrição do replay acima. Para executar, continue a mesma sessão com outro modo: `claude -p "implemente o plano" --continue --permission-mode acceptEdits`.
+
+### Quanto custa retomar
+
+Retomar não é de graça: o histórico volta para o contexto. Na Ficha 3, uma pergunta de uma frase sobre a sessão retomada registrou US$ 0,19 no campo `total_cost_usd` da saída JSON. No plano por assinatura isso consome limite de uso, não dinheiro. O [M18](../m18/) ensina a medir.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### O rewind não desfaz tudo
+
+- **Arquivo alterado só por comando de shell** (um `sed`, um script, um `npm install`) não é rastreado. Para ele, o remédio é o git.
+- **Edições de subagentes** em geral não entram nos checkpoints da sua sessão.
+- **Links simbólicos e hard links** são pulados na restauração, com um aviso.
+- Checkpoint é rede de segurança da sessão. Histórico de verdade continua sendo o git.
+
+### Shift+Tab na hora errada aprova o plano
+
+Com a pergunta de aprovação aberta, <kbd>Shift</kbd>+<kbd>Tab</kbd> **aprova**. Para sair do modo plano sem aprovar, aperte <kbd>Esc</kbd> primeiro.
+
+### Esc duas vezes com texto no prompt apaga o texto
+
+O menu de rewind só abre com o prompt vazio. Com texto, o duplo <kbd>Esc</kbd> limpa o rascunho. Ele não se perde: <kbd>↑</kbd> traz de volta.
+
+### A mesma sessão em dois terminais
+
+Retomar a mesma sessão em dois terminais sem ramificar mistura as mensagens das duas numa transcrição só. Quer duas frentes? `/branch`, ou `claude --continue --fork-session`.
+
+### Aceitar edições não é aceitar tudo
+
+`acceptEdits` libera edição de arquivo e alguns comandos de arquivo. `npm test`, `git commit` e o resto do shell continuam pedindo permissão. Em modo `-p`, onde não há quem responda, o que pediria permissão é **negado**: na nossa execução da Ficha 1, seis chamadas foram negadas até o Claude ficar só nos comandos liberados.
+
+### @arquivo passa por fora dos hooks de leitura
+
+Um arquivo incluído com `@` não gera chamada de ferramenta, então hooks de `PreToolUse` não rodam para ele. Quem depende de hook para proteger arquivo precisa de uma regra de negação de leitura. O [M7](../m7/) mostra como.
+
+</Camada>
+
+## Fichas de campo
+
+As quatro fichas usam o laboratório **Pendências**. Baixe o ponto de partida, descompacte e abra o terminal na pasta.
+
+- [Ponto de partida: `m3-inicio.zip`](../lab/m3-inicio.zip)
+- [Gabarito: `m3-gabarito.zip`](../lab/m3-gabarito.zip)
+
+```bash
+cd pendencias
+git init -b main && git add -A && git commit -m "Ponto de partida"
+npm test
+```
+
+O `npm test` deve terminar com `pass 5` e `fail 0`. O projeto não tem dependências: não há `npm install`.
+
+<Ficha
+  id="m3-e1"
+  n={1}
+  titulo="Uma tarefa em modo plano"
+  objetivo="Adicionar prioridade às pendências, planejando antes de editar."
+  minutos={20}
+  pre="M1, laboratório baixado"
+>
+
+1. Abra o Claude Code já em modo plano:
+
+   ```bash
+   claude --permission-mode plan
+   ```
+
+2. Confira a barra de status: `⏸ plan mode on`.
+3. Envie o pedido. Ele tem objetivo, restrição e critério de pronto:
+
+   ```text
+   Quero marcar pendências com prioridade alta ou normal (normal é o padrão). A CLI deve aceitar: add "texto" --prioridade alta. A listagem mostra ! antes das de prioridade alta. Pronto quando npm test passar com testes novos para isso. Não instale dependências.
+   ```
+
+4. Leia o plano inteiro. Procure duas coisas: quais arquivos ele vai tocar e como vai verificar.
+5. Se algo não agradar, escolha **continuar planejando** e diga o que mudar. Quando estiver bom, aprove com **aprovar cada edição manualmente**.
+6. Aprove as edições uma a uma, lendo cada diff. Aprove também o `npm test` quando ele pedir.
+
+<Prova>
+
+```bash
+npm test
+node src/cli.js add "pagar boleto" --prioridade alta
+node src/cli.js add "comprar café"
+node src/cli.js list
+```
+
+O teste termina com `fail 0` e mais testes que os 5 iniciais (na nossa execução, 10). A listagem mostra a marca só na pendência de prioridade alta:
+
+```text
+! [ ] 1. pagar boleto
+[ ] 2. comprar café
+```
+
+</Prova>
+
+<Gabarito>
+
+O gabarito está em `m3-gabarito.zip`. O essencial da mudança, em `src/pendencias.js`:
+
+```js
+export function adicionar(lista, texto, prioridade = 'normal') {
+  // valida texto e prioridade, depois:
+  return [...lista, { id, texto: limpo, feita: false, prioridade }];
+}
+```
+
+`formatar` passa a prefixar `! ` quando `item.prioridade === 'alta'`. Pendências antigas, sem o campo, seguem funcionando. Seu código pode ser diferente e estar certo: o que vale é a Prova.
+
+</Gabarito>
+
+<DeuErro>
+
+- **A barra não mostra `plan mode on`.** Aperte <kbd>Shift</kbd>+<kbd>Tab</kbd> até aparecer. No Windows, se a combinação não responder, tente <kbd>Alt</kbd>+<kbd>M</kbd>.
+- **O Claude editou sem mostrar plano.** A sessão não estava em modo plano. `Esc Esc`, **Restaurar código e conversa**, e recomece do passo 1.
+- **`npm test` falha com erro de sintaxe em `import`.** Seu Node é antigo. `node --version` precisa mostrar 20 ou mais.
+
+</DeuErro>
+
+<Desafio>
+
+Refaça com `/plan` em vez da flag, numa sessão já aberta. Depois de aprovar, em que modo a sessão ficou? Confira na barra de status.
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m3-e2"
+  n={2}
+  titulo="Desfazer um erro de propósito"
+  objetivo="Provocar uma mudança ruim e voltar no tempo com o rewind."
+  minutos={10}
+  pre="Ficha 1, com tudo commitado"
+  verificacao="ilustrativo"
+>
+
+1. Deixe o git limpo, para ter como provar depois:
+
+   ```bash
+   git add -A && git commit -m "Adiciona prioridade"
+   ```
+
+2. Na sessão do Claude Code, mude para **aceitar edições** com <kbd>Shift</kbd>+<kbd>Tab</kbd> e peça uma bobagem:
+
+   ```text
+   Traduza para inglês todas as mensagens que o programa mostra ao usuário.
+   ```
+
+3. Espere terminar. Rode `git status` em outro terminal: há arquivos modificados.
+4. Volte à sessão. Com o prompt vazio, aperte <kbd>Esc</kbd> duas vezes.
+5. Selecione o pedido da tradução e escolha **Restaurar código e conversa**.
+
+<Prova>
+
+```bash
+git status --short
+```
+
+A saída vem **vazia**: nenhum arquivo modificado. O pedido da tradução reaparece na caixa de texto, pronto para ser editado ou apagado.
+
+</Prova>
+
+<Gabarito>
+
+Não há código aqui: o gabarito é o estado do `m3-gabarito.zip`, igual ao de antes do pedido. Se `git status` mostrar mudanças, `git checkout -- .` devolve os arquivos ao último commit.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O menu não abre.** Havia texto no prompt, e o duplo <kbd>Esc</kbd> só limpou o rascunho. Aperte de novo com a caixa vazia, ou digite `/rewind`.
+- **Não aparece "Restaurar código".** Naquele ponto não houve edição rastreada. Escolha o pedido certo na lista.
+- **Um arquivo não voltou.** Ele foi alterado só por comando de shell. Use `git checkout -- arquivo`.
+
+</DeuErro>
+
+<Desafio>
+
+Repita o erro, mas escolha **Restaurar código**. A conversa continua lá. Pergunte ao Claude o que aconteceu com as mudanças dele e veja se a resposta bate com o disco.
+
+</Desafio>
+
+</Ficha>
+
+A Ficha 2 leva o selo **ilustrativo** porque o menu de rewind só existe na tela interativa, que não conseguimos automatizar. Os passos foram conferidos na documentação de checkpoints, item por item.
+
+<Ficha
+  id="m3-e3"
+  n={3}
+  titulo="Retomar a sessão de ontem"
+  objetivo="Dar nome a uma sessão, sair e voltar com o contexto intacto."
+  minutos={10}
+  pre="Ficha 1"
+>
+
+1. Na sessão da Ficha 1, dê um nome:
+
+   ```text
+   /rename prioridade
+   ```
+
+2. Saia com `/exit`. Feche o terminal, se quiser drama.
+3. Abra um terminal novo na pasta do projeto e retome pelo nome:
+
+   ```bash
+   claude --resume prioridade
+   ```
+
+4. Pergunte, proibindo a cola:
+
+   ```text
+   Sem ler nenhum arquivo: em uma frase, o que fizemos nesta sessão e qual foi o símbolo escolhido para prioridade alta?
+   ```
+
+<Prova>
+
+O Claude responde sem chamar ferramenta nenhuma e cita a prioridade e o símbolo `!`. Na nossa execução:
+
+```text
+Adicionamos prioridade alta ou normal às pendências da CLI, com testes novos que passam no npm test; o símbolo escolhido para prioridade alta foi !, colocado antes da caixa.
+```
+
+</Prova>
+
+<Gabarito>
+
+Sem nome, o caminho é `claude --continue`, que reabre a sessão mais recente da pasta, ou `claude --resume`, que mostra a lista. Os três levam ao mesmo lugar.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O nome não é encontrado.** As sessões são guardadas por pasta de projeto. Confira se você está na mesma pasta em que a sessão nasceu.
+- **O Claude releu os arquivos.** Ele pode fazer isso por zelo. Repita a pergunta com "sem usar ferramentas".
+- **A lista do `--resume` está vazia.** Você abriu o terminal em outra pasta. `pwd` (ou `cd` no Windows) mostra onde está.
+
+</DeuErro>
+
+<Desafio>
+
+Na sessão retomada, rode `/branch em-ingles` e peça a tradução da Ficha 2 só no ramo. Depois volte com `/resume prioridade`. A sessão original sabe da tradução?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m3-e4"
+  n={4}
+  titulo="Prompt ruim contra prompt bom"
+  objetivo="Medir, no diff, a diferença entre um pedido vago e um específico."
+  minutos={15}
+  pre="Ficha 1, com tudo commitado"
+>
+
+1. Crie dois ramos a partir do mesmo ponto:
+
+   ```bash
+   git branch vago && git branch especifico
+   ```
+
+2. No ramo `vago`, rode o pedido curto, sem tela interativa:
+
+   ```bash
+   git checkout vago
+   claude -p "adiciona data nas pendências" --permission-mode acceptEdits --allowedTools "Bash(npm test)"
+   git diff --stat
+   git commit -am "Pedido vago"
+   ```
+
+3. No ramo `especifico`, o pedido completo:
+
+   ```bash
+   git checkout especifico
+   claude -p "Cada pendência deve guardar a data de criação no campo criadaEm, em ISO 8601 (ex.: 2026-11-12T14:03:00.000Z). A função adicionar em @src/pendencias.js recebe a data como parâmetro opcional (padrão: agora), para o teste poder fixá-la. A listagem não muda. Pendências antigas, sem o campo, continuam funcionando. Pronto quando npm test passar com um teste novo que fixa a data. Não mexa na CLI nem no README." --permission-mode acceptEdits --allowedTools "Bash(npm test)"
+   git diff --stat
+   ```
+
+4. Compare os dois diffs e as duas respostas finais.
+
+<Prova>
+
+Os dois ramos passam em `npm test`. A diferença está no tamanho e na direção da mudança. Na nossa execução:
+
+| | Vago | Específico |
+|---|---|---|
+| Linhas alteradas | 41 a mais, 10 a menos | 9 a mais, 2 a menos |
+| Formato da data | escolhido pelo Claude (AAAA-MM-DD) | o pedido (ISO 8601) |
+| Listagem | mudou: ganhou a data entre parênteses | intacta |
+| Turnos | 11 | 8 |
+
+Seus números vão variar. O padrão se repete: o vago decide por você.
+
+</Prova>
+
+<Gabarito>
+
+Não existe resposta única. O ponto da ficha é o que o pedido específico **cortou**: três decisões que o Claude tomaria sozinho (formato, lugar de exibição, escopo dos arquivos).
+
+</Gabarito>
+
+<DeuErro>
+
+- **`claude -p` termina sem editar nada.** Faltou `--permission-mode acceptEdits`: sem tela, o que pediria permissão é negado.
+- **`git checkout` reclama de mudanças locais.** Faça o commit ou descarte com `git checkout -- .` antes de trocar de ramo.
+- **O pedido longo quebrou no terminal.** No PowerShell, aspas duplas dentro de aspas duplas atrapalham. Salve o pedido em `pedido.txt` e use `Get-Content pedido.txt | claude -p --permission-mode acceptEdits`.
+
+</DeuErro>
+
+<Desafio>
+
+Reescreva o pedido vago em três versões, acrescentando um elemento por vez: objetivo, depois restrição, depois critério de pronto. Em qual das três o diff parou de te surpreender?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Escrevi um pedido com objetivo, restrição e critério de pronto.
+- Usei `@arquivo` e `!comando` em vez de copiar e colar.
+- Aprovei um plano depois de ler quais arquivos ele tocaria.
+- Abri o menu de rewind e sei dizer duas coisas que ele não desfaz.
+- Dei nome a uma sessão e voltei a ela por esse nome.
+
+</Saida>
+
+**Próxima estação:** a Parte II abre o menu `/` comando por comando. Se você está na trilha rápida, vá direto ao [R3, Conduzir a sessão](../r3/), que aprofunda o que você acabou de usar.
+
+<Fontes>
+
+- [Choose a permission mode](https://code.claude.com/docs/en/permission-modes.md): modos, ciclo do Shift+Tab, modo plano e aprovação.
+- [Checkpointing](https://code.claude.com/docs/en/checkpointing.md): menu de rewind, opções e limitações.
+- [Manage sessions](https://code.claude.com/docs/en/sessions.md): retomar, nomear e ramificar.
+- [Interactive mode](https://code.claude.com/docs/en/interactive-mode.md): atalhos, multilinha, fila de mensagens e `/btw`.
+- [Best practices](https://code.claude.com/docs/en/best-practices.md): pedido específico, verificação e condução.
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): imagens, `@arquivos` e pipes.
+- Execuções locais registradas em `VERIFICATION/m3.md`.
+
+</Fontes>

@@ -175,6 +175,16 @@ function copiar() {
   });
 }
 
+/* ---------- Tabelas largas: a rolagem horizontal precisa ser alcançável pelo teclado ---------- */
+
+function tabelas() {
+  $$<HTMLTableElement>('.prosa table').forEach((t) => {
+    if (t.scrollWidth <= t.clientWidth) return;
+    t.tabIndex = 0;
+    t.setAttribute('aria-label', 'Tabela com rolagem horizontal');
+  });
+}
+
 /* ---------- Notas laterais: abertas na margem em telas largas ---------- */
 
 function notas() {
@@ -407,6 +417,7 @@ tema();
 sistema();
 progresso();
 copiar();
+tabelas();
 notas();
 players();
 dialogos();

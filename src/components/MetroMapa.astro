@@ -65,7 +65,7 @@ const passos = PARTES.length;
 
 <figure class="metro" data-player data-passos={passos} data-intervalo="520" {...autoplay ? { 'data-autoplay': '' } : {}}>
   <div class="metro__rolagem" tabindex="0" role="group" aria-label="Mapa do curso, com rolagem horizontal">
-    <svg class="metro__svg" viewBox={`0 0 ${LARGURA} ${ALTURA}`} role="img" aria-labelledby="metro-t metro-d">
+    <svg class="metro__svg" viewBox={`0 0 ${LARGURA} ${ALTURA}`} role="group" aria-labelledby="metro-t" aria-describedby="metro-d">
       <title id="metro-t">Mapa do Metrô do curso</title>
       <desc id="metro-d">
         Oito linhas, uma por parte do curso, ligando {ESTACOES.length} estações em ordem: do M0 ao projeto final.

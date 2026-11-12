@@ -391,7 +391,8 @@ dialog::backdrop {
   font-variation-settings: 'opsz' 144;
   line-height: 0.78;
   letter-spacing: -0.05em;
-  margin: 0 0 var(--e-4) -0.04em;
+  margin: 0 0 var(--e-4);
+  padding-left: 0.03em;
   color: transparent;
   -webkit-text-stroke: 2px var(--tinta);
   text-shadow: 0.045em 0.045em 0 var(--sinal);
@@ -1241,6 +1242,7 @@ dialog::backdrop {
 }
 
 .terminal {
+  margin: 0 7px 7px 0;
   color: var(--term-texto);
   background: var(--term-fundo);
   border: var(--traco) solid var(--tinta);

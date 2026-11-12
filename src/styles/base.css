@@ -216,6 +216,12 @@ pre {
   tab-size: 2;
 }
 
+/* Pedidos em texto corrido quebram linha; código de verdade rola na horizontal. */
+pre[data-language='text'],
+pre[data-language='plaintext'] {
+  white-space: pre-wrap;
+}
+
 .bloco-codigo {
   position: relative;
   margin: 0 0 var(--e-4);

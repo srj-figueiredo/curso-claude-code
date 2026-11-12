@@ -1,0 +1,73 @@
+{
+  "titulo": "pendencias · modo plano",
+  "versao": "2.1.323",
+  "data": "12/11/2026",
+  "origem": "transcripts/m3-plano.jsonl",
+  "reconstruido": "Reconstruído da saída estruturada de uma sessão real (a tela interativa tem outro desenho)",
+  "linhas": [
+    {
+      "t": "cmd",
+      "texto": "claude --permission-mode plan"
+    },
+    {
+      "t": "prompt",
+      "texto": "Quero marcar pendências com prioridade alta ou normal (normal é o padrão). A CLI deve aceitar: add \"texto\" --prioridade alta. A listagem mostra ! antes das de prioridade alta. Pronto quando npm test passar com testes novos para isso. Não instale dependências."
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Glob",
+      "arg": "**/* em .",
+      "saida": "41 caminhos encontrados"
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Read",
+      "arg": "src\\pendencias.js",
+      "saida": "28 linhas lidas"
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Read",
+      "arg": "src\\cli.js",
+      "saida": "34 linhas lidas"
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Read",
+      "arg": "src\\armazenamento.js",
+      "saida": "18 linhas lidas"
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Read",
+      "arg": "test\\pendencias.test.js",
+      "saida": "35 linhas lidas"
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Read",
+      "arg": "package.json",
+      "saida": "15 linhas lidas"
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Read",
+      "arg": "README.md",
+      "saida": "14 linhas lidas"
+    },
+    {
+      "t": "ferramenta",
+      "nome": "Write",
+      "arg": "~\\.claude\\plans\\quero-marcar-pend-ncias-com-tender-treasure.md",
+      "saida": "File created successfully at: ~\\.claude\\plans\\quero-marcar-pend-ncias-com-tender-treasure.md"
+    },
+    {
+      "t": "texto",
+      "texto": "Montei o plano, mas não consegui chamar o ExitPlanMode: a ferramenta não está disponível nesta sessão. Ele pede aprovação, então não alterei nenhum arquivo do projeto.\n\nO plano está em ~\\.claude\\plans\\quero-marcar-pend-ncias-com-tender-treasure.md.\n\n- src/pendencias.js: adicionar passa a aceitar prioridade, com normal como padrão. Prioridade inválida gera um erro claro. formatar põe !  antes das pendências de prioridade alta, como em ! [ ] 2. texto. As normais e as já salvas no JSON, sem o campo, ficam como estão, então não precisa de migração.\n- src/cli.js: o add lê --prioridade <valor> em qualquer posição e usa o resto como texto. Flag sem valor dá erro.\n- Testes novos: cobrem o padrão normal, alta, prioridade inválida, o ! só nas altas, item antigo sem o campo e a leitura da flag.\n- README: ganha um exemplo com --prioridade alta.\n- Verificação: npm test, mais um teste manual com um arquivo temporário em PENDENCIAS_ARQUIVO.\n\nEscolhi pôr o ! antes da caixa de seleção. Se preferir outro formato, é fácil trocar.\n\nSe estiver ok, me avise para eu sair do modo de planejamento e implementar."
+    },
+    {
+      "t": "nota",
+      "texto": "⏸ plan mode on · nenhum arquivo do projeto foi alterado (git status limpo)"
+    }
+  ]
+}

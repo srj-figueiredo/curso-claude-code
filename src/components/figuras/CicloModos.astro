@@ -1,0 +1,62 @@
+---
+// Anatomia: o ciclo de modos de permissão do Shift+Tab (M3).
+// Fonte: https://code.claude.com/docs/en/permission-modes.md, lida em 12/11/2026.
+const modos = [
+  { x: 40, nome: 'Manual', barra: '⏸ manual mode on', livre: 'só leitura', n: 1 },
+  { x: 290, nome: 'Aceitar edições', barra: '⏵⏵ accept edits on', livre: 'leitura + edições', n: 2 },
+  { x: 540, nome: 'Plano', barra: '⏸ plan mode on', livre: 'leitura (edição não)', n: 3 },
+];
+---
+
+<svg viewBox="0 0 800 300" role="img" aria-labelledby="ciclo-t ciclo-d">
+  <title id="ciclo-t">Ciclo de modos de permissão</title>
+  <desc id="ciclo-d">
+    Shift+Tab alterna entre três modos em ordem: Manual, Aceitar edições e Plano, e volta ao começo. O modo auto, quando
+    disponível, entra depois do Plano.
+  </desc>
+  <defs>
+    <marker id="ciclo-seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" class="svg-cheio-sinal"></path>
+    </marker>
+  </defs>
+
+  {
+    modos.map((m) => (
+      <g transform={`translate(${m.x} 70)`}>
+        <rect class="svg-papel-2" width="220" height="120" />
+        <rect class="svg-cheio" width="220" height="34" />
+        <text class="svg-texto-claro" x="14" y="22">
+          {m.nome.toUpperCase()}
+        </text>
+        <text class="svg-texto" x="14" y="62">
+          sem perguntar:
+        </text>
+        <text class="svg-texto-forte" x="14" y="82">
+          {m.livre}
+        </text>
+        <text class="svg-texto" x="14" y="108" style="font-size:11.5px">
+          {m.barra}
+        </text>
+        <g class="svg-num" transform="translate(220 0)">
+          <circle r="12" />
+          <text>{m.n}</text>
+        </g>
+      </g>
+    ))
+  }
+
+  <path class="svg-sinal" d="M262 130H284" marker-end="url(#ciclo-seta)"></path>
+  <path class="svg-sinal" d="M512 130H534" marker-end="url(#ciclo-seta)"></path>
+  <path class="svg-sinal" d="M650 192V240H150V196" marker-end="url(#ciclo-seta)"></path>
+  <text class="svg-texto-forte" x="400" y="262" text-anchor="middle">Shift+Tab</text>
+
+  <g transform="translate(570 14)">
+    <rect class="svg-papel" width="190" height="36" stroke-dasharray="5 4"></rect>
+    <text class="svg-texto" x="12" y="23">auto (se disponível)</text>
+    <g class="svg-num" transform="translate(190 0)">
+      <circle r="12"></circle>
+      <text>4</text>
+    </g>
+  </g>
+  <path class="svg-traco" d="M680 50V68" stroke-dasharray="4 4"></path>
+</svg>

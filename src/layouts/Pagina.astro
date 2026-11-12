@@ -33,10 +33,10 @@ const nomesTrilhas = dados.trilhas.map((t) => TRILHAS[t].titulo).join(' · ');
       <ul class="placa__meta">
         <li><Icone nome="relogio" tamanho={18} /> {dados.minutos} min</li>
         <li>
-          Antes:
+          Antes:{' '}
           {
             dados.pre_requisitos.length === 0
-              ? ' nada'
+              ? 'nada'
               : dados.pre_requisitos.map((p, i) => (
                   <>
                     {i > 0 && ', '}
