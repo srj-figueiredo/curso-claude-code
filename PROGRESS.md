@@ -6,20 +6,20 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 ## Onde parou
 
 13/11/2026: modo de trabalho trocado para o do `CONTINUAR.md` (plano Pro, uma página por vez, sem subagentes).
-M0 e M1 escritos e no commit, sem passar pelos gates. Próximo item: o primeiro não marcado da Fila.
+M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). Próximo item: M1 nos gates.
 
 ## Fila
 
 Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 
 ### Onda 1 · publicar e fechar a Parte 0 e a Parte I
-- [ ] **Publicação.** `gh repo create curso-claude-code --public --source . --push`; ligar o Pages por Actions
+- [ ] **Publicação.** (BLOQUEADA 13/11: o classificador de permissões negou `gh repo create --public`; o autor precisa liberar ou rodar o comando com `!`.) `gh repo create curso-claude-code --public --source . --push`; ligar o Pages por Actions
       (`gh api -X POST repos/{dono}/curso-claude-code/pages -f build_type=workflow`); conferir que o workflow
       `.github/workflows/deploy.yml` passa (ajustar `npm run check` e os testes se quebrarem no Linux);
       abrir a URL e confirmar que a home carrega. Escrever a URL no topo deste arquivo e no `README.md`.
-- [ ] **Atalho local.** `scripts/abrir-local.cmd` (build se `dist/` não existir, `npm run preview`, abre o
+- [x] **Atalho local.** `scripts/abrir-local.cmd` (build se `dist/` não existir, `npm run preview`, abre o
       navegador) + atalho "Manual de Bordo" na Área de Trabalho apontando para ele.
-- [ ] **Script de um clique.** `scripts/proxima-pagina.ps1` + atalho "Manual de Bordo · próxima página"
+- [x] **Script de um clique.** `scripts/proxima-pagina.ps1` + atalho "Manual de Bordo · próxima página"
       (CONTINUAR.md §7). `logs/` no `.gitignore`.
 - [ ] **M1 nos gates.** Conferir build, axe, uma foto em 390 px; ajustar o que destoar do M3.
 - [ ] **M0 nos gates.** Falta `VERIFICATION/m0.md` (o autor foi interrompido): conferir as afirmações do M0
