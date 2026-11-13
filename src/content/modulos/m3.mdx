@@ -23,7 +23,7 @@ exercicios:
   - { id: m3-e1, titulo: Uma tarefa em modo plano, minutos: 20, custo: gratis }
   - { id: m3-e2, titulo: Desfazer um erro de propósito, minutos: 10, custo: gratis }
   - { id: m3-e3, titulo: Retomar a sessão de ontem, minutos: 10, custo: gratis }
-  - { id: m3-e4, titulo: Prompt ruim contra prompt bom, minutos: 15, custo: gratis }
+  - { id: m3-e4, titulo: Pedido vago contra pedido específico, minutos: 15, custo: gratis }
 ---
 
 import CicloModos from '../../components/figuras/CicloModos.astro';
@@ -411,7 +411,7 @@ A Ficha 2 leva o selo **ilustrativo** porque o menu de rewind só existe na tela
    ```
 
 2. Saia com `/exit`. Feche o terminal, se quiser drama.
-3. Abra um terminal novo na pasta do projeto e retome pelo nome:
+3. Abra um terminal novo na pasta de trabalho e retome pelo nome:
 
    ```bash
    claude --resume prioridade
@@ -458,7 +458,7 @@ Na sessão retomada, rode `/branch em-ingles` e peça a tradução da Ficha 2 s�
 <Ficha
   id="m3-e4"
   n={4}
-  titulo="Prompt ruim contra prompt bom"
+  titulo="Pedido vago contra pedido específico"
   objetivo="Medir, no diff, a diferença entre um pedido vago e um específico."
   minutos={15}
   pre="Ficha 1, com tudo commitado"

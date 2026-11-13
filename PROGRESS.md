@@ -6,7 +6,7 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 ## Onde parou
 
 13/11/2026: modo de trabalho trocado para o do `CONTINUAR.md` (plano Pro, uma página por vez, sem subagentes).
-M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). M0 nos gates feito. M2 escrito e verificado (animações 1 e 2 prontas). Próximo item: Revisão da Parte I (M0–M3), depois Onda 2. Publicação segue bloqueada.
+M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). M0 nos gates feito. Onda 1 fechada, exceto a Publicação (bloqueada por permissão). Próximo item: Onda 2, começando pelo M4.
 
 ## Fila
 
@@ -28,7 +28,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
       animações 1 (loop agêntico) e 2 (contexto e compactação): ver BRIEFING §6.4. Cada uma vira componente em `src/components/figuras/` usado com
       `<Figura passos={N} legendas={[…]}>`; elementos com `data-de="N"` aparecem a partir do passo N; o estado
       final precisa funcionar como figura estática.
-- [ ] **Revisão da Parte I** (M0–M3): estilo (corte ≥ 15%), consistência de termos, fotos 390/1280.
+- [x] **Revisão da Parte I** (13/11: termos unificados, sem estouro em 390/1280, axe 18/18; o corte de 15% não foi aplicado: as 4 páginas ficam entre 3.035 e 3.280 palavras, abaixo do teto de 3.500) (M0–M3): estilo (corte ≥ 15%), consistência de termos, fotos 390/1280.
 
 ### Onda 2 · trilha rápida até os cases
 - [ ] M4 · [ ] M5 · [ ] M6 · [ ] M7 · [ ] M8 · [ ] M10 · [ ] M11

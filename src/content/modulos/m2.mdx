@@ -196,11 +196,11 @@ Consequência: o primeiro turno depois de uma pausa longa é mais lento. E `/com
 
 ### Onde o cache vive e o que o separa
 
-O cache fica no servidor, onde seu modelo roda, e é separado por modelo, por velocidade e por esforço (na maioria dos modelos). No Claude Code ele também é limitado a uma máquina e uma pasta, porque o início da conversa inclui o diretório de trabalho e o sistema operacional. Duas sessões em pastas diferentes não aproveitam o cache uma da outra.
+O cache fica no servidor, onde seu modelo roda, e é separado por modelo, por velocidade e por esforço (na maioria dos modelos). No Claude Code ele também é limitado a uma máquina e uma pasta, porque o início da conversa inclui a pasta de trabalho e o sistema operacional. Duas sessões em pastas diferentes não aproveitam o cache uma da outra.
 
 ### Subagentes e cache
 
-Um subagente começa conversa própria, com prompt do sistema e ferramentas próprios. O primeiro pedido dele não lê o cache do pai. Em compensação, o cache do pai fica intacto. Subagentes usam o prazo de cinco minutos mesmo numa assinatura, a menos que você escolha outro.
+Um subagente começa conversa própria, com instruções do sistema e ferramentas próprios. O primeiro pedido dele não lê o cache do pai. Em compensação, o cache do pai fica intacto. Subagentes usam o prazo de cinco minutos mesmo numa assinatura, a menos que você escolha outro.
 
 ### Janela de contexto e compactação automática
 
