@@ -1,0 +1,538 @@
+---
+id: m6
+titulo: Memória e CLAUDE.md
+parte: p4
+ordem: 6
+minutos: 80
+pre_requisitos: [m2, m3]
+objetivos:
+  - Dizer onde vive cada tipo de memória e em que ordem o Claude as lê.
+  - Gerar um CLAUDE.md com o /init e enxugá-lo até ficar só com o que o Claude não adivinha.
+  - Testar se uma instrução é obedecida, comparando a mesma tarefa com e sem o arquivo.
+  - Ver o que a memória automática gravou e corrigi-la.
+  - Auditar instruções com o /doctor prompt-audit e separar o que vai em CLAUDE.md, regra ou skill.
+tldr:
+  - CLAUDE.md é o que você quer que ele saiba em toda sessão. Memória automática é o que ele anota sozinho.
+  - Escreva só o que o Claude não descobre lendo o código, em frases que dá para conferir. Menos de 200 linhas.
+  - As duas memórias são contexto, não regra de ferro. O que precisa ser garantido vira hook.
+verificado_em_versao: 2.1.323
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: m6-e1, titulo: Escrever o CLAUDE.md e testar a obediência, minutos: 30, custo: gratis }
+  - { id: m6-e2, titulo: Ver a memória automática em ação, minutos: 15, custo: gratis }
+  - { id: m6-e3, titulo: Auditar instruções com o /doctor, minutos: 15, custo: gratis }
+---
+
+## Essencial
+
+Toda sessão do Claude Code começa do zero: ele não lembra de ontem. O que dá continuidade ao trabalho é a **memória**: arquivos que ele lê sozinho antes de você digitar a primeira palavra. Bem usada, ela troca "toda vez eu explico de novo" por "escrevi uma vez".
+
+### Duas memórias, dois autores
+
+| | **CLAUDE.md** | **Memória automática** |
+|---|---|---|
+| Quem escreve | Você | O Claude |
+| O que contém | Instruções e regras do projeto | Preferências, correções e contexto que o código não mostra |
+| Alcance | Projeto, usuário ou organização | Um repositório, compartilhado entre os worktrees dele |
+| Quando carrega | Toda sessão | Toda sessão (só as primeiras 200 linhas ou 25 KB do índice) |
+
+A documentação faz um aviso que vale decorar: **as duas são contexto, não configuração imposta.** O Claude lê e tenta seguir, mas não há garantia. Se algo **precisa** acontecer sempre, como rodar os testes antes de cada commit, o caminho é um *hook*, que executa por conta própria (o [M9](../m9/) ensina). CLAUDE.md orienta; hook obriga.
+
+### Onde o CLAUDE.md mora
+
+Há quatro lugares, do mais amplo ao mais específico. Todos são lidos e **somados** (um não anula o outro), e os mais específicos entram por último.
+
+| Escopo | Arquivo | Para quê | Vai para o git? |
+|---|---|---|---|
+| **Organização** | Arquivo de política no sistema (ex.: `C:\Program Files\ClaudeCode\CLAUDE.md` no Windows) | Regras da empresa | Distribuído pela TI |
+| **Usuário** | `~/.claude/CLAUDE.md` | Suas preferências em todos os projetos | Não |
+| **Projeto** | `./CLAUDE.md` ou `./.claude/CLAUDE.md` | O que o time inteiro precisa saber | **Sim** |
+| **Local** | `./CLAUDE.local.md` | Suas preferências neste projeto | Não: ponha no `.gitignore` |
+
+Três regras de carga:
+
+1. O Claude lê o `CLAUDE.md` da pasta onde você abriu a sessão **e de todas as pastas acima dela**, da raiz para baixo. Quanto mais perto de você, mais tarde entra.
+2. `CLAUDE.md` em **subpastas** abaixo da sua só entra quando o Claude lê, escreve ou edita um arquivo daquela subpasta.
+3. Comentários HTML (`<!-- nota para quem mantém -->`) são removidos antes de o texto chegar ao Claude. Servem de anotação para humanos, sem gastar contexto.
+
+Para conferir o que carregou, rode `/context all` e olhe a lista **Memory files**. Na nossa execução, um `CLAUDE.md` de oito linhas aparecia ali com 202 tokens.
+
+### Gerar o primeiro com `/init`
+
+Na pasta do projeto, dentro de uma sessão:
+
+```text
+/init
+```
+
+O Claude lê o código e escreve um `CLAUDE.md` com comandos de build e teste, estrutura e convenções que descobriu. Se já existe um, ele sugere melhorias em vez de sobrescrever. A documentação também descreve uma versão interativa, em várias fases, ligada pela variável de ambiente `CLAUDE_CODE_NEW_INIT=1`: ela pergunta quais artefatos criar (CLAUDE.md, skills, hooks) e mostra uma proposta antes de gravar. Não a executamos aqui.
+
+Dois cuidados com o resultado do `/init`:
+
+- **Ele pode escrever em inglês, mesmo num projeto em português.** No nosso laboratório saiu em inglês. Peça em português, ou traduza.
+- **É um rascunho.** Ele descreve o que viu, e boa parte é coisa que o Claude veria de novo sozinho. Enxugue.
+
+### O que escrever (e o que não escrever)
+
+A regra de ouro cabe numa frase: **escreva o que você explicaria de novo a cada sessão.** A documentação dá quatro gatilhos para adicionar uma linha:
+
+- o Claude errou a mesma coisa pela segunda vez;
+- uma revisão de código pegou algo que ele devia saber deste projeto;
+- você digitou a mesma correção que digitou na sessão passada;
+- uma pessoa nova no time precisaria do mesmo contexto.
+
+O que entra: **comandos** (como testar, como subir), **convenções que fogem do padrão**, **decisões e seus motivos**, **armadilhas**. O que não entra: tudo que o Claude lê no código em dois segundos (lista de pastas, dependências, resumo da arquitetura) e procedimentos longos de várias etapas, que são trabalho para uma *skill* ([M8](../m8/)).
+
+Para as frases funcionarem, faça-as **verificáveis**:
+
+| Vago | Verificável |
+|---|---|
+| "Formate o código direito" | "Use indentação de 2 espaços" |
+| "Teste suas mudanças" | "Rode `npm test` antes de commitar" |
+| "Mantenha os arquivos organizados" | "Os handlers da API ficam em `src/api/handlers/`" |
+
+E mantenha curto: **menos de 200 linhas por arquivo.** Arquivo maior gasta contexto e reduz a obediência. Instruções contraditórias são pior: o Claude pode escolher uma ao acaso.
+
+<Nota rotulo="Resultado do nosso teste A/B (Ficha 1)">
+Pedimos a mesma tarefa, "adicione o comando limpar", com e sem um CLAUDE.md. Em ambos os casos o Claude atualizou o README e manteve o `console.log` só na CLI, porque deduziu isso do código. O que mudou foi só a regra que não dava para deduzir: a mensagem de sucesso começar com "Pronto:". **CLAUDE.md vale pelo que o código não diz.**
+</Nota>
+
+### Importar arquivos e manter o pessoal fora do git
+
+Um `CLAUDE.md` pode puxar outro arquivo com `@caminho`:
+
+```text
+Veja @README para a visão geral e @package.json para os comandos npm.
+- Fluxo de git: @docs/git-instructions.md
+```
+
+O arquivo importado entra **inteiro** no contexto, junto com o CLAUDE.md que o chamou. Importar organiza, mas **não economiza** contexto. Para mencionar um caminho sem importar, coloque-o entre crases.
+
+Para preferências suas que não devem ir ao time, crie `CLAUDE.local.md` na raiz do projeto e inclua-o no `.gitignore`. Ele é lido junto com o `CLAUDE.md`, logo depois dele.
+
+### Quando um arquivo só não basta
+
+Quando o `CLAUDE.md` cresce, a saída não é escrever mais fino: é **dividir por quem precisa**.
+
+| Instrução | Onde fica |
+|---|---|
+| Vale sempre, em todo o projeto | `CLAUDE.md` |
+| Vale só para alguns arquivos (ex.: os da API) | **Regra com caminho**: um `.md` em `.claude/rules/` com `paths:` no cabeçalho. Só carrega quando o Claude mexe num arquivo que casa |
+| É um procedimento com etapas, chamado de vez em quando | **Skill** ([M8](../m8/)) |
+| Precisa acontecer sempre, sem depender do Claude | **Hook** ([M9](../m9/)) |
+
+Uma regra com caminho tem este formato:
+
+```markdown
+---
+paths:
+  - "src/api/**/*.ts"
+---
+
+# Regras da API
+- Todo endpoint valida a entrada.
+- Use o formato padrão de erro.
+```
+
+### Repositório que já tem `AGENTS.md`
+
+O `AGENTS.md` é um arquivo de instruções usado por outros agentes de código. O Claude Code o lê, com a ressalva de que **por padrão só quando não há nenhum `CLAUDE.md`** na sua pasta nem acima dela:
+
+| O repositório tem | O Claude lê |
+|---|---|
+| Só `AGENTS.md` | O `AGENTS.md` |
+| `AGENTS.md` e `CLAUDE.md` | Só o `CLAUDE.md` |
+| `CLAUDE.md` que importa o `AGENTS.md` | O `CLAUDE.md`, com o `AGENTS.md` incluído |
+
+Para dividir uma fonte única entre ferramentas, faça o `CLAUDE.md` importar o `AGENTS.md` e acrescentar só o que é do Claude.
+
+### A memória automática
+
+Além do que você escreve, o Claude **anota por conta própria**, em quatro tipos: `user` (seu papel e preferências), `feedback` (correções e acertos confirmados), `project` (decisões e prazos que o código não mostra) e `reference` (onde achar informação fora do projeto). Ele pula o que consegue derivar do código e o que seu CLAUDE.md já diz, e não grava em toda sessão.
+
+Os arquivos ficam em `~/.claude/projects/<projeto>/memory/`: um índice `MEMORY.md`, com uma linha por memória, e um arquivo por tópico. **Só as 200 primeiras linhas (ou 25 KB) do índice entram no começo da sessão**; os arquivos de tópico o Claude lê sob demanda. É texto comum: você lê, edita e apaga.
+
+Dois pedidos parecem iguais e vão para lugares diferentes:
+
+| Você diz | Vai para |
+|---|---|
+| "Lembre-se: usamos pnpm" | Memória automática |
+| "Adicione isto ao CLAUDE.md" | `CLAUDE.md` |
+
+O comando **`/memory`** lista os arquivos de memória de usuário e de projeto, liga e desliga a memória automática e abre a pasta dela. Fica no seu computador: não vai para outra máquina nem para sessões na nuvem.
+
+### Memória e compactação
+
+O que acontece com cada coisa quando a conversa é compactada ([M2](../m2/)):
+
+- **`CLAUDE.md` da raiz e regras sem `paths:`**: relidos do disco.
+- **Memória automática**: relida do disco.
+- **`CLAUDE.md` de subpastas e regras com `paths:`**: voltam sob demanda, quando o Claude tocar nos arquivos deles de novo.
+- **Instrução dita só na conversa**: vira resumo e pode perder força.
+
+Daí a regra do módulo anterior: instrução que precisa durar vai para o arquivo.
+
+### A pasta `.claude`
+
+O `.claude/` do projeto guarda a configuração que vai para o git; o `~/.claude/` guarda a pessoal. Quase todo mundo só mexe em dois arquivos: `CLAUDE.md` e `settings.json`. O resto é opcional, e o mapa é este:
+
+| Você quer | Mexe em |
+|---|---|
+| Dar contexto e convenções | `CLAUDE.md` |
+| Permitir ou bloquear ferramentas, rodar scripts em eventos | `settings.json` (`permissions`, `hooks`) |
+| Guardar ajustes pessoais fora do git | `settings.local.json` |
+| Criar um comando ou capacidade chamada com `/nome` | `skills/<nome>/SKILL.md` |
+| Definir um subagente com ferramentas próprias | `agents/*.md` |
+| Conectar ferramentas externas por MCP | `.mcp.json` |
+
+Os [M7](../m7/) a [M10](../m10/) e o [M12](../m12/) abrem cada um.
+
+### Em projeto grande
+
+Num monorepo, um `CLAUDE.md` único na raiz ou engorda demais ou fica genérico. A documentação recomenda **dois níveis**: a raiz com o que vale em todo lugar (padrões de código, convenção de commit), e um `CLAUDE.md` por pacote ou subsistema com o que é daquela área. Se você abre o Claude em `packages/api/`, ele lê o da raiz e o da API, e nada de `packages/web/`. Se o `CLAUDE.md` de outras equipes atrapalha, a configuração `claudeMdExcludes` pula os que você escolher.
+
+<Camada tipo="capo" titulo="Limites, carga e detalhes">
+
+### Tamanhos que importam
+
+- **Arquivos carregados na abertura** (CLAUDE.md, regras sem `paths:`): o Claude recebe o arquivo inteiro, desde que tenha até 4 MiB. Acima disso, nenhum trecho entra. A meta de 200 linhas é de **adesão**, não de limite técnico.
+- **Arquivos carregados sob demanda** (CLAUDE.md de subpasta, regras com `paths:`): têm limite por arquivo, de 40.000 caracteres numa janela de 200 mil tokens. Em janela de 1 milhão, o limite é de 150.000 caracteres nos modelos mais novos. O que passa disso chega cortado, com um aviso para o Claude ler o resto. `wc -m arquivo` conta os caracteres.
+- **`MEMORY.md`**: 200 linhas ou 25 KB, o que vier primeiro. O que passa não carrega.
+
+### O aviso de tamanho
+
+Se um arquivo de instruções passar do tamanho recomendado, aparece um aviso na abertura e no `/status`. Cada `CLAUDE.md`, arquivo de regra e importação conta como um arquivo.
+
+### Outras pastas e hooks de diagnóstico
+
+Pastas adicionadas com `--add-dir` **não** têm o `CLAUDE.md` carregado por padrão. Para carregá-lo, defina `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1`. Para ver quais arquivos carregaram, quando e por quê, o hook `InstructionsLoaded` registra cada carga.
+
+### Instruções do próprio Claude Code competindo com as suas
+
+O Claude Code traz regras próprias de commit e de PR. Se o seu CLAUDE.md define outras, desligue as embutidas com `includeGitInstructions` e ajuste o texto de atribuição com `attribution` (veja o [M4](../m4/)).
+
+### Importação externa
+
+Importar de fora da pasta de trabalho (como `@~/.claude/minhas-regras.md`) numa memória de **projeto** abre uma janela de aprovação na primeira vez. Se você recusar, a importação fica desligada. Arquivos do seu `~/.claude` não pedem aprovação.
+
+### Subagentes e memória
+
+A memória automática da conversa principal **não** vai para subagentes. Um subagente pode ter uma memória própria, em pasta separada, se a configuração dele permitir.
+
+### Desligar a memória automática
+
+Ela vem ligada nas sessões locais. Desligue pelo `/memory` (salva `autoMemoryEnabled` em `~/.claude/settings.json`), por projeto com `autoMemoryEnabled: false`, ou com a variável `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`. Em sessões iniciadas por outro Claude e em sessões em segundo plano, o interruptor só desliga: não religa.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### CLAUDE.md virando manual
+
+Cada linha que o Claude já deduz do código é ruído que dilui as que importam. Corte lista de pastas, dependências e resumos de arquitetura.
+
+### Frases vagas
+
+"Escreva código limpo" não verifica nada. Troque por regras que um revisor consiga checar.
+
+### Instruções contraditórias
+
+Dois arquivos pedindo coisas opostas (um manda 2 espaços, outro manda tabs) fazem o Claude escolher ao acaso. Revise o conjunto de tempos em tempos, e use o `/doctor prompt-audit`.
+
+### Editar o CLAUDE.md e esperar efeito na hora
+
+O arquivo é lido na abertura. A versão nova entra no `/clear`, no `/compact` ou num reinício, como o [M2](../m2/) mostrou.
+
+### Esperar obediência de ferro
+
+É contexto. Para impedir uma ação, regra de permissão ou hook; para exigir uma, hook.
+
+### Segredo no CLAUDE.md
+
+O arquivo vai para o git. Chave, senha e token nunca entram ali ([M4](../m4/)).
+
+### Pedir ao Claude para "lembrar" e achar que está no CLAUDE.md
+
+"Lembre-se" grava na memória automática, que é só sua e só desta máquina. O que o time precisa saber vai para o `CLAUDE.md`.
+
+### Testar um CLAUDE.md de subpasta pedindo ao Claude para criá-lo
+
+O arquivo só carrega quando o Claude lê um arquivo daquela subpasta. Para testar, crie o arquivo você mesmo, pelo shell, e peça a leitura de um arquivo da pasta.
+
+### Achar que o `AGENTS.md` sempre é lido
+
+Basta existir um `CLAUDE.md` na pasta ou acima, mesmo um `CLAUDE.local.md`, para o `AGENTS.md` ser ignorado. Importe-o no `CLAUDE.md`.
+
+</Camada>
+
+## Fichas de campo
+
+As três fichas usam o laboratório **Pendências**, no estado em que o [M3](../m3/) o deixou.
+
+- [Ponto de partida: `m6-inicio.zip`](../lab/m6-inicio.zip)
+
+```bash
+cd pendencias
+git init -b main
+git add -A
+git commit -m "Ponto de partida"
+npm test
+```
+
+O `npm test` deve terminar com `pass 10` e `fail 0`.
+
+<Nota rotulo="O que foi testado">
+Executei as três fichas com `claude -p`. A tela interativa do `/memory`, a versão interativa do `/init` (`CLAUDE_CODE_NEW_INIT=1`) e a conferência da lista **Memory files** em tela são descritas pela documentação. Os resultados abaixo são da nossa execução, em Sonnet 5.5.
+</Nota>
+
+<Ficha
+  id="m6-e1"
+  n={1}
+  titulo="Escrever o CLAUDE.md e testar a obediência"
+  objetivo="Gerar um CLAUDE.md, enxugá-lo e provar com um teste A/B o que ele muda."
+  minutos={30}
+  pre="M2, M3, laboratório baixado"
+>
+
+1. **Gere o rascunho.** Numa cópia do laboratório, rode:
+
+   ```text
+   /init
+   ```
+
+   Leia o `CLAUDE.md` que saiu. Quantas linhas tem? Quais delas o Claude descobriria sozinho?
+
+2. **Apague e escreva o seu**, só com o que o código não diz. Crie dois diretórios iguais, `A` e `B`, a partir do mesmo estado. Em `B`, escreva este `CLAUDE.md`:
+
+   ```markdown
+   # Pendências
+
+   App de pendências em Node, sem dependências. Código e mensagens em português.
+
+   ## Comandos
+   - Testes: `npm test`. Precisa passar antes de qualquer commit.
+
+   ## Regras
+   - Todo comando novo da CLI imprime mensagem de sucesso começando com "Pronto:".
+   - Todo comando novo entra no bloco de exemplos do README.md.
+   - `console.log` só existe em `src/cli.js`.
+   - Regras de negócio ficam em `src/pendencias.js`; leitura e gravação em `src/armazenamento.js`.
+   ```
+
+3. **A mesma tarefa nas duas pastas**, sem tela interativa:
+
+   ```bash
+   claude -p "Adicione o comando limpar na CLI, que remove todas as pendências já concluídas. Pronto quando npm test passar com um teste novo." --permission-mode acceptEdits --allowedTools "Bash(npm test)"
+   ```
+
+4. **Compare.** Em cada pasta, use o comando novo e olhe a mensagem:
+
+   ```bash
+   export PENDENCIAS_ARQUIVO=/tmp/teste.json
+   node src/cli.js add "um" && node src/cli.js add "dois" && node src/cli.js done 1
+   node src/cli.js limpar
+   ```
+
+   Depois confira o `git diff --stat` e se o README ganhou a linha do comando.
+
+<Prova>
+
+Só a regra que o código não revelava mudou o resultado. Na nossa execução, os dois ramos passaram em `npm test` (11 testes) e alteraram os mesmos quatro arquivos, mas a mensagem de sucesso foi:
+
+```text
+A (sem CLAUDE.md): Removidas: 1 concluída(s).
+B (com CLAUDE.md): Pronto: 1 pendência(s) concluída(s) removida(s).
+```
+
+Nos dois, o README ganhou `node src/cli.js limpar` e nenhum `console.log` apareceu fora de `src/cli.js`: o Claude deduziu isso do código. O `/init` do passo 1 gerou, no laboratório, um arquivo de 23 linhas em inglês.
+
+</Prova>
+
+<Gabarito>
+
+O teste A/B prova **o que o CLAUDE.md acrescenta**: nada além da convenção arbitrária ("Pronto:"). As outras três regras eram deduzíveis e poderiam sair do arquivo sem perda. Um bom CLAUDE.md de laboratório tem poucas linhas, todas assim: comandos, convenções que não se leem no código, decisões. Se você escreveu uma regra e o teste A mostra que o Claude a cumpre sozinho, apague-a.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O `B` também gerou "Removidas:".** O arquivo não foi lido. Rode `/context all` na pasta e procure o caminho em **Memory files**. Confirme que abriu a sessão na pasta certa e que o nome é exatamente `CLAUDE.md`.
+- **`/init` respondeu em inglês.** É o esperado. Peça: "traduza o CLAUDE.md para português e corte o que for óbvio no código".
+- **No Git Bash, `claude -p "/init"` fala de um caminho `C:/Program Files/Git/init`.** O Git Bash converte `/init` em caminho. Use `MSYS_NO_PATHCONV=1` antes do comando, ou o PowerShell.
+
+</DeuErro>
+
+<Desafio>
+
+Adicione ao CLAUDE.md uma regra que o código **contradiz** (por exemplo, "mensagens de erro em inglês") e repita a tarefa. O Claude seguiu a regra ou o código? Que isso diz sobre escrever regras compatíveis com o projeto?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m6-e2"
+  n={2}
+  titulo="Ver a memória automática em ação"
+  objetivo="Fazer o Claude anotar uma preferência e conferir que uma sessão nova a recupera."
+  minutos={15}
+  pre="Ficha 1"
+>
+
+1. Numa pasta do laboratório, peça uma preferência:
+
+   ```bash
+   claude -p "Lembre-se para sempre: neste projeto usamos pnpm, não npm, e prefiro respostas curtas." --permission-mode acceptEdits
+   ```
+
+2. Abra a pasta de memória do projeto. Ela fica em `~/.claude/projects/`, numa subpasta cujo nome deriva do caminho do projeto:
+
+   <SO unix="ls ~/.claude/projects/*/memory/" win="dir $env:USERPROFILE\.claude\projects\*\memory" />
+
+   Leia o `MEMORY.md` e o arquivo de tópico.
+
+3. **Sessão nova**, sem `--continue`, sem ler arquivo:
+
+   ```bash
+   claude -p "Sem ler arquivo nenhum: qual gerenciador de pacotes este projeto usa?"
+   ```
+
+4. Na tela interativa, `/memory` mostra os arquivos e o interruptor da memória automática.
+
+<Prova>
+
+O passo 1 responde algo como `Anotado: pnpm (não npm) e respostas curtas.` A pasta de memória contém um índice e um arquivo de tópico. Na nossa execução:
+
+```text
+MEMORY.md
+- [pnpm e respostas curtas](feedback-pnpm-respostas-curtas.md) — usar pnpm, não npm; respostas curtas
+
+feedback-pnpm-respostas-curtas.md
+---
+name: feedback-pnpm-respostas-curtas
+description: Projeto usa pnpm (não npm); usuário prefere respostas curtas
+metadata:
+  type: feedback
+  modified: 2026-11-13T15:56:36.593Z
+---
+Neste projeto usar sempre pnpm, nunca npm. Dar respostas curtas.
+```
+
+No passo 3, numa sessão nova, o Claude respondeu "O pnpm" e explicou que vinha da memória, não do projeto.
+
+</Prova>
+
+<Gabarito>
+
+O tipo gravado foi `feedback`: uma preferência dada pelo usuário. A memória é **por projeto e por máquina**. Em outra pasta de projeto, a nota não existe. O campo `modified` mostra quando o fato foi gravado.
+
+</Gabarito>
+
+<DeuErro>
+
+- **A pasta de memória não existe.** A memória automática pode estar desligada. Em sessões iniciadas por outro Claude (por exemplo, uma chamada de `claude` pela ferramenta `Bash` de uma sessão) o interruptor só desliga. Abra uma sessão num terminal comum e use o `/memory`.
+- **O Claude não gravou nada.** Ele decide o que vale lembrar. "Lembre-se para sempre" costuma bastar. Frases vagas, não.
+- **Não achei a pasta.** Ela só aparece depois da primeira gravação, e o nome da subpasta vem do caminho do projeto.
+
+</DeuErro>
+
+<Desafio>
+
+Apague o arquivo de tópico e deixe o `MEMORY.md` apontando para ele. Repita o passo 3. O que o Claude responde? Depois apague a pasta de memória inteira para não deixar lixo do exercício.
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m6-e3"
+  n={3}
+  titulo="Auditar instruções com o /doctor"
+  objetivo="Deixar o Claude achar contradições e referências quebradas num CLAUDE.md."
+  minutos={15}
+  pre="Ficha 1"
+>
+
+1. Numa cópia do laboratório, crie um `CLAUDE.md` com defeitos de propósito:
+
+   ```markdown
+   # Pendências
+
+   - Indente com 2 espaços.
+   - Indente com tabs em todo arquivo de src/.
+   - Siga o guia de estilo em docs/estilo.md.
+   - Antes de responder, pense passo a passo e seja extremamente minucioso.
+   - Rode `npm run lint` antes de cada commit.
+   - Testes: `npm test`.
+   ```
+
+2. Rode a auditoria, em modo plano para que nada seja alterado:
+
+   ```bash
+   claude -p "/doctor prompt-audit CLAUDE.md" --permission-mode plan
+   ```
+
+3. Leia a tabela de achados. Decida linha por linha.
+
+<Prova>
+
+O relatório lista quatro achados, com evidência, confiança e ação, e uma proposta de alteração que **não foi aplicada**. Na nossa execução:
+
+| # | Linha | Achado |
+|---|---|---|
+| 1 | `npm run lint` | O `package.json` só define `test` e `start`: o comando falha |
+| 2 | `docs/estilo.md` | A pasta `docs/` não existe |
+| 3 | 2 espaços contra tabs | As linhas de `src/` usam espaços, nenhuma usa tabs: instruções em conflito |
+| 4 | "pense passo a passo" | Receita antiga e redundante. Profundidade é do esforço, não da prosa |
+
+O arquivo `CLAUDE.md` continuou com as mesmas 8 linhas.
+
+</Prova>
+
+<Gabarito>
+
+A auditoria cobre o que a documentação lista: instruções escritas para modelos antigos, referências a arquivos ou comandos que não existem e arquivos que se contradizem. Ela **propõe**; você aplica. O terceiro achado exige decisão sua: o auditor não sabe qual das duas regras é a que vale, só que não podem ser as duas.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude respondeu sobre um caminho `C:/Program Files/Git/doctor`.** O Git Bash converteu a barra. Use `MSYS_NO_PATHCONV=1` ou o PowerShell.
+- **`prompt-audit` não existe.** Ele exige a versão 2.1.283 ou mais nova do Claude Code. Rode `claude update`.
+- **O audit não roda.** Ele depende da skill embutida `claude-api`. Se ela estiver desligada em `skillOverrides` ou por `disableBundledSkills`, o comando fica indisponível.
+
+</DeuErro>
+
+<Desafio>
+
+Peça: "aplique só as correções dos achados 1 e 2". Depois rode a auditoria de novo. O que mudou no relatório?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei em que ordem o Claude lê usuário, projeto, local e subpastas.
+- Gerei um `CLAUDE.md` com `/init` e tirei dele o que o Claude deduz do código.
+- Fiz um teste A/B e sei dizer qual regra mudou o resultado.
+- Vi a memória automática gravar e recuperar uma preferência.
+- Auditei um `CLAUDE.md` com o `/doctor prompt-audit`.
+- Sei escolher entre CLAUDE.md, regra com caminho, skill e hook.
+
+</Saida>
+
+**Próxima estação:** o [M7, Configurações, permissões e segurança](../m7/): o que o Claude pode fazer sem perguntar, e como garantir.
+
+<Fontes>
+
+- [Store instructions and memories](https://code.claude.com/docs/en/memory.md): hierarquia, `/init`, regras, `AGENTS.md`, memória automática, `/memory` e solução de problemas.
+- [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory.md): o que fica em cada arquivo e pasta.
+- [Monorepos and large repos](https://code.claude.com/docs/en/large-codebases.md): CLAUDE.md por camadas.
+- [Explore the context window](https://code.claude.com/docs/en/context-window.md): o que sobrevive à compactação.
+- [Commands](https://code.claude.com/docs/en/commands.md): `/init`, `/memory`, `/doctor`, `/context`.
+- Execuções locais registradas em `VERIFICATION/m6.md`.
+
+</Fontes>
