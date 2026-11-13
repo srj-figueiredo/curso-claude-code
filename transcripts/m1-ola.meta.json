@@ -1,0 +1,9 @@
+{
+  "titulo": "ola · primeira tarefa",
+  "data": "12/11/2026",
+  "comando": "claude -p \"…\" --permission-mode acceptEdits",
+  "prompt": "Crie um arquivo index.html com uma página simples: título \"Olá\", um parágrafo dizendo que esta é minha primeira página feita com o Claude Code, e um pouco de CSS no próprio arquivo para centralizar o texto. Um arquivo só, sem JavaScript e sem dependências.",
+  "ocultar": ["ToolSearch"],
+  "corta": 900,
+  "notas": ["⏵⏵ accept edits on · um arquivo criado, nenhum comando de shell executado"]
+}

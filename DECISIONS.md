@@ -69,3 +69,13 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Alternativas:** um worktree por autor (pedido no briefing §4).
 - **Motivo:** os arquivos são disjuntos por desenho, então não há o que mesclar; worktrees multiplicariam `node_modules` e a etapa de merge. Vira estudo de caso do M12.
 - **Lição da primeira leva:** seis autores em paralelo esgotaram o limite de 5 horas antes de gravar qualquer arquivo. As levas passaram a ter três.
+
+## D012 · Escopo e modo de trabalho para o plano Pro (13/11/2026, decisão do autor)
+
+- **Escopo:** M0–M22, R3, Baralho de Comandos (117 cartas curtas), C0–C6, projeto final, apêndices A, B e F. Fora por agora: R1, R2, R4–R8 como páginas escritas e os apêndices C, D, E, G, H, I.
+- **Modo:** uma sessão por vez, uma página por vez, sem subagentes; Sonnet com esforço medium; execução real só da Prova principal; revisão e fotos por parte. Regras em `CONTINUAR.md`.
+- **Motivo:** a primeira leva paralela esgotou duas janelas de 5 horas entregando uma página.
+
+## D013 · Publicação aprovada pelo autor (13/11/2026)
+
+- GitHub Pages em repositório público `curso-claude-code` na conta do autor, com push a cada item, e atalho local na Área de Trabalho. Script de um clique sem supervisão, com ferramentas restritas (`CONTINUAR.md` §7).

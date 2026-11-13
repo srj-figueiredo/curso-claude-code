@@ -1,0 +1,99 @@
+---
+// Anatomia: onde o Claude Code roda (M0). Um motor, várias superfícies e integrações.
+// Fontes: https://code.claude.com/docs/en/platforms.md, overview.md e glossary.md (verbete Surface),
+// lidas em 12/11/2026.
+const locais = ['Terminal (CLI)', 'VS Code', 'JetBrains', 'App desktop'];
+const nuvem = ['Web: claude.ai/code', 'Celular (app Claude)'];
+const ligados = [
+  { x: 40, nome: 'Chrome' },
+  { x: 230, nome: 'Slack' },
+  { x: 420, nome: 'CI/CD' },
+  { x: 610, nome: 'Agent SDK' },
+];
+---
+
+<svg viewBox="0 0 800 372" role="img" aria-labelledby="m0sup-t m0sup-d">
+  <title id="m0sup-t">Onde o Claude Code roda</title>
+  <desc id="m0sup-d">
+    No centro, um único motor que coleta contexto, age e verifica. À esquerda, as superfícies que rodam na sua máquina:
+    terminal, VS Code, JetBrains e app desktop. À direita, as que alcançam sessões na nuvem: web e celular, mais o Remote
+    Control, que mostra numa tela remota uma sessão que executa na sua máquina. Embaixo, o que se liga ao motor: Chrome,
+    Slack, CI/CD e Agent SDK.
+  </desc>
+
+  <text class="svg-titulo" x="40" y="26">NA SUA MÁQUINA</text>
+  {
+    locais.map((nome, i) => (
+      <g transform={`translate(40 ${44 + i * 50})`}>
+        <rect class="svg-papel-2" width="200" height="40" />
+        <text class="svg-texto-forte" x="14" y="25">
+          {nome}
+        </text>
+        <path class="svg-traco" d="M200 20H230" />
+      </g>
+    ))
+  }
+  <path class="svg-traco" d="M270 64V214"></path>
+  <path class="svg-sinal" d="M270 170H300"></path>
+
+  <text class="svg-titulo" x="560" y="26">NA NUVEM</text>
+  {
+    nuvem.map((nome, i) => (
+      <g transform={`translate(560 ${44 + i * 50})`}>
+        <rect class="svg-papel-2" width="200" height="40" />
+        <text class="svg-texto-forte" x="14" y="25">
+          {nome}
+        </text>
+        <path class="svg-traco" d="M0 20H-30" />
+      </g>
+    ))
+  }
+  <path class="svg-traco" d="M530 64V170"></path>
+  <path class="svg-sinal" d="M500 170H530"></path>
+
+  <g transform="translate(560 164)">
+    <rect class="svg-papel" width="200" height="54" stroke-dasharray="5 4"></rect>
+    <text class="svg-texto" x="14" y="23" style="font-size:11.5px">Remote Control: tela</text>
+    <text class="svg-texto" x="14" y="41" style="font-size:11.5px">remota, execução local</text>
+  </g>
+
+  <g transform="translate(300 120)">
+    <rect class="svg-papel-2" width="200" height="100"></rect>
+    <rect class="svg-cheio" width="200" height="34"></rect>
+    <text class="svg-texto-claro" x="14" y="22">O MESMO MOTOR</text>
+    <text class="svg-texto" x="14" y="60">coletar contexto,</text>
+    <text class="svg-texto-forte" x="14" y="82">agir e verificar</text>
+  </g>
+
+  <path class="svg-sinal" d="M400 220V268"></path>
+  <path class="svg-traco" d="M125 268H695"></path>
+  {
+    ligados.map((l) => (
+      <g transform={`translate(${l.x} 294)`}>
+        <path class="svg-traco" d="M85 -26V0" />
+        <rect class="svg-papel-2" width="170" height="40" />
+        <text class="svg-texto-forte" x="14" y="25">
+          {l.nome}
+        </text>
+      </g>
+    ))
+  }
+  <text class="svg-titulo" x="40" y="360">LIGADOS AO MOTOR</text>
+
+  <g class="svg-num" transform="translate(240 44)">
+    <circle r="12"></circle>
+    <text>1</text>
+  </g>
+  <g class="svg-num" transform="translate(760 44)">
+    <circle r="12"></circle>
+    <text>2</text>
+  </g>
+  <g class="svg-num" transform="translate(590 294)">
+    <circle r="12"></circle>
+    <text>3</text>
+  </g>
+  <g class="svg-num" transform="translate(780 294)">
+    <circle r="12"></circle>
+    <text>4</text>
+  </g>
+</svg>

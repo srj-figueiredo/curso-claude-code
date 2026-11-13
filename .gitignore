@@ -12,3 +12,4 @@ test-results/
 playwright-report/
 screenshots/
 public/lab/
+logs/

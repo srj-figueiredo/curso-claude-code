@@ -1,0 +1,526 @@
+---
+id: m1
+titulo: Instalação e primeiro contato
+parte: p1
+ordem: 1
+minutos: 60
+pre_requisitos: [m0]
+objetivos:
+  - Abrir um terminal, saber em que pasta você está e mudar de pasta.
+  - Instalar o Claude Code pelo método certo para o seu sistema e provar que funcionou com claude --version.
+  - Entrar com a sua conta e conferir qual credencial está em uso.
+  - Pedir a primeira tarefa real e aprovar a edição com consciência.
+  - Escolher entre sessão interativa, sessão com pedido inicial e resposta única com -p.
+tldr:
+  - Um comando instala, claude --version prova. Se o terminal não achar o claude, o problema é o PATH.
+  - O Claude Code trabalha na pasta em que você o abre. Entre na pasta antes de digitar claude.
+  - claude abre a conversa; claude -p "pedido" responde uma vez e devolve o terminal.
+verificado_em_versao: 2.1.323
+verificado_em_data: 12/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: m1-e1, titulo: Instalar e verificar, minutos: 15, custo: gratis }
+  - { id: m1-e2, titulo: A primeira tarefa real, minutos: 10, custo: gratis }
+  - { id: m1-e3, titulo: Três jeitos de chamar o Claude, minutos: 10, custo: gratis }
+---
+
+## Essencial
+
+Instalar o Claude Code é colar uma linha no terminal. O que costuma dar trabalho vem antes e depois: abrir o terminal certo, entender por que ele "não acha" o programa e entrar com a conta certa. Vamos na ordem.
+
+### O terminal em cinco minutos
+
+O terminal é uma janela onde você digita o nome de um programa e aperta <kbd>Enter</kbd>. Só isso. Para abrir:
+
+- **Mac:** <kbd>Cmd</kbd>+<kbd>Espaço</kbd>, digite `Terminal`, <kbd>Enter</kbd>.
+- **Windows:** menu Iniciar, digite `PowerShell`, <kbd>Enter</kbd>.
+- **Linux:** procure por "Terminal" no menu de aplicativos. Em muitas distribuições, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd> também abre.
+
+O terminal está sempre "dentro" de uma pasta. Três comandos resolvem a navegação e funcionam igual no Mac, no Linux e no PowerShell:
+
+| Comando | Pergunta que ele responde |
+|---|---|
+| `pwd` | Em que pasta estou? |
+| `ls` | O que tem aqui? |
+| `cd nome-da-pasta` | Entrar na pasta. `cd ..` sobe um nível. |
+
+`mkdir nome` cria uma pasta. Com esses quatro você atravessa o curso inteiro.
+
+<Nota rotulo="Por que isso importa aqui">
+O Claude Code enxerga e edita a pasta em que foi aberto. Abrir na pasta errada é o erro número um de quem começa.
+</Nota>
+
+### Instalar
+
+O instalador nativo é o caminho recomendado pela documentação. Cole a linha do seu sistema:
+
+<SO unix="curl -fsSL https://claude.ai/install.sh | bash" win="irm https://claude.ai/install.ps1 | iex" />
+
+O comando não mostra barra de progresso enquanto baixa. Espere terminar, **abra uma janela nova de terminal** e siga para a verificação.
+
+Prefere um gerenciador de pacotes? Também vale:
+
+| Método | Comando | Atualiza sozinho? |
+|---|---|---|
+| Instalador nativo | a linha acima | Sim, em segundo plano |
+| Homebrew | `brew install --cask claude-code` | Não: `brew upgrade claude-code` |
+| WinGet (Windows) | `winget install Anthropic.ClaudeCode` | Não: `winget upgrade Anthropic.ClaudeCode` |
+| apt, dnf, apk (Linux) | exigem cadastrar o repositório assinado antes; siga o [passo a passo oficial](https://code.claude.com/docs/en/setup.md) | Não: vem com a atualização do sistema |
+
+Requisitos mínimos, segundo a documentação: macOS 13, Windows 10 versão 1809, Ubuntu 20.04, Debian 10 ou Alpine 3.19; 4 GB de memória; internet.
+
+Este curso foi escrito numa máquina que já tinha o Claude Code instalado. Por isso os comandos de instalação acima vêm da documentação e não foram reexecutados; a verificação abaixo, sim.
+
+### A trilha Windows
+
+No Windows existem dois terminais parecidos, e o comando de instalação muda de um para o outro. Olhe o começo da linha:
+
+| Você vê | Você está em | Comando de instalação |
+|---|---|---|
+| `PS C:\Users\voce>` | PowerShell | `irm https://claude.ai/install.ps1 \| iex` |
+| `C:\Users\voce>` | CMD | `curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd` |
+
+Use o PowerShell: é nele que `pwd` e `ls` existem. Não precisa abrir como Administrador.
+
+Duas decisões opcionais:
+
+- **Git for Windows.** Recomendado. Ele traz o Git Bash, e com ele o Claude roda comandos pela ferramenta Bash. Sem ele, o Claude usa o PowerShell como shell. As duas formas funcionam.
+- **WSL.** É um Linux dentro do Windows. Faz sentido se o seu projeto usa ferramentas de Linux ou se você quer o sandbox, que só funciona no WSL 2 e não existe no Windows nativo. No WSL, instale e rode o `claude` **dentro** do terminal do WSL, com o comando de Linux.
+
+Se você não sabe se precisa de WSL, não precisa. Comece no Windows nativo.
+
+### Verificar, e o tal do PATH
+
+```bash
+claude --version
+```
+
+Uma instalação que funciona imprime um número seguido de `(Claude Code)`. Na nossa máquina:
+
+```text
+2.1.323 (Claude Code)
+```
+
+Se a resposta for `command not found` ou `'claude' is not recognized`, o programa quase sempre **está** instalado. O terminal é que não sabe onde procurar.
+
+O **PATH** é a lista de pastas em que o terminal procura programas. O instalador nativo grava o `claude` em `~/.local/bin` (no Windows, `%USERPROFILE%\.local\bin`) e avisa quando essa pasta está fora da lista, mas não mexe no PATH por você. O conserto é feito uma vez:
+
+<Para so="mac linux">
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+No Linux com Bash, troque `~/.zshrc` por `~/.bashrc`.
+
+</Para>
+
+<Para so="win">
+
+```powershell
+$currentPath = [Environment]::GetEnvironmentVariable('PATH', 'User')
+[Environment]::SetEnvironmentVariable('PATH', "$currentPath;$env:USERPROFILE\.local\bin", 'User')
+```
+
+Depois feche e abra o terminal.
+
+</Para>
+
+Para um exame mais completo, sem abrir sessão:
+
+```bash
+claude doctor
+```
+
+Ele só lê e relata: como o programa foi instalado, em que caminho está, se as atualizações automáticas estão ligadas e se há erro nos arquivos de configuração.
+
+### Entrar com a sua conta
+
+Rode `claude` numa pasta qualquer. Na primeira vez, ele abre o navegador para você entrar. Dois detalhes poupam tempo:
+
+- Se o navegador não abrir, aperte `c` para copiar o endereço de login e cole no navegador.
+- Se o navegador mostrar um código em vez de voltar sozinho, cole o código no terminal.
+
+Quando aparecer `Login successful`, aperte <kbd>Enter</kbd>. A credencial fica guardada e você não entra de novo a cada sessão.
+
+O plano gratuito do claude.ai **não** inclui o Claude Code. Os tipos de conta aceitos:
+
+| Conta | Para quem | Como entra |
+|---|---|---|
+| Pro, Max ou Ultra | Uso individual por assinatura | Sua conta do claude.ai |
+| Team ou Enterprise | Empresas, com cobrança e gestão centralizadas | A conta para a qual o administrador convidou você |
+| Claude Console | Cobrança por uso de API, com créditos pré-pagos | Suas credenciais do Console |
+| Provedor de nuvem | Empresas que já contratam Amazon Bedrock, Google Cloud Agent Platform (antigo Vertex AI) ou Microsoft Foundry | Variáveis de ambiente; sem login no navegador |
+
+Preços mudam, então não os repetimos aqui: consulte [claude.com/pricing](https://claude.com/pricing). O [M0](../m0/) explica o que é pago e o que não é; o [M19](../m19/) cuida do cenário de empresa.
+
+Dentro da sessão, `/status` mostra a credencial em uso, `/login` troca de conta e `/logout` sai. Fora dela, `claude auth status` responde em JSON se há login ativo.
+
+### Sem terminal: app desktop e VS Code
+
+<Selo tipo="nao-testado" data="12/11/2026" />
+
+O terminal não é a única porta. A documentação descreve duas alternativas gráficas, que não testamos nesta máquina:
+
+- **App desktop.** Disponível para Mac e Windows, e em beta para Linux. O Claude Code fica na aba **Code**. O app já traz o Claude Code embutido: não exige instalar a CLI. Pede assinatura Pro, Max, Ultra, Team ou Enterprise.
+- **Extensão do VS Code.** Procure "Claude Code" na aba de extensões (VS Code 1.94 ou mais novo). Ela abre um painel de conversa dentro do editor.
+
+Nenhuma das duas coloca o comando `claude` no seu terminal. O curso segue pelo terminal porque é nele que tudo aparece primeiro e é ele que os exercícios usam. O [M15](../m15/) volta às outras superfícies.
+
+### Tour da interface
+
+Entre numa pasta de projeto e rode `claude`. Numa pasta nova, ele pergunta antes se você confia nela: aceite só em pastas suas.
+
+| Onde | O que é |
+|---|---|
+| Acima da caixa de texto | Versão, modelo em uso e pasta de trabalho. |
+| Caixa de texto | Onde você escreve o pedido, em português comum. <kbd>Enter</kbd> envia. |
+| `/` no começo | Abre o menu de comandos e skills. `/help` lista o que existe. |
+| `?` com a caixa vazia | Painel de atalhos. |
+| <kbd>Shift</kbd>+<kbd>Tab</kbd> | Troca o modo de permissão: quanto o Claude faz sem perguntar. |
+| <kbd>Esc</kbd> | Interrompe o Claude. O que já foi feito fica. |
+| `/exit`, ou <kbd>Ctrl</kbd>+<kbd>D</kbd> duas vezes | Sai. A conversa fica gravada. |
+
+Quando o Claude quer editar um arquivo ou rodar um comando e o modo de permissão exige, ele para e pergunta. Leia o que ele mostra e escolha **Yes** para aprovar. Essa pausa é o seu cinto de segurança; o [M3](../m3/) ensina a regulá-lo.
+
+<Replay id="m1-ola" legenda="O pedido da Ficha 2, executado de verdade: um pedido, uma chamada de ferramenta, um arquivo criado." />
+
+Repare na última frase da resposta: o Claude avisa que **não** abriu a página no navegador. Ele relata o que fez e o que deixou de conferir. Acostume-se a ler esse trecho.
+
+### Três jeitos de chamar
+
+| Comando | O que acontece | Quando usar |
+|---|---|---|
+| `claude` | Abre a sessão interativa e espera você. | Trabalho de verdade, com idas e vindas. |
+| `claude "pedido"` | Abre a sessão interativa já com o pedido enviado. | Você sabe a primeira frase antes de entrar. |
+| `claude -p "pedido"` | Responde uma vez, imprime e devolve o terminal. | Pergunta rápida, scripts, encadear com outros comandos. |
+
+O `-p` também aceita texto vindo de outro comando: `cat erro.log | claude -p "explique"`. O [M14](../m14/) constrói automações inteiras sobre ele.
+
+<Camada tipo="capo" titulo="Onde as coisas ficam, canais de versão e credenciais">
+
+### O que o instalador põe na sua máquina
+
+- **Mac e Linux:** `~/.local/bin/claude` é um atalho que aponta para a versão em uso, guardada em `~/.local/share/claude/versions/`.
+- **Windows:** `%USERPROFILE%\.local\bin\claude.exe`. Conferimos com `where.exe claude`.
+- **Configuração e histórico:** a pasta `~/.claude/`. O [M6](../m6/) abre essa pasta gaveta por gaveta.
+
+### Atualizações e canais
+
+O instalador nativo procura versão nova ao iniciar e de tempos em tempos, baixa em segundo plano e aplica na próxima abertura. `claude update` força na hora.
+
+Há dois canais. `latest`, o padrão, recebe cada versão assim que sai. `stable` fica cerca de uma semana atrás e pula versões com regressão grave. A troca é em `/config`, ou na configuração `autoUpdatesChannel`. No Homebrew, o canal é o nome do pacote: `claude-code` é o estável, `claude-code@latest` é o mais novo.
+
+### A instalação por npm
+
+`npm install -g @anthropic-ai/claude-code` também funciona e instala o mesmo binário nativo. A documentação pede Node.js 22 ou mais novo e proíbe o `sudo`: uma instalação feita com ele não consegue se atualizar sozinha.
+
+### Onde a credencial mora
+
+- **Mac:** no Keychain do sistema.
+- **Linux:** em `~/.claude/.credentials.json`, com permissão `0600`.
+- **Windows:** em `%USERPROFILE%\.claude\.credentials.json`, protegido pelas permissões da sua pasta de usuário.
+
+Trate esse arquivo como senha. Não copie, não cole em conversa, não suba para repositório.
+
+### Quando há mais de uma credencial
+
+O Claude Code segue uma ordem de precedência. O que interessa agora: uma variável `ANTHROPIC_API_KEY` no ambiente, depois que você a aprova, **passa na frente** do login da assinatura. Em `-p` ela é usada sempre que existir, sem perguntar.
+
+### O `-p` carrega a mesma configuração
+
+Uma chamada com `-p` lê os mesmos arquivos de configuração de uma sessão interativa, mas não mostra a pergunta de confiança na pasta nem pedidos de permissão. Por isso, rode `-p` só em pastas suas. O que pediria permissão é negado, a menos que você libere com `--permission-mode` ou `--allowedTools`.
+
+### Quanto custou o "Olá"
+
+Na nossa execução da Ficha 2, o campo `total_cost_usd` da saída registrou US$ 0,006, em dois turnos e cinco segundos, com o modelo que a conta usava no momento. Em plano por assinatura esse número vira consumo de limite, não cobrança. O [M18](../m18/) ensina a medir.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### O comando certo no terminal errado
+
+As mensagens de erro entregam o engano:
+
+- `'irm' is not recognized`: você está no CMD com o comando do PowerShell.
+- `The token '&&' is not a valid statement separator`: você está no PowerShell com o comando do CMD.
+- `A parameter cannot be found that matches parameter name 'fsSL'` ou `'bash' is not recognized`: você colou o comando de Mac e Linux no Windows.
+
+### A janela antiga não sabe da instalação
+
+Um terminal que já estava aberto guarda o PATH de antes. O terminal embutido de um editor herda o PATH do editor. Abra uma janela nova, ou feche e reabra o editor, antes de concluir que a instalação falhou.
+
+### Extensão instalada não é `claude` no terminal
+
+A extensão do VS Code traz uma cópia particular da CLI, só para o painel dela, fora do PATH. Para usar `claude` no terminal, faça a instalação normal.
+
+### No Windows, `claude` abre o app desktop
+
+Uma versão antiga do app desktop pode registrar um `Claude.exe` que ganha prioridade no PATH. O conserto documentado é atualizar o app desktop.
+
+### Uma chave de API esquecida sequestra o login
+
+Erros como `This organization has been disabled`, com a assinatura em dia, costumam vir de uma `ANTHROPIC_API_KEY` antiga perdida no ambiente. Remova a variável e confira em `/status`.
+
+### O script de instalação devolveu HTML
+
+`syntax error near unexpected token '<'` ou erro `403` no comando de instalação significam que o servidor respondeu uma página em vez do script. As causas comuns são proxy, filtro de rede corporativa ou país não atendido. A [página de solução de problemas](https://code.claude.com/docs/en/troubleshoot-install.md) tem a tabela completa de erros.
+
+### `curl` no PowerShell não é o `curl`
+
+No Windows PowerShell, `curl` é um apelido de outro comando e recusa as opções habituais. Quando uma instrução pedir `curl`, digite `curl.exe`.
+
+</Camada>
+
+## Fichas de campo
+
+O laboratório Pendências só começa no [M3](../m3/). Aqui você trabalha numa pasta sua, chamada `ola`, criada do zero. Não há nada para baixar.
+
+<Ficha
+  id="m1-e1"
+  n={1}
+  titulo="Instalar e verificar"
+  objetivo="Ter o comando claude respondendo no terminal, com login feito."
+  minutos={15}
+  pre="M0: conta com acesso ao Claude Code"
+  verificacao="nao-testado"
+>
+
+1. Abra o terminal (no Windows, o PowerShell).
+2. Cole o comando de instalação do seu sistema:
+
+   <SO unix="curl -fsSL https://claude.ai/install.sh | bash" win="irm https://claude.ai/install.ps1 | iex" />
+
+3. Espere terminar. Feche o terminal e abra outro.
+4. Rode `claude --version`.
+5. Rode `claude doctor` e leia a saída inteira.
+6. Rode `claude`, entre com a sua conta no navegador e volte ao terminal. Saia com `/exit`.
+7. Confira o login sem abrir sessão: `claude auth status`.
+
+<Prova>
+
+```bash
+claude --version
+claude doctor
+```
+
+O primeiro imprime a versão. O segundo termina sem apontar problema. Na nossa máquina (Windows 11, instalação nativa), os trechos que importam:
+
+```text
+2.1.323 (Claude Code)
+
+Running: native (2.1.323)
+Path: C:\Users\voce\.local\bin\claude.exe
+Auto-updates: enabled
+No installation issues found.
+```
+
+Em `claude auth status`, procure `"loggedIn": true`.
+
+</Prova>
+
+<Gabarito>
+
+Não há código. O estado certo é: `claude --version` responde em qualquer pasta, `claude doctor` não lista problema de instalação e `claude auth status` mostra login ativo. Seu número de versão será maior que o nosso, e está tudo bem.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`command not found` ou `not recognized`.** A pasta de instalação está fora do PATH, ou a janela é antiga. Abra um terminal novo; se persistir, aplique o conserto da seção "Verificar, e o tal do PATH".
+- **Erro citando `irm`, `&&`, `fsSL` ou `bash`.** Comando de um terminal colado em outro. Veja a primeira armadilha.
+- **O navegador não abriu ou o login não voltou.** Aperte `c` para copiar o endereço e cole no navegador; se aparecer um código, cole no terminal.
+
+</DeuErro>
+
+<Desafio>
+
+Na saída do `claude doctor`, ache a linha `Auto-update channel`. Em que canal você está? Diga, sem consultar o texto, quanto tempo o outro canal costuma ficar atrás.
+
+</Desafio>
+
+</Ficha>
+
+A Ficha 1 leva o selo **não testado localmente** porque os passos 2, 3 e 6 não foram refeitos: a máquina do curso já tinha o Claude Code instalado e com login. Eles estão descritos com base na documentação de 12/11/2026; não testado localmente. Os passos 4, 5 e 7 foram executados, e a Prova mostra a saída real.
+
+<Ficha
+  id="m1-e2"
+  n={2}
+  titulo="A primeira tarefa real"
+  objetivo="Pedir uma página Olá, aprovar a criação do arquivo e abrir no navegador."
+  minutos={10}
+  pre="Ficha 1"
+>
+
+1. Crie uma pasta vazia e entre nela:
+
+   ```bash
+   mkdir ola
+   cd ola
+   ```
+
+2. Abra o Claude Code com `claude`. Se ele perguntar se você confia na pasta, aceite: ela é sua e está vazia.
+3. Envie o pedido:
+
+   ```text
+   Crie um arquivo index.html com uma página simples: título "Olá", um parágrafo dizendo que esta é minha primeira página feita com o Claude Code, e um pouco de CSS no próprio arquivo para centralizar o texto. Um arquivo só, sem JavaScript e sem dependências.
+   ```
+
+4. Se o Claude pedir permissão para criar o arquivo, leia o conteúdo proposto e escolha **Yes**.
+5. Saia com `/exit` e abra a página:
+
+   <SO mac="open index.html" win="start index.html" linux="xdg-open index.html" />
+
+<Prova>
+
+```bash
+ls
+```
+
+A pasta tem exatamente um arquivo, `index.html`. No navegador, a aba se chama "Olá" e a página mostra o título e o parágrafo centralizados. Na nossa execução, o Claude criou o arquivo com uma única chamada da ferramenta `Write` e encerrou assim:
+
+```text
+Não há JavaScript nem dependências externas. Não abri o arquivo no navegador para verificar a aparência.
+```
+
+</Prova>
+
+<Gabarito>
+
+O miolo do arquivo que o Claude gerou para nós:
+
+```html
+<title>Olá</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+</style>
+...
+<h1>Olá</h1>
+<p>Esta é minha primeira página feita com o Claude Code.</p>
+```
+
+O seu vai sair diferente nas cores e na fonte. Vale a Prova: um arquivo, o título certo, nada de JavaScript.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O arquivo não apareceu.** O pedido de permissão ficou sem resposta, ou você respondeu não. Repita o pedido e aprove.
+- **O arquivo foi parar em outro lugar.** Você abriu o `claude` fora da pasta `ola`. Saia, confira com `pwd`, entre na pasta e refaça.
+- **Os acentos saíram trocados no navegador.** Peça ao Claude: "garanta que o index.html declara charset UTF-8".
+
+</DeuErro>
+
+<Desafio>
+
+Sem sair da sessão, peça uma mudança visível: outra cor de fundo, ou o seu nome no parágrafo. Recarregue a página no navegador. Quantos arquivos a pasta tem agora?
+
+</Desafio>
+
+</Ficha>
+
+Executamos a Ficha 2 sem a tela interativa, que não é automatizável: o mesmo pedido, com `claude -p "…" --permission-mode acceptEdits`, numa pasta vazia. O replay acima vem dessa execução. A pergunta de confiança, o pedido de permissão e a abertura no navegador (passos 2, 4 e 5) foram conferidos na documentação, não na tela.
+
+<Ficha
+  id="m1-e3"
+  n={3}
+  titulo="Três jeitos de chamar o Claude"
+  objetivo="Sentir a diferença entre resposta única, pedido inicial e sessão aberta."
+  minutos={10}
+  pre="Ficha 2, dentro da pasta ola"
+>
+
+1. Resposta única. O Claude responde e o terminal volta para você:
+
+   ```bash
+   claude -p "Em uma frase: o que há nesta pasta?"
+   ```
+
+2. Resposta única com entrada vinda de outro comando:
+
+   ```bash
+   cat index.html | claude -p "Quantas tags h1 há neste HTML? Responda só com o número."
+   ```
+
+3. Sessão interativa com pedido inicial. A conversa abre, o pedido já vai enviado e a sessão continua esperando:
+
+   ```bash
+   claude "Explique o index.html em duas frases."
+   ```
+
+4. Faça uma segunda pergunta na mesma sessão. Depois digite `?` com a caixa vazia, olhe o painel de atalhos e saia com `/exit`.
+
+<Prova>
+
+O passo 1 imprime uma frase e devolve o terminal, sem abrir tela nenhuma. O passo 2 imprime um número. Na nossa execução:
+
+```text
+Esta pasta contém um único arquivo, `index.html`.
+```
+
+```text
+1
+```
+
+No passo 3, a diferença é visível: depois da resposta, a caixa de texto continua lá.
+
+</Prova>
+
+<Gabarito>
+
+A regra de bolso: se você vai ler a resposta e reagir a ela, sessão interativa. Se a resposta vai para um arquivo, para outro comando ou é só uma consulta, `-p`. O `claude "pedido"` é a sessão interativa com um <kbd>Enter</kbd> a menos.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O `-p` respondeu sobre outra coisa.** Você não está na pasta `ola`. Confira com `pwd`.
+- **Erro de aspas no PowerShell.** Aspas duplas dentro de aspas duplas quebram o comando. Tire as aspas internas do pedido, ou salve o pedido em `pedido.txt` e use `Get-Content pedido.txt | claude -p`.
+- **O `-p` disse que não pôde editar ou rodar algo.** Sem tela, não há quem aprove: o que pediria permissão é negado. Perguntas de leitura, como as desta ficha, passam.
+
+</DeuErro>
+
+<Desafio>
+
+Rode o passo 1 de novo com `--output-format json` no final. Ache na saída os campos `result`, `num_turns` e `total_cost_usd`. Qual deles um script usaria?
+
+</Desafio>
+
+</Ficha>
+
+Os passos 1 e 2 da Ficha 3 foram executados e a Prova mostra a saída real. Os passos 3 e 4 dependem da tela interativa e foram conferidos na documentação.
+
+<Saida>
+
+- Abri o terminal e sei dizer em que pasta estou.
+- `claude --version` responde em qualquer pasta.
+- Entrei com a minha conta e sei conferir o login com `claude auth status` ou `/status`.
+- Criei uma página com um pedido em português e a abri no navegador.
+- Sei quando usar `claude`, `claude "pedido"` e `claude -p "pedido"`.
+
+</Saida>
+
+**Próxima estação:** o [M2, Como o Claude Code pensa](../m2/), abre o capô: o ciclo de ler, agir e verificar que rodou por baixo do seu "Olá".
+
+<Fontes>
+
+- [Quickstart](https://code.claude.com/docs/en/quickstart.md): instalação, primeira sessão, comandos essenciais.
+- [Advanced setup](https://code.claude.com/docs/en/setup.md): requisitos, Windows e WSL, gerenciadores de pacotes, canais de atualização, npm.
+- [Troubleshoot installation and login](https://code.claude.com/docs/en/troubleshoot-install.md): PATH, erros de instalação e de login.
+- [Authentication](https://code.claude.com/docs/en/authentication.md): tipos de conta, onde a credencial fica, precedência.
+- [CLI reference](https://code.claude.com/docs/en/cli-reference.md): `claude`, `claude "query"`, `-p`, `claude doctor`, `claude auth status`.
+- [Interactive mode](https://code.claude.com/docs/en/interactive-mode.md): atalhos e saída da sessão.
+- [Run Claude Code programmatically](https://code.claude.com/docs/en/headless.md): o modo `-p`.
+- [Get started with the desktop app](https://code.claude.com/docs/en/desktop-quickstart.md) e [Use Claude Code in VS Code](https://code.claude.com/docs/en/vs-code.md): as alternativas gráficas.
+- Execuções locais registradas em `VERIFICATION/m1.md`.
+
+</Fontes>

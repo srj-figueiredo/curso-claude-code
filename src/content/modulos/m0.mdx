@@ -1,0 +1,436 @@
+---
+id: m0
+titulo: Mapa do Claude Code e regras do jogo
+parte: p0
+ordem: 0
+minutos: 40
+pre_requisitos: []
+objetivos:
+  - Explicar em uma frase o que o Claude Code faz que um chat não faz.
+  - Escolher a superfície certa (terminal, editor, app, web, celular) para uma tarefa.
+  - Dizer qual acesso pago você vai usar e onde conferir o preço vigente.
+  - Usar as camadas, as fichas de campo, a busca e o progresso deste curso.
+  - Provar, com dois comandos, que seu computador está pronto para o M1.
+tldr:
+  - O Claude Code é um agente. Ele lê seu projeto, edita arquivos, roda comandos e confere o próprio resultado.
+  - O mesmo motor roda no terminal, no editor, no app, na web e no celular. O curso usa o terminal como base.
+  - O acesso ao Claude Code é pago. Todo o resto do curso tem caminho gratuito.
+verificado_em_versao: 2.1.323
+verificado_em_data: 12/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: m0-e1, titulo: Kit de partida e escolha da trilha, minutos: 20, custo: gratis }
+  - { id: m0-e2, titulo: Levar o progresso no bolso, minutos: 5, custo: gratis }
+---
+
+import M0Superficies from '../../components/figuras/M0Superficies.astro';
+
+## Essencial
+
+### O que é: um agente, não um chat com sotaque de programador
+
+Num chat, você pergunta e recebe texto. Copiar, colar, rodar e conferir ficam por sua conta. O Claude Code inverte isso: ele trabalha **dentro da sua pasta** e faz o serviço completo.
+
+Cada tarefa passa por um ciclo de três fases, repetido até acabar:
+
+1. **Coletar contexto.** Procura e lê os arquivos que importam.
+2. **Agir.** Edita arquivos, cria outros, roda comandos.
+3. **Verificar.** Executa testes, lê o erro, corrige e tenta de novo.
+
+Esse ciclo é o **laço agêntico**. Quem raciocina é o modelo (o Claude). Quem dá mãos ao modelo é o Claude Code: as **ferramentas** para ler, editar, buscar, executar e consultar a web, mais o controle do que ele pode fazer sem perguntar.
+
+<Nota rotulo="Não é só para código">
+Serve para qualquer coisa que se faça pela linha de comando: organizar pastas, escrever documentos, tratar dados, pesquisar. O [M22](../m22/) é inteiro sobre isso.
+</Nota>
+
+Você continua no comando. Dá para interromper a qualquer momento, corrigir o rumo e desfazer edições. O [M2](../m2/) abre o motor; o [M3](../m3/) ensina a conduzir.
+
+### Onde roda: um motor, várias portas
+
+O motor é o mesmo em todo lugar. Muda **onde o código executa** e **como você enxerga o trabalho**.
+
+<Figura
+  id="fig-superficies"
+  titulo="Um motor, várias superfícies"
+  chamadas={[
+    '<strong>Na sua máquina.</strong> Terminal, extensões de editor e app desktop trabalham sobre os seus arquivos e compartilham configuração, memória do projeto e servidores MCP.',
+    '<strong>Na nuvem.</strong> A sessão roda em infraestrutura remota e continua depois que você fecha o computador. O celular é uma janela para essas sessões, não um lugar onde código roda.',
+    '<strong>Integrações.</strong> Chrome, Slack e CI/CD não são superfícies: conectam o motor ao navegador, ao chat do time e ao pipeline.',
+    '<strong>Agent SDK.</strong> As mesmas ferramentas e o mesmo laço, programáveis em Python e TypeScript, para você construir o seu agente.',
+  ]}
+>
+  <M0Superficies />
+</Figura>
+
+| Porta | Boa para | Onde o curso usa |
+|---|---|---|
+| **Terminal (CLI)** | Tudo. É a mais completa: scripts e automação só existem aqui. | Base do curso, a partir do [M1](../m1/) |
+| **VS Code** | Ver os diffs dentro do editor, sem trocar de janela. | [M15](../m15/) |
+| **JetBrains** | O mesmo, em IntelliJ, PyCharm, WebStorm e parentes. O plugin exige a CLI instalada. | [M15](../m15/) |
+| **App desktop** | Quem prefere interface gráfica: revisão visual e sessões lado a lado. Já inclui o Claude Code. | [M15](../m15/) |
+| **Web** (`claude.ai/code`) | Tarefa longa que deve seguir sem você, ou repositório que não está no seu disco. | [M15](../m15/) |
+| **Celular** (app Claude) | Começar e acompanhar tarefas longe do computador. | [M15](../m15/) |
+| **Chrome** | Testar e depurar uma página no navegador de verdade. | [M15](../m15/) e C4 |
+| **Slack** | Mencionar o Claude no canal do time e receber um pull request. | [M15](../m15/) |
+| **CI/CD** | Revisão automática de PR e triagem de issues. | [M16](../m16/) |
+| **Agent SDK** | Embutir o motor num programa seu. | [M17](../m17/) |
+
+Na dúvida, comece pelo terminal. É onde tudo funciona, e o que você aprende nele vale nas outras portas. Terminal causa alergia? O app desktop entrega o mesmo motor com janelas e botões.
+
+<Nota rotulo="Nem toda porta abre com qualquer conta">
+Web, celular, app desktop, Chrome e Slack pedem login com conta claude.ai. Só com chave de API, eles ficam de fora. A CLI aceita todos os tipos de conta.
+</Nota>
+
+### Chat para pensar, Claude Code para fazer
+
+Esta é uma regra do curso, não da documentação. Ela poupa tempo e limite de uso.
+
+| Você quer | Use |
+|---|---|
+| Decidir **o que** construir, comparar caminhos, rascunhar uma proposta | Chat (claude.ai ou o chat do app) |
+| Escrever o escopo e a definição de pronto de um projeto | Chat, e depois salve o resultado num arquivo |
+| Criar, alterar, rodar, testar, commitar, publicar | Claude Code, na pasta do projeto |
+| Entender um repositório que já existe | Claude Code: ele lê os arquivos, você não cola nada |
+
+O sinal para trocar de ferramenta é simples. Se a próxima ação é **mexer num arquivo ou rodar um comando**, o chat acabou. Leve a decisão escrita para a pasta do projeto e abra o Claude Code.
+
+### O pré-requisito pago inescapável
+
+Sem rodeio: **o Claude Code não tem acesso gratuito.** A documentação lista três tipos de conta que entram, e o plano gratuito do claude.ai não está entre eles.
+
+| Acesso | Como você paga | Para quem |
+|---|---|---|
+| **Assinatura Claude** (Pro, Max, Ultra, Team ou Enterprise) | Mensalidade. O uso está incluído, até o limite do plano. | Quem está aprendendo e quem trabalha sozinho |
+| **Claude Console** | Créditos pré-pagos de API. Cada sessão desconta pelo que consumiu. | Automação, CI e quem quer pagar só o que usar |
+| **Provedor de nuvem** (Amazon Bedrock, Google Cloud, Microsoft Foundry) | Na conta de nuvem da empresa. | Organizações |
+
+**Quanto custa?** Este manual não imprime preço de assinatura: ele muda, e número velho em página de curso vira armadilha. A tabela vigente fica em [claude.com/pricing](https://claude.com/pricing). Confira lá antes de assinar.
+
+A documentação de custos publica uma média de uso **cobrado por consumo** em empresas. Serve como ordem de grandeza:
+
+- cerca de **US$ 13 por desenvolvedor por dia ativo**;
+- entre **US$ 150 e 250 por desenvolvedor por mês**;
+- abaixo de **US$ 30 por dia ativo** para 90% das pessoas.
+
+São desenvolvedores em tempo integral, pagando por token. Para seguir o curso, o caminho previsível é a assinatura: você sabe a conta antes de começar. Quando o limite do plano acaba, você espera a renovação ou liga os créditos de uso, que são cobrados à parte.
+
+Dentro de uma sessão, `/usage` mostra quanto do plano você já gastou. O [M18](../m18/) ensina a medir e a economizar.
+
+**E o resto?** Grátis. Hospedagem, banco, automação, canal de atendimento: cada exercício tem um caminho de custo zero. Onde o pago faz sentido, uma fita amarela **TROCA POR PAGO** diz o que trocar, quando e por quanto, com data.
+
+### Como usar este manual
+
+Cada página tem três camadas:
+
+- **Essencial**, sempre aberta. Resolve nove em cada dez situações.
+- **Por baixo do capô**, recolhida. Como funciona de verdade, limites e custos.
+- **Armadilhas**, recolhida. Só erros que realmente acontecem.
+
+Com pressa, leia o Essencial e faça as fichas. Volte às outras camadas quando algo se comportar de um jeito estranho.
+
+As **fichas de campo** são os exercícios, sempre no mesmo formato: passos numerados, uma **Prova** (comando e saída esperada), gabarito recolhido, as três causas mais prováveis de erro e um desafio. Nenhuma ficha termina em "parece que funcionou": a Prova diz sim ou não.
+
+Quatro ferramentas do próprio site:
+
+| Ferramenta | Onde fica | O que faz |
+|---|---|---|
+| **Busca** | Tecla <kbd>/</kbd> em qualquer página | Procura no curso inteiro. A tecla é uma homenagem ao menu do Claude Code. |
+| **Seletor de sistema** | Botão **Sumário**, bloco "Seu sistema" | Mac, Windows ou Linux. Troca os comandos do curso todo de uma vez. |
+| **Progresso** | Botão "Marcar como feito" de cada ficha | Fica gravado só neste navegador. Sem conta, sem cookie, sem servidor. |
+| **Tema** | Ícone no cabeçalho | Alterna entre modo Papel (claro) e modo Console (escuro). |
+
+O seletor em ação: a linha abaixo muda conforme o sistema escolhido. É também como se abre um terminal, peça que você vai usar na Ficha 1.
+
+<SO mac="Cmd+Espaço, digite Terminal, Enter" win="Menu Iniciar, digite PowerShell, Enter" linux="Ctrl+Alt+T (Ubuntu e derivados)" />
+
+### O selo de versão
+
+O Claude Code muda depressa. Por isso cada página, ficha e carta de comando carrega um selo:
+
+| Selo | Quer dizer |
+|---|---|
+| **Verificado v2.1.323 · 12/11/2026** | Conferido na documentação oficial e executado nessa versão, nessa data. |
+| **Beta** | O recurso existe, mas a documentação avisa que pode mudar. |
+| **Plano: …** | Só funciona em determinado plano. |
+| **Não testado localmente** | Descrito pela documentação. Faltou plano, app ou plataforma para executar aqui. |
+| **Ilustrativo** | Passo de tela interativa, conferido na documentação e não automatizado. |
+
+Sua versão provavelmente será mais nova que a do selo. Quase tudo continua valendo. Se algo divergir, a página [O que mudou](../f/) lista as diferenças por versão. O curso é independente: não é afiliado nem endossado pela Anthropic, e a documentação oficial tem sempre a última palavra.
+
+### As três trilhas
+
+Nada é trancado. A trilha só apaga do mapa o que você pode deixar para depois.
+
+| Trilha | Estações | Para quem | Percurso |
+|---|---|---|---|
+| **Rápida para Cases** | 22 | Quer entregar projeto de cliente logo | M0 a M3, R3, M4 a M8, M10, M11, M20 a M22, C0 a C6 |
+| **Completa** | 39 | Quer maestria | Tudo, na ordem |
+| **Empresa** | 10 | Vai adotar o Claude Code num time | M0 a M3, M6, M7, M12, M16, M18, M19 |
+
+Em dúvida entre duas? Comece pela Rápida. Dá para mudar a qualquer momento, e o progresso feito continua contando.
+
+### Glossário de bolso
+
+Treze palavras que aparecem em todas as páginas. O [Apêndice A](../a/) tem a lista completa.
+
+| Termo | Em uma frase |
+|---|---|
+| **Agente** | Programa que planeja os próprios passos e usa ferramentas para cumprir uma tarefa. |
+| **Laço agêntico** | O ciclo coletar contexto, agir, verificar, repetido até a tarefa fechar. |
+| **Modelo** | O Claude, a parte que raciocina. O Claude Code é o que fica em volta dele. |
+| **Ferramenta** | Uma ação que o Claude pode executar: ler arquivo, editar, rodar comando, buscar na web. |
+| **Pedido** | O que você escreve para o Claude. Em inglês, *prompt*. |
+| **Sessão** | Uma conversa ligada a uma pasta, gravada em disco, que pode ser retomada. |
+| **Janela de contexto** | A memória de trabalho da sessão: conversa, arquivos lidos, saídas de comandos. Ela enche. |
+| **Token** | A unidade em que o texto é medido e cobrado. Mais contexto, mais tokens. |
+| **Superfície** | Qualquer lugar por onde você usa o Claude Code: CLI, editor, app desktop, web. |
+| **Modo de permissão** | A regra-base do que roda sem perguntar a você. |
+| **Comando** | Instrução que começa com `/`, como `/help` ou `/clear`. A Parte II disseca todos. |
+| **CLAUDE.md** | Arquivo de instruções permanentes do projeto, lido no início de cada sessão. |
+| **MCP** | Padrão aberto que liga o Claude a serviços externos: GitHub, bancos, navegador. |
+
+<Camada tipo="capo" titulo="O que muda de uma porta para outra">
+
+### Três ambientes de execução
+
+A documentação separa a **interface** (o que você vê) do **ambiente** (onde o código roda):
+
+- **Local.** Na sua máquina. É o padrão, com acesso total aos seus arquivos e ferramentas.
+- **Nuvem.** Em máquinas virtuais gerenciadas pela Anthropic, ou em ambiente que a sua organização opera.
+- **Remote Control.** Executa na sua máquina, e você dirige pelo navegador ou pelo celular.
+
+O celular alcança os dois últimos. O app Claude não tem um "Claude Code para celular" separado: sessões na nuvem e Remote Control moram na aba **Code** do mesmo app.
+
+### O que as portas compartilham, e o que não
+
+As superfícies locais leem a mesma configuração, a mesma memória de projeto e os mesmos servidores MCP. Uma sessão na nuvem é diferente: parte de um clone novo do repositório e **não** lê a pasta `~/.claude` do seu computador. O que estiver só na sua máquina não viaja.
+
+### O que cada tipo de conta alcança
+
+A CLI, o Agent SDK e as extensões de VS Code e JetBrains funcionam com qualquer tipo de conta. Já estes exigem login com conta claude.ai e ficam fora do alcance de uma chave de API:
+
+- sessões na nuvem e o uso pelo celular;
+- app desktop, com exceção parcial: há configurações corporativas que o ligam a outros provedores;
+- Remote Control;
+- extensão do Chrome;
+- Slack, só nos planos Pro, Max e Ultra. Em Team e Enterprise, o caminho para o chat do time é outro produto, o Claude Tag.
+
+A extensão do Chrome pede ainda um plano direto da Anthropic e funciona em Chrome e Edge. A integração não é suportada dentro do WSL.
+
+### Requisitos de sistema da CLI
+
+- macOS 13 ou mais novo; Windows 10 (versão 1809) ou mais novo; Ubuntu 20.04, Debian 10 ou Alpine 3.19 em diante.
+- 4 GB de RAM, processador x64 ou ARM64, conexão com a internet.
+- Estar num dos [países atendidos](https://www.anthropic.com/supported-countries) pela Anthropic.
+- Git é opcional para o Claude Code e indispensável para este curso. No Windows nativo, o Git for Windows é recomendado: com ele o Claude usa Bash; sem ele, usa PowerShell.
+
+### Por que sua versão anda na frente do selo
+
+A instalação nativa se atualiza sozinha, em segundo plano. Instalações por Homebrew e WinGet não: esperam você rodar o comando de atualização. O [M1](../m1/) mostra os dois casos.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Assinar achando que o plano gratuito serve
+
+A lista de contas aceitas começa no Pro. Confira o nome do plano antes de reservar a tarde para o [M1](../m1/).
+
+### Uma chave de API esquecida no ambiente
+
+Se a variável `ANTHROPIC_API_KEY` existir e você aprovar o uso dela, a CLI usa a chave, mesmo com assinatura ativa. O consumo vai para a conta de API, não para o plano. Dentro da sessão, `/status` mostra qual credencial está valendo. Remover a variável devolve você à assinatura.
+
+### Esperar que o celular rode código
+
+O app do celular é controle remoto. O trabalho acontece na nuvem ou no seu computador ligado.
+
+### Tratar o chat como executor
+
+Pedir ao chat um projeto inteiro e colar arquivo por arquivo funciona até o terceiro arquivo. Depois você vira o mensageiro entre duas janelas. Se há arquivo para mexer, é trabalho do Claude Code.
+
+### Confiar no progresso como se fosse backup
+
+O progresso mora no armazenamento local do navegador. Limpar os dados do site, trocar de navegador ou usar janela anônima zera tudo. A Ficha 2 resolve isso em um minuto.
+
+### Ler o selo como garantia eterna
+
+O selo diz o que era verdade em uma versão e uma data. Um menu pode ter mudado de nome desde então. Divergiu? A documentação oficial e a página [O que mudou](../f/) desempatam.
+
+</Camada>
+
+## Fichas de campo
+
+Duas fichas. Nenhuma usa o Claude Code ainda: a instalação é assunto do [M1](../m1/). Aqui você deixa a bancada pronta.
+
+<Ficha
+  id="m0-e1"
+  n={1}
+  titulo="Kit de partida e escolha da trilha"
+  objetivo="Conferir conta, terminal, git, Node, GitHub e editor, e marcar sua trilha no mapa."
+  minutos={20}
+  pre="nenhum"
+>
+
+1. **Conta e plano.** Decida qual dos três acessos você vai usar. Para assinatura, compare os planos em [claude.com/pricing](https://claude.com/pricing) e confirme que o seu é Pro ou superior. Anote o nome do plano: você vai precisar dele no M1.
+2. **Terminal.** Abra um. O atalho do seu sistema está no Essencial, na parte sobre o seletor. No Windows, use o PowerShell: o prompt dele começa com `PS C:\`. Se começar só com `C:\`, você abriu o CMD.
+
+3. **Git.** Rode:
+
+   ```bash
+   git --version
+   ```
+
+   Não tem? Instale por [git-scm.com](https://git-scm.com/downloads), feche o terminal e abra outro.
+
+4. **Node.js.** O laboratório do curso roda em Node 20 ou mais novo:
+
+   ```bash
+   node --version
+   ```
+
+   Não tem, ou é antigo? Instale a versão LTS de [nodejs.org](https://nodejs.org/en/download).
+
+5. **GitHub.** Crie sua conta em [github.com](https://github.com/signup), ou entre na que já tem. O plano de entrada basta para o curso; as condições vigentes estão em [github.com/pricing](https://github.com/pricing).
+6. **Editor.** Qualquer editor de código serve. O curso mostra o VS Code. Se ele já está instalado:
+
+   ```bash
+   code --version
+   ```
+
+7. **Trilha.** Vá à [página inicial](../), seção "O mapa", e clique na sua trilha. As estações fora dela ficam apagadas no mapa.
+
+<Prova>
+
+```bash
+git --version
+node --version
+```
+
+Os dois comandos respondem com um número de versão, e o do Node começa com `v20` ou mais. Na nossa execução, em Windows 11:
+
+```text
+git version 2.55.0.windows.3
+v24.19.0
+```
+
+Na página inicial, o botão da sua trilha aparece marcado, e continua marcado depois de recarregar a página.
+
+</Prova>
+
+<Gabarito>
+
+Não há resposta única: há um kit completo. Confira os seis itens.
+
+| Item | Pronto quando |
+|---|---|
+| Conta | Você sabe dizer o nome do plano (ou que vai usar créditos do Console) |
+| Terminal | Abre, e você sabe qual é (PowerShell, Terminal, Bash) |
+| Git | `git --version` mostra uma versão |
+| Node | `node --version` mostra `v20` ou mais |
+| GitHub | Você consegue entrar na sua conta pelo navegador |
+| Editor | Abre uma pasta e mostra os arquivos |
+
+Na nossa máquina, `code --version` respondeu `1.146.0`. A extensão do Claude Code para VS Code pede a versão 1.94.0 ou mais nova.
+
+</Gabarito>
+
+<DeuErro>
+
+- **"Comando não encontrado" logo depois de instalar.** O terminal aberto antes da instalação não enxerga o programa novo. Feche e abra outro.
+- **`node --version` mostra um número abaixo de 20.** Há uma instalação antiga. Instale a LTS atual e confira de novo num terminal novo.
+- **A trilha não fica marcada.** O site grava a escolha no armazenamento local do navegador. Janela anônima ou bloqueio de armazenamento impedem isso. O curso funciona igual, só não lembra de você.
+
+</DeuErro>
+
+<Desafio>
+
+Já tem o Claude Code instalado? Rode `claude --version` e compare com o selo desta página (na nossa execução: `2.1.323 (Claude Code)`). Depois rode `claude auth status` e ache dois campos na resposta: `loggedIn` e `authMethod`. Eles dizem se há login e de que tipo.
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m0-e2"
+  n={2}
+  titulo="Levar o progresso no bolso"
+  objetivo="Marcar a primeira ficha, exportar o progresso e saber restaurá-lo em outro navegador."
+  minutos={5}
+  pre="Ficha 1"
+  verificacao="ilustrativo"
+>
+
+1. Na Ficha 1, clique em **Marcar como feito**.
+2. Abra a página [Seu progresso](../progresso/). O link também está no rodapé de todas as páginas.
+3. Clique em **Exportar JSON**. O navegador baixa o arquivo `manual-de-bordo-progresso.json`.
+4. Abra o arquivo no seu editor.
+
+<Prova>
+
+O arquivo traz a ficha marcada dentro de `feitos` e a trilha escolhida:
+
+```json
+{
+  "feitos": {
+    "m0-e1": 1794000000000
+  },
+  "cartas": {},
+  "trilha": "rapida"
+}
+```
+
+O número ao lado de `m0-e1` e o nome da trilha serão os seus. Podem aparecer outros campos, como `so` e `tema`.
+
+</Prova>
+
+<Gabarito>
+
+Para restaurar em outro navegador ou computador: abra **Seu progresso**, clique em **Importar JSON** e escolha o arquivo. A página responde "Progresso importado." e as fichas voltam marcadas.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`feitos` veio vazio.** Você exportou antes de marcar a ficha, ou marcou em outro navegador.
+- **Não existe o campo `trilha`.** Nenhuma trilha foi escolhida. Volte ao passo 7 da Ficha 1.
+- **A importação recusa o arquivo.** Ele foi editado e deixou de ser JSON válido, ou não é um arquivo exportado daqui.
+
+</DeuErro>
+
+<Desafio>
+
+Use a tecla <kbd>/</kbd> para buscar `rewind`. Em quantas páginas a palavra aparece? Anote a primeira: é para lá que você volta quando o Claude fizer besteira.
+
+</Desafio>
+
+</Ficha>
+
+A Ficha 2 leva o selo **ilustrativo** porque acontece no navegador, com o site construído, e não foi automatizada. Os passos e o formato do arquivo foram conferidos no código do próprio site.
+
+<Saida>
+
+- Sei explicar a diferença entre conversar com um chat e delegar a um agente.
+- Sei em que porta vou começar e por quê.
+- Sei qual acesso pago vou usar e conferi o preço na página oficial.
+- `git --version` e `node --version` respondem no meu terminal.
+- Escolhi uma trilha e exportei meu progresso.
+
+</Saida>
+
+**Próxima estação:** [M1, Instalação e primeiro contato](../m1/). Você instala a CLI, faz login e pede a primeira tarefa de verdade.
+
+<Fontes>
+
+- [Overview](https://code.claude.com/docs/en/overview.md): o que é, superfícies e tipos de conta.
+- [Platforms and integrations](https://code.claude.com/docs/en/platforms.md): comparação entre CLI, desktop, editores, web, celular e integrações.
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works.md): laço agêntico, ferramentas e ambientes de execução.
+- [Quickstart](https://code.claude.com/docs/en/quickstart.md) e [Authentication](https://code.claude.com/docs/en/authentication.md): contas aceitas e login.
+- [Feature availability](https://code.claude.com/docs/en/feature-availability.md): o que cada tipo de conta e cada plano alcança.
+- [Manage costs effectively](https://code.claude.com/docs/en/costs.md): cobrança por token, médias de uso e créditos.
+- [Advanced setup](https://code.claude.com/docs/en/setup.md): requisitos de sistema e atualização.
+- [Glossary](https://code.claude.com/docs/en/glossary.md): definições que basearam o glossário de bolso.
+- [Chrome](https://code.claude.com/docs/en/chrome.md), [Slack](https://code.claude.com/docs/en/slack.md), [Mobile](https://code.claude.com/docs/en/mobile.md) e [Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview.md): requisitos de cada porta.
+- Execuções locais registradas em `VERIFICATION/m0.md`.
+
+</Fontes>
