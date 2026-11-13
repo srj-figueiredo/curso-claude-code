@@ -1,0 +1,64 @@
+---
+// Animação 2 (M2): a janela de contexto enchendo e o que sobra depois do /compact.
+// Larguras ilustrativas, não proporcionais a tokens reais. Elementos com data-de="N" aparecem no passo N.
+// Fonte: https://code.claude.com/docs/en/context-window.md, lida em 13/11/2026.
+const antes = [
+  { x: 40, w: 70, de: 1, nome: 'Início', cls: 'svg-cheio' },
+  { x: 110, w: 150, de: 2, nome: 'Arquivos lidos', cls: 'svg-papel-2' },
+  { x: 260, w: 170, de: 3, nome: 'Saídas e edições', cls: 'svg-papel' },
+  { x: 430, w: 280, de: 4, nome: 'Conversa', cls: 'svg-papel-2' },
+];
+---
+
+<svg viewBox="0 0 800 330" role="img" aria-labelledby="ctx-t ctx-d">
+  <title id="ctx-t">A janela de contexto enchendo e a compactação</title>
+  <desc id="ctx-d">
+    Uma barra representa a janela de contexto. Ela começa com o que carrega sozinho, depois recebe arquivos lidos,
+    saídas de comandos e edições e a conversa, até ficar quase cheia. O comando /compact troca tudo isso por um resumo.
+    Na barra de baixo, o início volta do disco, o resumo ocupa pouco espaço e até cinco arquivos são relidos.
+  </desc>
+  <defs>
+    <marker id="ctx-seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" class="svg-cheio-sinal"></path>
+    </marker>
+  </defs>
+
+  <text class="svg-titulo" x="40" y="34">ANTES</text>
+  <rect class="svg-traco" x="40" y="48" width="720" height="48" fill="none"></rect>
+  {
+    antes.map((s) => (
+      <g data-de={s.de}>
+        <rect class={s.cls} x={s.x} y="48" width={s.w} height="48"></rect>
+        <text class="svg-texto" x={s.x + 8} y="120" style="font-size:11.5px">
+          {s.nome}
+        </text>
+      </g>
+    ))
+  }
+  <g data-de="1" class="svg-num" transform="translate(110 48)"><circle r="12"></circle><text>1</text></g>
+  <g data-de="3" class="svg-num" transform="translate(430 48)"><circle r="12"></circle><text>2</text></g>
+  <g data-de="4">
+    <path class="svg-traco" d="M710 40V104" stroke-dasharray="4 4"></path>
+    <text class="svg-texto-forte" x="758" y="34" text-anchor="end" style="font-size:11.5px">quase cheia</text>
+  </g>
+
+  <g data-de="5">
+    <path class="svg-sinal" d="M400 134V176" marker-end="url(#ctx-seta)"></path>
+    <text class="svg-texto-forte" x="416" y="160">/compact</text>
+  </g>
+
+  <text class="svg-titulo" x="40" y="214">DEPOIS</text>
+  <rect class="svg-traco" x="40" y="228" width="720" height="48" fill="none"></rect>
+  <g data-de="5">
+    <rect class="svg-cheio" x="40" y="228" width="70" height="48"></rect>
+    <text class="svg-texto" x="48" y="300" style="font-size:11.5px">Início</text>
+    <rect class="svg-cheio-sinal" x="110" y="228" width="90" height="48"></rect>
+    <text class="svg-texto" x="118" y="300" style="font-size:11.5px">Resumo</text>
+  </g>
+  <g data-de="6">
+    <rect class="svg-papel-2" x="200" y="228" width="110" height="48"></rect>
+    <text class="svg-texto" x="208" y="300" style="font-size:11.5px">5 arquivos relidos</text>
+    <text class="svg-texto-forte" x="560" y="256" text-anchor="middle">espaço livre</text>
+  </g>
+  <g data-de="5" class="svg-num" transform="translate(200 228)"><circle r="12"></circle><text>3</text></g>
+</svg>

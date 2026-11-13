@@ -6,7 +6,7 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 ## Onde parou
 
 13/11/2026: modo de trabalho trocado para o do `CONTINUAR.md` (plano Pro, uma página por vez, sem subagentes).
-M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). M0 nos gates feito. Próximo item: M2 (escrever do zero, com as animações 1 e 2).
+M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). M0 nos gates feito. M2 escrito e verificado (animações 1 e 2 prontas). Próximo item: Revisão da Parte I (M0–M3), depois Onda 2. Publicação segue bloqueada.
 
 ## Fila
 
@@ -24,7 +24,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 - [x] **M1 nos gates.** (build e axe ok 13/11; foto 390/1280 fica para o fim da Parte I) Conferir build, axe, uma foto em 390 px; ajustar o que destoar do M3.
 - [x] **M0 nos gates.** (VERIFICATION/m0.md feito 13/11; foto fica para o fim da Parte I) Falta `VERIFICATION/m0.md` (o autor foi interrompido): conferir as afirmações do M0
       contra a doc em cache e registrar; depois build, axe, foto.
-- [ ] **M2.** Escrever do zero (só existe `lab/estados/m2-inicio/`; confira se serve ou apague). Tem as
+- [x] **M2.** (13/11: página, 2 animações, ficha 3 executada; foto das figuras 390/1280 conferida) Escrever do zero (só existe `lab/estados/m2-inicio/`; confira se serve ou apague). Tem as
       animações 1 (loop agêntico) e 2 (contexto e compactação): ver BRIEFING §6.4. Cada uma vira componente em `src/components/figuras/` usado com
       `<Figura passos={N} legendas={[…]}>`; elementos com `data-de="N"` aparecem a partir do passo N; o estado
       final precisa funcionar como figura estática.
@@ -66,6 +66,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 | Página | Fatos | Execução | Estilo | Visual/a11y | Grátis↔Pago | Estado |
 |---|---|---|---|---|---|---|
 | M3 | ok | ok (ficha 2 ilustrativa) | autor | axe ok; LH desempenho 80 | n/a | verificado, ressalva de desempenho |
+| M2 | ok (VERIFICATION/m2.md, 22 afirmações) | ok (`claude -p`; telas interativas ilustrativas) | autor, 3.129 palavras | axe ok; figuras 390/1280 ok | n/a | verificado |
 | M1 | ok (VERIFICATION/m1.md) | ok (instalação não testada: máquina já instalada) | autor | axe ok; foto pendente | n/a | escrito |
 | M0 | ok (VERIFICATION/m0.md) | n/a (sem comando do Claude Code) | autor | axe ok; foto pendente | pendente | escrito, falta verificação |
 

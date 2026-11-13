@@ -1,0 +1,496 @@
+---
+id: m2
+titulo: Como o Claude Code pensa
+parte: p1
+ordem: 2
+minutos: 70
+pre_requisitos: [m0, m1]
+objetivos:
+  - Descrever o laço agêntico e dizer que ferramentas entram em cada fase.
+  - Medir o contexto de uma sessão com /context e explicar o que o enche.
+  - Compactar com instruções e prever o que sobrevive à compactação.
+  - Listar três ações que derrubam o cache e três que o preservam.
+  - Escolher modelo e nível de esforço no início da sessão, e não no meio.
+tldr:
+  - O Claude Code repete coletar, agir e verificar, com ferramentas, até o trabalho fechar ou você interromper.
+  - O contexto enche a cada leitura e a cada saída de comando. /context mede, /compact esvazia, /clear recomeça.
+  - Trocar de modelo no meio da tarefa refaz o cache inteiro. Escolha no começo e compacte nos intervalos.
+verificado_em_versao: 2.1.323
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: m2-e1, titulo: Encher o contexto de propósito, minutos: 15, custo: gratis }
+  - { id: m2-e2, titulo: Compactar com instruções, minutos: 15, custo: gratis }
+  - { id: m2-e3, titulo: Ver o cache trabalhar, minutos: 15, custo: gratis }
+---
+
+import M2LacoAgentico from '../../components/figuras/M2LacoAgentico.astro';
+import M2ContextoCompactacao from '../../components/figuras/M2ContextoCompactacao.astro';
+
+## Essencial
+
+Dá para usar o Claude Code sem saber como ele funciona. Só que três coisas que parecem caprichos dele, como "esqueceu o que combinamos", "ficou lento de repente" e "o limite acabou cedo", têm causa mecânica. Esta página mostra o mecanismo para você parar de adivinhar.
+
+### O laço: coletar, agir, verificar
+
+A cada pedido, o Claude Code entra num laço. Ele **coleta** contexto, **age** e **verifica** o resultado, e repete até concluir. As fases se misturam: ele lê durante a ação e roda testes no meio da edição.
+
+<Figura
+  id="fig-laco"
+  titulo="O laço agêntico, num pedido real"
+  passos={6}
+  intervalo={1500}
+  legendas={[
+    'Você pede: "corrija o teste que falha".',
+    'Coletar: roda npm test para ver o erro e lê o arquivo suspeito.',
+    'Agir: edita o arquivo.',
+    'Verificar: roda npm test de novo e lê o resultado.',
+    'Falhou outra vez? O resultado vira contexto novo e o laço recomeça.',
+    'Passou: o Claude entrega. Cada volta usou ferramentas e aprendeu algo.',
+  ]}
+  chamadas={[
+    '<strong>Coletar.</strong> Ler arquivos, buscar texto, rodar um comando só para ver a saída.',
+    '<strong>Agir.</strong> Editar, criar, rodar comandos que mudam coisas.',
+    '<strong>Verificar.</strong> Rodar testes, ler o erro, decidir o próximo passo. Sem algo para rodar, o Claude só "acha" que acabou.',
+  ]}
+>
+  <M2LacoAgentico />
+</Figura>
+
+Quem raciocina é o **modelo**. Quem age é o conjunto de **ferramentas**. O Claude Code é a camada que fornece as ferramentas e controla o que o modelo vê. Cada resultado de ferramenta volta para o modelo e informa o passo seguinte. Por isso um pedido simples pode virar dezenas de chamadas, e por isso o contexto enche.
+
+Você faz parte do laço. Esc interrompe e preserva o que já foi feito. É a forma mais barata de corrigir o rumo, e o [M3](../m3/) mostra como.
+
+### As ferramentas que ele tem
+
+A documentação agrupa as ferramentas embutidas em cinco categorias:
+
+| Categoria | O que o Claude consegue fazer | Ferramentas (nomes exatos) |
+|---|---|---|
+| **Arquivos** | Ler, editar, criar | `Read`, `Edit`, `Write` |
+| **Busca** | Achar arquivos por nome, procurar texto | `Glob`, `Grep` |
+| **Execução** | Rodar comandos, testes, git | `Bash`, `PowerShell` |
+| **Web** | Pesquisar e ler páginas | `WebSearch`, `WebFetch` |
+| **Código** | Ver erros de tipo, achar definições | `LSP`, com plugin de inteligência de código |
+
+Há ainda ferramentas de orquestração, como `Agent` (cria um subagente) e `AskUserQuestion` (pergunta algo a você). A lista completa fica em [Tools reference](https://code.claude.com/docs/en/tools-reference.md).
+
+Os nomes importam porque são as palavras que você escreve nas **regras de permissão** do [M7](../m7/). Duas regras úteis desde já:
+
+- **Ler não pede licença; mexer pede.** Na tabela da documentação, `Read`, `Glob` e `Grep` não exigem permissão. `Edit`, `Write`, `Bash`, `WebFetch` e `WebSearch` exigem, no modo manual.
+- **Em macOS, Linux e WSL, `Glob` e `Grep` não vêm por padrão.** O Claude procura com `find` e `grep` pelo `Bash`. No Windows nativo elas vêm. Se a busca do seu sistema parecer diferente da de um colega, é isso.
+
+### A janela de contexto: a memória de trabalho
+
+O **contexto** é tudo que o modelo enxerga num dado momento: o que carrega sozinho (instruções do sistema, `CLAUDE.md`, memória automática, nomes de ferramentas e descrições de skills), a conversa, os arquivos lidos e as saídas de comandos. Ele tem tamanho limitado e só cresce.
+
+<Figura
+  id="fig-contexto"
+  titulo="A janela de contexto enchendo, e o /compact"
+  passos={6}
+  intervalo={1500}
+  legendas={[
+    'Antes de você digitar, o início já está lá: instruções, CLAUDE.md, memória, ferramentas.',
+    'Cada arquivo lido entra inteiro na conversa.',
+    'Saídas de comandos e edições também.',
+    'A conversa cresce até a janela ficar quase cheia.',
+    '/compact troca a conversa por um resumo. O início volta do disco.',
+    'Até cinco arquivos recentes são relidos. A janela fica com muito espaço livre.',
+  ]}
+  chamadas={[
+    '<strong>Início.</strong> Carrega sozinho. Sobrevive porque é relido do disco.',
+    '<strong>Leituras e saídas.</strong> O que mais pesa. Um log inteiro custa o log inteiro.',
+    '<strong>Resumo.</strong> O que o Claude guardou da conversa. Instruções dadas só no meio dela podem não entrar.',
+  ]}
+>
+  <M2ContextoCompactacao />
+</Figura>
+
+As larguras da figura são ilustrativas. Os números reais você mede com **`/context`**, que mostra o uso por categoria: instruções do sistema, ferramentas, skills, mensagens e espaço livre. Faça isso na Ficha 1.
+
+**O que sobrevive à compactação.** Nem tudo some. A tabela resume o que a documentação diz:
+
+| Item | Depois do `/compact` |
+|---|---|
+| Instruções do sistema e estilo de saída | Continuam valendo |
+| `CLAUDE.md` da raiz, regras sem `paths:` e memória automática | Relidos do disco |
+| O plano escrito em modo plano | Relido do disco |
+| Arquivos que o Claude leu ou editou | Até **cinco** são relidos, os mais recentes; arquivo grande volta só como referência |
+| Instruções que você deu **só na conversa** | Resumidas. Podem perder detalhe |
+| Saídas de comandos, leituras antigas | Resumidas |
+
+A lição prática cabe numa linha: **regra que precisa durar vai no `CLAUDE.md`**, não na conversa. O [M6](../m6/) ensina a escrever um bom.
+
+**Quando enche.** O Claude Code compacta sozinho perto do limite, então a sessão não morre. Mas você pode agir antes, e é melhor:
+
+| Situação | Faça |
+|---|---|
+| Vai começar uma tarefa longa com a conversa cheia | `/compact` com instruções do que guardar |
+| Vai para um assunto sem relação | `/clear`: conversa nova, contexto vazio |
+| Precisa ler muita coisa só para pesquisar | Peça a um subagente: as leituras ficam no contexto dele, só o resumo volta |
+| Quer saber quanto sobrou | `/context` |
+
+### O cache: por que trocar de modelo no meio custa
+
+A cada mensagem sua, o Claude Code manda **a conversa inteira** de novo para a API, porque o modelo não guarda nada entre pedidos. Só funciona rápido e barato por causa do **cache de prompt**: a API reconhece o começo do pedido, que é idêntico ao do turno anterior, e relê esse trecho a uma tarifa menor, processando só o que é novo.
+
+A comparação é por **prefixo exato**. Mudou algo no começo, tudo depois precisa ser refeito. O Claude Code ordena o pedido para o que muda menos ficar na frente:
+
+| Camada | Conteúdo | Muda quando |
+|---|---|---|
+| Sistema | Instruções, definições de ferramentas | O conjunto de ferramentas muda |
+| Projeto | `CLAUDE.md`, memória, regras | A sessão começa, ou após `/clear` ou `/compact` |
+| Conversa | Suas mensagens, respostas, resultados | A cada turno |
+
+Daí sai a regra que paga a página inteira:
+
+| Derruba o cache (próximo turno lento e caro) | Preserva o cache |
+|---|---|
+| Trocar de modelo com `/model` | Trocar o modo de permissão (Shift+Tab) |
+| Ligar o modo rápido (`/fast`) | Editar arquivos do repositório |
+| Compactar (`/compact`) | Invocar uma skill ou comando |
+| Conectar ou remover um servidor MCP sem busca de ferramentas | Rebobinar com `/rewind` |
+| Mudar o esforço, na maioria dos modelos (*) | Criar um subagente (ele tem cache próprio) |
+
+(*) Com assinatura ou chave de API, Sonnet 5.5, Opus 5.5 e Haiku 5.5 mantêm o cache ao mudar o esforço. Em Bedrock e Google Cloud, não.
+
+Duas observações para não se assustar. Primeiro, **editar o `CLAUDE.md` no meio da sessão não derruba o cache, mas também não vale**: o arquivo é lido na abertura, e a versão nova só entra no próximo `/clear`, `/compact` ou reinício. Segundo, o custo é de **um turno**: depois ele reconstrói o cache e volta ao normal.
+
+A recomendação da documentação é simples: **escolha modelo e esforço no começo da sessão e deixe o `/compact` para os intervalos entre tarefas.** Para ver o cache funcionando, `/usage` mostra uma linha `Prompt cache (main)` com a taxa de acerto, e a Ficha 3 faz isso com números.
+
+### Modelos, esforço e raciocínio
+
+Três botões, três efeitos diferentes:
+
+| Botão | O que muda | Como mexer |
+|---|---|---|
+| **Modelo** | Capacidade, velocidade e consumo | `/model`, ou `claude --model <alias>` |
+| **Esforço** | Quanto ele raciocina antes de agir | `/effort`, ou `claude --effort <nível>` |
+| **Raciocínio (thinking)** | Mostrar ou esconder o que ele pensou | Alt+T (Windows e Linux) ou Option+T (macOS); Ctrl+O mostra o texto |
+
+**Modelos.** Use os apelidos, que apontam para a versão recomendada e se atualizam:
+
+| Apelido | Para que serve |
+|---|---|
+| `sonnet` | Trabalho diário de código |
+| `opus` | Raciocínio mais pesado, decisões de arquitetura |
+| `haiku` | Tarefas simples e rápidas |
+| `opusplan` | Opus no modo plano e Sonnet na execução (cada troca de modo é troca de modelo, com cache novo) |
+
+Na API da Anthropic, em 13/11/2026, a documentação resolve `sonnet` para Sonnet 5.5, `opus` para Opus 5.5 e `haiku` para Haiku 5.5. Em Bedrock, Google Cloud e Foundry, os apelidos podem apontar para versões mais antigas. Para fixar uma versão, use o nome completo.
+
+**Esforço.** Controla o raciocínio adaptativo: o modelo decide quanto pensar em cada passo, dentro do teto do nível. Os níveis em Sonnet 5.5, Opus 5.5 e Haiku 5.5 são `low`, `medium`, `high`, `xhigh` e `max`, e o padrão desses três é `medium`. A documentação sugere `low` para ideias e mudanças pequenas, `medium` para trabalho diário com escopo claro e `high` quando a verificação importa ou há casos de borda. `max` vale só para a sessão atual.
+
+**Raciocínio.** Nesses mesmos modelos você **não consegue desligar** o raciocínio: o esforço é o controle. A frase "pense com calma" no pedido é texto comum. Mexa no `/effort`.
+
+Esse conjunto também explica o limite de uso do plano. Raciocínio, leituras e releituras de contexto consomem tokens, e `/usage` mostra quanto do plano você gastou. O [M18](../m18/) trata de medir e economizar.
+
+<Camada tipo="capo" titulo="Cache, janela e limites por dentro">
+
+### O cache expira
+
+Prefixos em cache vencem depois de um tempo parado. Cada pedido que acerta o cache reinicia o relógio. A API oferece duas durações: cinco minutos e uma hora (com escrita mais cara). Numa assinatura, dentro do uso incluído no plano, o Claude Code pede uma hora para a conversa principal. Com chave de API ou crédito de uso, o padrão é cinco minutos. Você pode escolher com a configuração `promptCacheTtl` ou a variável `CLAUDE_CODE_PROMPT_CACHE_TTL`.
+
+Consequência: o primeiro turno depois de uma pausa longa é mais lento. E `/compact` custa mais quando você retoma uma sessão velha, porque o pedido de resumo precisa reprocessar tudo sem cache.
+
+### Onde o cache vive e o que o separa
+
+O cache fica no servidor, onde seu modelo roda, e é separado por modelo, por velocidade e por esforço (na maioria dos modelos). No Claude Code ele também é limitado a uma máquina e uma pasta, porque o início da conversa inclui o diretório de trabalho e o sistema operacional. Duas sessões em pastas diferentes não aproveitam o cache uma da outra.
+
+### Subagentes e cache
+
+Um subagente começa conversa própria, com prompt do sistema e ferramentas próprios. O primeiro pedido dele não lê o cache do pai. Em compensação, o cache do pai fica intacto. Subagentes usam o prazo de cinco minutos mesmo numa assinatura, a menos que você escolha outro.
+
+### Janela de contexto e compactação automática
+
+Alguns modelos têm janela de 1 milhão de tokens, entre eles Sonnet 5.5 e os modelos Fable. Quando você não define nada, a compactação automática roda perto do limite do modelo. Para antecipar, use `/autocompact` com um valor, como `/autocompact 500k`, ou a configuração `autoCompactWindow`. O comando aceita de 100 mil a 1 milhão de tokens.
+
+### Imagens acumuladas
+
+A API limita imagens e PDFs por pedido. Ao chegar perto, o Claude Code remove as mais antigas em lote, e o Claude deixa de vê-las. Se precisar de uma de novo, mande outra vez. Um turno lento por lote removido é esperado.
+
+### O que o laço faz com permissões
+
+Antes de executar uma ferramenta que exige permissão, o Claude Code consulta o modo de permissão e suas regras. É o assunto do [M7](../m7/). O que importa aqui: uma ferramenta negada não executa, e o laço continua com a recusa como informação nova.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Trocar de modelo no meio de uma tarefa longa
+
+O Claude Code pergunta antes, enquanto o cache está quente. O aviso existe porque o turno seguinte relê tudo sem desconto. Se for trocar, troque no intervalo entre tarefas.
+
+### Dar uma regra importante só na conversa
+
+"A partir de agora, sempre use tabs." Depois de uma compactação, essa frase vive num resumo e pode perder força. Se vale para o projeto, vai no `CLAUDE.md`.
+
+### Editar o `CLAUDE.md` e esperar efeito imediato
+
+A versão nova só entra no `/clear`, no `/compact` ou num reinício. Na sessão em curso, vale a lida na abertura.
+
+### Pedir para "ler o log inteiro"
+
+Um log grande custa o log grande, a cada turno seguinte, até a próxima compactação. Peça a parte que importa (`tail`, `grep`) ou mande um subagente ler.
+
+### Achar que `/compact` é de graça
+
+Ele manda um pedido de resumo e reconstrói o cache da conversa. Compacte nos intervalos, não no meio de um raciocínio.
+
+### Tentar controlar o esforço pelo texto do pedido
+
+"Seja minucioso" não muda nível nenhum. `/effort` muda.
+
+### Confundir `/clear` com `/compact`
+
+`/clear` abre conversa nova e vazia, e a anterior fica disponível em `/resume`. `/compact` continua a mesma conversa, resumida.
+
+</Camada>
+
+## Fichas de campo
+
+As três fichas usam o laboratório **Pendências**, com uma pasta extra de ferramentas. Baixe, descompacte e abra o terminal na pasta.
+
+- [Ponto de partida: `m2-inicio.zip`](../lab/m2-inicio.zip)
+
+```bash
+cd pendencias
+npm test
+```
+
+O `npm test` deve terminar com `fail 0`. Todas as fichas rodam sem tocar no código do projeto: o foco é a sessão.
+
+<Nota rotulo="Verificação das fichas">
+Executei as três fichas com `claude -p` e `/context`, `/compact` em modo não interativo, que fazem o mesmo trabalho da tela interativa. Lá o `/context` aparece como grade colorida. Os números abaixo são os da nossa execução, em Sonnet 5.5.
+</Nota>
+
+<Ficha
+  id="m2-e1"
+  n={1}
+  titulo="Encher o contexto de propósito"
+  objetivo="Medir com /context quanto uma leitura grande custa."
+  minutos={15}
+  pre="M1, laboratório baixado"
+>
+
+1. Gere um log falso de uns 100 KB:
+
+   ```bash
+   node ferramentas/gerar-registro.mjs
+   ```
+
+2. Abra o Claude Code e meça o ponto de partida:
+
+   ```text
+   /context
+   ```
+
+   Anote a linha **Messages**.
+
+3. Mande ler o arquivo inteiro:
+
+   ```text
+   Leia o arquivo registro.log inteiro e responda só com o número de linhas que contêm ERRO.
+   ```
+
+4. Meça de novo:
+
+   ```text
+   /context
+   ```
+
+<Prova>
+
+O script avisa `registro.log criado: 1200 linhas, 12 com ERRO.` O Claude responde `12`. A linha **Messages** cresce de forma visível. Na nossa execução:
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Messages | 25,3k tokens | 58,9k tokens |
+| Total da sessão | 42,6k | 76,2k |
+
+Os valores variam com seus plugins e skills. O que não varia: uma leitura de 100 KB acrescenta dezenas de milhares de tokens, e eles ficam até a compactação.
+
+</Prova>
+
+<Gabarito>
+
+O contexto cresceu porque o arquivo inteiro virou mensagem, e ele continua lá em todo turno seguinte. Perguntar "quantas linhas com ERRO" a um `grep` custaria poucas linhas de saída. A diferença entre "ler" e "buscar" é a primeira economia que você aprende.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`/context` mostra números muito diferentes dos acima.** Seu ponto de partida inclui seus plugins, skills e `CLAUDE.md`. Compare só o antes e o depois.
+- **Em `claude -p "/context"` no Git Bash, o Claude responde sobre um caminho `C:/Program Files/Git/context`.** O Git Bash converte `/context` em caminho. Use `MSYS_NO_PATHCONV=1` antes do comando, ou o PowerShell.
+- **O arquivo `registro.log` não existe.** Rode o passo 1 na pasta do laboratório, não em outra.
+
+</DeuErro>
+
+<Desafio>
+
+Peça de novo, desta vez: "Use grep para contar as linhas com ERRO em registro.log". Meça a linha Messages antes e depois. Quantos tokens a busca custou?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m2-e2"
+  n={2}
+  titulo="Compactar com instruções"
+  objetivo="Esvaziar o contexto sem perder o que importa."
+  minutos={15}
+  pre="Ficha 1, na mesma sessão"
+>
+
+1. Compacte dizendo o que guardar:
+
+   ```text
+   /compact Guarde só isto: o registro.log tem 12 linhas com ERRO e o serviço é o de pendências.
+   ```
+
+2. Meça:
+
+   ```text
+   /context
+   ```
+
+3. Pergunte proibindo a releitura:
+
+   ```text
+   Sem ler arquivo nenhum: quantas linhas com ERRO o registro.log tinha?
+   ```
+
+<Prova>
+
+A linha **Messages** cai e o Claude responde sem chamar ferramenta. Na nossa execução:
+
+| Medida | Antes do /compact | Depois |
+|---|---|---|
+| Messages | 58,9k | 12,6k |
+| Total da sessão | 76,2k | 28,9k |
+
+```text
+O registro.log tinha 12 linhas com ERRO, e o serviço envolvido é o de pendências.
+```
+
+</Prova>
+
+<Gabarito>
+
+A resposta veio do **resumo**, não do arquivo: foi a instrução do `/compact` que decidiu o que entrou nele. Sem instrução, o Claude escolhe sozinho o que parece importante. Se o fato essencial fosse outro, ele poderia ter ficado de fora.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude relê o arquivo.** Ele pode fazer isso por zelo. Repita a pergunta frisando "sem usar ferramentas".
+- **`/compact` não mexe nos números.** Havia pouco para compactar. Rode a Ficha 1 antes.
+- **Você perdeu um detalhe no resumo.** Esperado. Compacte de novo com instruções mais específicas, ou volte atrás com `/rewind` (Ficha 2 do [M3](../m3/)).
+
+</DeuErro>
+
+<Desafio>
+
+Compacte de novo, mas sem instruções (`/compact` puro), e repita a pergunta. A resposta continua certa? O que isso diz sobre guardar fatos importantes no `CLAUDE.md`?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m2-e3"
+  n={3}
+  titulo="Ver o cache trabalhar"
+  objetivo="Medir, em tokens, o preço de trocar de modelo no meio da conversa."
+  minutos={15}
+  pre="Ficha 1"
+>
+
+O script `ferramentas/uso.mjs` lê a saída `--output-format json` do `claude -p` e mostra os campos do cache. Quatro chamadas curtas, na mesma pasta, encadeadas com `--continue`.
+
+1. Primeira chamada, com Haiku:
+
+   ```bash
+   claude -p "Responda apenas: ok" --model haiku --output-format json | node ferramentas/uso.mjs
+   ```
+
+2. A mesma conversa, mesmo modelo:
+
+   ```bash
+   claude -p "Responda apenas: ok" --model haiku --continue --output-format json | node ferramentas/uso.mjs
+   ```
+
+3. **Troque de modelo** na mesma conversa:
+
+   ```bash
+   claude -p "Responda apenas: ok" --model sonnet --continue --output-format json | node ferramentas/uso.mjs
+   ```
+
+4. Fique no Sonnet:
+
+   ```bash
+   claude -p "Responda apenas: ok" --model sonnet --continue --output-format json | node ferramentas/uso.mjs
+   ```
+
+<Prova>
+
+Compare "escrito no cache" e "lido do cache" nas quatro saídas. O passo 3 **escreve muito**; o passo 4 **lê muito e escreve pouco**. Na nossa execução, nos passos 3 e 4:
+
+| Passo | Escrito no cache | Lido do cache |
+|---|---|---|
+| 3. Troca para Sonnet | 26.302 | 14.507 |
+| 4. Fica no Sonnet | 1.001 | 40.809 |
+
+Os números exatos mudam com seu ambiente. O padrão é o ponto: depois da troca, a conversa inteira foi reprocessada e escrita de novo. No turno seguinte, ela voltou a vir do cache.
+
+</Prova>
+
+<Gabarito>
+
+Cada modelo tem o seu cache. No passo 3, o Sonnet nunca tinha visto aquela conversa, então nada havia para ler. No passo 4, o cache dele já existia. É por isso que o Claude Code pergunta antes de trocar de modelo enquanto o cache está quente.
+
+Os passos 1 e 2 no nosso ambiente usaram o modelo padrão da conta, que era o Haiku 5.5. O contraste entre 3 e 4 é o que a ficha prova.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`A entrada não é o JSON do claude -p`.** Faltou `--output-format json`, ou a chamada falhou antes de responder. Rode sem o `| node ...` para ver o erro.
+- **Tudo "escrito", nada "lido", em todos os passos.** O cache pode estar desligado por `DISABLE_PROMPT_CACHING` ou você está atrás de um gateway que remove os marcadores. Confira se a variável `DISABLE_PROMPT_CACHING` está definida no seu ambiente.
+- **O passo 4 também escreve muito.** Passou tempo demais entre os passos e o cache expirou. Rode os quatro em sequência.
+
+</DeuErro>
+
+<Desafio>
+
+Repita só o passo 4 depois de esperar mais de cinco minutos (ou mais de uma hora, se sua assinatura usa o prazo longo). O que acontece com "escrito" e "lido"?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Descrevi o laço coletar, agir, verificar e citei uma ferramenta de cada fase.
+- Medi o contexto com `/context` antes e depois de uma leitura grande.
+- Compactei com instruções e conferi que o Claude lembrou do que pedi.
+- Sei dizer três ações que derrubam o cache e três que o preservam.
+- Escolho modelo e esforço no começo da sessão e compacto nos intervalos.
+
+</Saida>
+
+**Próxima estação:** o [M3, Conduzindo no dia a dia](../m3/): como pedir, escolher a rédea e desfazer o que deu errado.
+
+<Fontes>
+
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works.md): laço agêntico, ferramentas, contexto e compactação.
+- [Explore the context window](https://code.claude.com/docs/en/context-window.md): o que carrega, o que sobrevive à compactação e como agir antes.
+- [How Claude Code uses prompt caching](https://code.claude.com/docs/en/prompt-caching.md): camadas, o que derruba e preserva o cache, validade e como medir.
+- [Tools reference](https://code.claude.com/docs/en/tools-reference.md): nomes e permissões das ferramentas.
+- [Model configuration](https://code.claude.com/docs/en/model-config.md): apelidos, esforço, raciocínio e janela de compactação.
+- [Commands](https://code.claude.com/docs/en/commands.md): `/context`, `/compact`, `/clear`, `/effort`, `/model`, `/usage`.
+- Execuções locais registradas em `VERIFICATION/m2.md`.
+
+</Fontes>

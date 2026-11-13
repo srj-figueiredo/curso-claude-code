@@ -1,0 +1,72 @@
+---
+// Animação 1 (M2): o laço agêntico em seis passos, com um pedido real ("corrija o teste que falha").
+// Elementos com data-de="N" aparecem a partir do passo N; o estado final serve de figura estática.
+// Fonte: https://code.claude.com/docs/en/how-claude-code-works.md, lida em 13/11/2026.
+const fases = [
+  { x: 210, de: 2, nome: 'COLETAR', ferr: ['Bash: npm test', 'Read: arquivo'], n: 1 },
+  { x: 410, de: 3, nome: 'AGIR', ferr: ['Edit: arquivo', 'Write: novo'], n: 2 },
+  { x: 610, de: 4, nome: 'VERIFICAR', ferr: ['Bash: npm test', 'lê o resultado'], n: 3 },
+];
+---
+
+<svg viewBox="0 0 800 330" role="img" aria-labelledby="laco-t laco-d">
+  <title id="laco-t">O laço agêntico</title>
+  <desc id="laco-d">
+    Seu pedido entra no laço. O Claude coleta contexto com ferramentas de leitura, age com ferramentas de edição e
+    verifica rodando os testes. Se o teste falhar, volta a coletar. Quando passa, entrega o resultado. Você pode
+    interromper em qualquer ponto.
+  </desc>
+  <defs>
+    <marker id="laco-seta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" class="svg-cheio-sinal"></path>
+    </marker>
+  </defs>
+
+  <g data-de="1">
+    <rect class="svg-papel" x="14" y="100" width="150" height="90" stroke-dasharray="5 4"></rect>
+    <text class="svg-texto-forte" x="26" y="128">SEU PEDIDO</text>
+    <text class="svg-texto" x="26" y="152" style="font-size:11.5px">"corrija o teste</text>
+    <text class="svg-texto" x="26" y="170" style="font-size:11.5px">que falha"</text>
+    <path class="svg-sinal" d="M166 145H204" marker-end="url(#laco-seta)"></path>
+  </g>
+
+  {
+    fases.map((f) => (
+      <g data-de={f.de}>
+        <g transform={`translate(${f.x} 100)`}>
+          <rect class="svg-papel-2 svg-pulso" width="160" height="90"></rect>
+          <rect class="svg-cheio" width="160" height="30"></rect>
+          <text class="svg-texto-claro" x="12" y="20">
+            {f.nome}
+          </text>
+          <text class="svg-texto" x="12" y="54" style="font-size:11.5px">
+            {f.ferr[0]}
+          </text>
+          <text class="svg-texto" x="12" y="74" style="font-size:11.5px">
+            {f.ferr[1]}
+          </text>
+          <g class="svg-num" transform="translate(160 0)">
+            <circle r="12"></circle>
+            <text>{f.n}</text>
+          </g>
+        </g>
+      </g>
+    ))
+  }
+
+  <path data-de="3" class="svg-sinal" d="M372 145H404" marker-end="url(#laco-seta)"></path>
+  <path data-de="4" class="svg-sinal" d="M572 145H604" marker-end="url(#laco-seta)"></path>
+
+  <g data-de="5">
+    <path class="svg-sinal" d="M690 192V262H290V196" marker-end="url(#laco-seta)"></path>
+    <text class="svg-texto-forte" x="490" y="284" text-anchor="middle">falhou: volta a coletar</text>
+  </g>
+
+  <g data-de="6">
+    <path class="svg-sinal" d="M690 98V52" marker-end="url(#laco-seta)"></path>
+    <rect class="svg-cheio-sinal" x="560" y="14" width="200" height="34"></rect>
+    <text class="svg-texto-claro" x="660" y="31" text-anchor="middle">passou: entrega</text>
+  </g>
+
+  <text class="svg-texto" x="14" y="312" style="font-size:11.5px">Você pode interromper com Esc em qualquer ponto.</text>
+</svg>
