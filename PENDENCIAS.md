@@ -53,6 +53,11 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
   instalado, então a instalação do zero não foi testada).
 - [ ] **3.4 (M6)** `/init` interativo (`CLAUDE_CODE_NEW_INIT=1`), tela do `/memory` e `CLAUDE.md` de subpasta com carga sob
   demanda (aparece uma linha `Loaded` no terminal). Rodei só em `-p`.
+- [ ] **3.5 (M7)** `/permissions` e o diálogo de confiança da pasta (só interativos); `/fewer-permission-prompts` (não
+  executei: ela lê o histórico das suas sessões; rode num projeto seu); regras `ask`.
+- [ ] **3.6 (M7) Sandbox e dev container.** A ficha 4 está "não testado": o sandbox não existe no Windows nativo e esta
+  máquina não tem WSL2 nem Docker. Para testar: instalar o WSL2 (`wsl --install`, instalação global que eu não faço
+  sem você) e rodar `/sandbox` lá; e conferir se o sandbox realmente fecha o desvio do `ler-env.mjs` da ficha 1.
   *Como resolver juntos:* você roda cada passo na tela e me diz se bate com o texto; eu ajusto e troco o selo.
 
 ## 4. Scripts e atalhos na sua máquina (🟡)
