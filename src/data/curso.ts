@@ -9,6 +9,7 @@ export type TrilhaId = 'rapida' | 'completa' | 'empresa';
 
 export const PARTES: Parte[] = [
   { id: 'p0', rotulo: 'Parte 0', titulo: 'Antes de começar' },
+  { id: 'p8', rotulo: 'Temporada 1', titulo: 'Primeiro cliente' },
   { id: 'p1', rotulo: 'Parte I', titulo: 'Fundamentos' },
   { id: 'p2', rotulo: 'Parte II', titulo: 'O menu / dissecado' },
   { id: 'p3', rotulo: 'Parte III', titulo: 'Do zero ao ar' },
@@ -22,6 +23,10 @@ const e = (id: string, parte: string, titulo: string, curto = titulo): Estacao =
 
 export const ESTACOES: Estacao[] = [
   e('m0', 'p0', 'Mapa do Claude Code e regras do jogo', 'Mapa e regras'),
+  e('t1a', 'p8', 'Seu primeiro cliente: o site no navegador', 'Primeiro site'),
+  e('t1b', 'p8', 'Conduzir o trabalho: planejar, pedir e conferir', 'Conduzir'),
+  e('t1c', 'p8', 'A memória do cliente: o CLAUDE.md', 'Memória'),
+  e('t1d', 'p8', 'Guardar e publicar: histórico e site no ar', 'No ar'),
   e('m1', 'p1', 'Instalação e primeiro contato', 'Instalação'),
   e('m2', 'p1', 'Como o Claude Code pensa', 'Como pensa'),
   e('m3', 'p1', 'Conduzindo no dia a dia', 'Dia a dia'),
@@ -81,7 +86,7 @@ export const TRILHAS: Record<TrilhaId, { titulo: string; resumo: string; ids: st
   rapida: {
     titulo: 'Rápida para Cases',
     resumo: 'O mínimo para entregar um projeto de cliente.',
-    ids: [...faixa('m', 0, 3), 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)],
+    ids: [...faixa('m', 0, 3), 't1a', 't1b', 't1c', 't1d', 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)],
   },
   completa: {
     titulo: 'Completa',

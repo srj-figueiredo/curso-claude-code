@@ -103,3 +103,13 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Não é o mascote oficial do Claude Code** (personagem de terceiros; o curso se declara independente). Se o autor obtiver permissão da Anthropic, o desenho oficial pode substituir o Bloquinho trocando só o componente `Mascote.astro`.
 - **Mapa do metrô:** cada Parte ganhou a sua cor (antes eram 4 estilos que se repetiam).
 
+
+## D017 · Mudança de rumo: Temporadas por projeto, para quem quer vender serviços (13/11/2026, decisão do autor)
+
+- **Por quê:** o autor leu o M7 e outros módulos e avaliou que começavam bem e viravam manual: comandos sem motivo, termos sem definição, nada que prendesse. Pedido: ensinar de forma simples e profunda a **não programadores que querem vender serviços a pequenas empresas**, de modo fluido, chegando a projetos profissionais.
+- **O que muda:** o curso deixa de ser organizado por recurso (Memória, Skills, MCP) e passa a **Temporadas**, cada uma com um cliente fictício e uma entrega (T1 site, T2 sistema com login, T3 atendimento com IA, T4 automação, T5 profissional). O recurso entra **na hora em que o projeto precisa dele**. Prioridade dos projetos segundo o radar de demanda do curso (chatbot 41%, sistema 21%, automação 8%, landing 7%; amostra de 352 projetos de TI do Workana, não é censo e não mede a procura de pequenas empresas locais). Roteiro completo em `docs/ROTEIRO-V2.md`.
+- **Molde de cada estação:** `<Conceitos>` de abertura (o que vai aprender, em palavras simples; o que só ouve falar, com link para o módulo de referência), cena, primeiro resultado em minutos, por que funcionou, quando dá errado, entrega e "Como vender isso". Sem JSON na camada principal; sintaxe fica em "Por baixo do capô". Mantém a sequência visual do formato antigo (placa, três linhas, Essencial, camadas, fichas, saída, fontes).
+- **Cobertura:** os módulos antigos permanecem no ar como **Referência**, e `docs/MAPA-DE-CONCEITOS.md` lista cada conceito deles e onde será ensinado. Ao final do curso, nenhum fica "Planejado".
+- **Mapa do metrô:** nova linha roxa `p8` (Temporada 1) entre a Parte 0 e a Parte I; as cores agora vêm do número do id da Parte (`--linha-N`), não da posição no array. Reorganização completa do mapa fica para quando as Temporadas existirem.
+- **Versão nas fichas:** `Ficha` aceita `versao` (as estações novas foram executadas na CLI 2.1.325; as antigas, na 2.1.323).
+- **Modelo e variação:** os `claude -p` desta máquina usam o modelo padrão, que variou entre Sonnet 5.5 e Haiku 5.5. As páginas dizem que o texto varia.

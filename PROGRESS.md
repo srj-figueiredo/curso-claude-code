@@ -10,12 +10,20 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 
 ## Onde parou
 
-13/11/2026 (pausa pedida pelo autor, e o limite de 5 horas do plano também bateu): M0 a M8 e M10 escritos e verificados.
-A Onda 1 está fechada, exceto a **Publicação** (bloqueada por permissão). Ver `PENDENCIAS.md` para tudo que precisa do autor.
+13/11/2026, **mudança de rumo (D017):** o autor avaliou que os módulos liam como manual e definiu o público: **não programadores
+que querem vender serviços a pequenas empresas**. O curso passa de módulos por recurso para **Temporadas por projeto**.
+Roteiro aprovado em `docs/ROTEIRO-V2.md`; o mapa de conceitos dos módulos antigos está em `docs/MAPA-DE-CONCEITOS.md`
+(gerado por `node scripts/mapa-de-conceitos.mjs`; regra: nenhum conceito pode ficar sem destino até o fim).
 
-**Em andamento: M11 (Planejar e verificar). Ainda NÃO existe `src/content/modulos/m11.mdx`.** Só o estado de laboratório
-`lab/estados/m11-inicio/` (`ferramentas/cobertura.mjs` e `ferramentas/relatorio.mjs`, este com um bug plantado: `NaN%` com a
-lista vazia), que está no commit de pausa. Para retomar, ler a seção "Retomar o M11" abaixo.
+- **Piloto M7** reescrito (cena, analogias, referência recolhida): publicado, aguardando avaliação final do autor.
+- **Temporada 1 (Primeiro cliente), escrita e verificada:** T1A, T1B, T1C, T1D (`src/content/modulos/t1*.mdx`, cliente fictício
+  Doce Esquina, labs `lab/estados/t1*`). Cada estação abre com `<Conceitos>` (o que vai aprender e o que só ouve falar, com link
+  para o módulo de referência). A ficha 4 da T1D (publicar no GitHub Pages) é `nao-testado`.
+- **Módulos antigos (M0 a M8, M10) continuam no ar como Referência.** M9 e M11 (Planejar e verificar) entram reescritos dentro das
+  Temporadas (M11 em T1 e T5; M9 em T2). O estado `lab/estados/m11-inicio/` fica guardado para quando chegar a hora.
+- **Próximo:** aguardar o retorno do autor sobre a T1; depois a **Temporada 2 (Sistema do cliente)**, na ordem do roteiro.
+
+Pausa anterior (limite do plano): M0 a M8 e M10 estão escritos e verificados; a Publicação saiu em 13/11/2026.
 
 ## Retomar o M11 (Planejar e verificar)
 

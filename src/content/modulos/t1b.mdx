@@ -1,0 +1,380 @@
+---
+id: t1b
+titulo: "Conduzir o trabalho: planejar, pedir e conferir"
+parte: p8
+ordem: 102
+minutos: 60
+pre_requisitos: [t1a]
+objetivos:
+  - Pedir um plano antes de uma mudança e ler o plano como se fosse um orçamento.
+  - Aprovar, ajustar e mandar executar sem perder o controle do que muda.
+  - Pedir ao Claude uma conferência automática do trabalho e rodá-la você mesma.
+  - Provocar uma falha de propósito para ter certeza de que a conferência enxerga erros.
+tldr:
+  - Em mudanças maiores, peça o plano antes. Ler cinco linhas custa menos do que desfazer uma obra.
+  - Pronto é o que você consegue provar, não o que o Claude diz. Peça uma conferência que você mesma roda.
+  - Toda conferência tem ponto cego. Teste a página de verdade além de rodar o roteiro.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t1b-e1, titulo: Plano antes da obra, minutos: 25, custo: gratis }
+  - { id: t1b-e2, titulo: Construir, conferir e quebrar de propósito, minutos: 35, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Modo plano', simples: 'O Claude lê, pensa e devolve um plano, mas não mexe em nenhum arquivo. É o ensaio antes da obra.' },
+    { termo: 'Critério de pronto', simples: 'Uma coisa que você consegue conferir e que responde "passou" ou "falhou". Sem isso, "pronto" é opinião.' },
+    { termo: 'Conferência automática', simples: 'Um pequeno roteiro que o Claude escreve e que testa o trabalho dele. Você roda e vê o resultado.' },
+    { termo: 'Licença específica', simples: 'Em vez de liberar tudo, você libera um único comando que o Claude pode rodar sem perguntar.' },
+    { termo: 'Janela de contexto', simples: 'A memória de trabalho da conversa. Ela enche conforme você conversa, e por isso conversas longas ficam confusas.' },
+  ]}
+  depois={[
+    { termo: 'Subagentes', quando: 'ajudantes que o Claude chama para tarefas paralelas. Entram na Temporada 5.', ref: 'm12' },
+    { termo: 'Hooks', quando: 'regras que rodam sozinhas, como "confira o site depois de cada mudança". Entram na Temporada 2.', ref: 'm9' },
+    { termo: 'Voltar atrás com o git', quando: 'desfazer qualquer mudança. É o assunto da última estação desta temporada.', ref: 'm4' },
+  ]}
+/>
+
+A Marta mandou mensagem: "Duas encomendas se perderam esta semana porque o cliente esqueceu de dizer a data. Dá para o site já pedir nome, produto, quantidade e data, e mandar tudo pronto para o meu WhatsApp?"
+
+É um pedido razoável, e também o tipo de pedido em que você mais se arrepende de ter pulado uma etapa. Esta estação ensina as duas etapas que separam um trabalho de amador de um trabalho profissional: **planejar antes** e **conferir depois**.
+
+### Planejar antes de construir
+
+Imagine contratar um pedreiro para ampliar a cozinha. Um bom profissional **não** sai quebrando a parede. Ele mede, desenha a planta, mostra o que vai mudar e só então começa. O **modo plano** do Claude Code é exatamente a planta.
+
+Nesse modo, o Claude **lê** os arquivos, **pensa** e devolve um plano. Ele não grava nada. Você lê, discorda, ajusta, e só depois manda construir. Três jeitos de entrar:
+
+| Como | Quando usar |
+|---|---|
+| Aperte <kbd>Shift</kbd>+<kbd>Tab</kbd> durante a sessão, até aparecer "plan mode on" | O mais comum |
+| `/plan adicione um formulário` | Só para este pedido |
+| `claude --permission-mode plan` | Já ao abrir |
+
+O pedido da Ficha 1 é este:
+
+```text
+Quero adicionar à página um formulário de encomenda com nome, produto, quantidade e data de retirada. Ao enviar, o formulário deve abrir o WhatsApp da Marta com a mensagem de encomenda já escrita. Faça um plano e me mostre. Não altere nenhum arquivo ainda.
+```
+
+Na nossa execução, o Claude devolveu um plano de quatro blocos. Os mais importantes:
+
+> **Nova seção "Faça sua encomenda"** entre o Cardápio e os Horários, no mesmo estilo das outras, com quatro campos obrigatórios: nome, produto (lista com os 6 itens do cardápio, sem itens nem preços novos), quantidade e data de retirada.
+>
+> **Ao enviar**, o site monta a mensagem e abre o WhatsApp. O calendário não deixa escolher datas passadas. Domingo é recusado, porque a loja fecha. Bolo inteiro e caixa de brigadeiros exigem 48 horas, como já diz a nota do cardápio.
+
+E fechou com **duas decisões que são suas**: se o formulário lista os seis itens (inclusive fatia e café) ou só os de encomenda, e se pede só a data ou também a hora. Esse é o grande ganho do plano: o Claude mostra **onde ele ia decidir por você**, e você escolhe.
+
+<Nota rotulo="Onde o plano fica">
+Numa sessão normal, o Claude pergunta se pode seguir. Numa sessão sem tela (`-p`), ele escreve o plano num arquivo dentro da sua pasta de usuário (`~/.claude/plans/`) e para. É um dos pontos em que a tela interativa e o `-p` se comportam diferente.
+</Nota>
+
+### Aprovar e construir
+
+Você leu o plano e decidiu. Agora é só dizer. No terminal interativo, ao terminar o plano o Claude oferece opções: seguir deixando editar com liberdade, seguir pedindo licença a cada edição, ou voltar a planejar. Sem tela, você manda a próxima mensagem:
+
+```text
+Pode implementar o plano. Liste os seis itens do cardápio e peça só a data de retirada.
+```
+
+Resultado da nossa execução: 7 passos, um único arquivo alterado (o `index.html`) e o formulário no lugar certo. O Claude **não conseguiu testar** no navegador, e disse: "ele ainda precisa de um teste real". Guarde essa frase. Ela abre a próxima parte.
+
+### Conferir: "pronto" é o que você consegue provar
+
+Quando o Claude diz "terminei", ele quer dizer "li o código e parece certo". Para um cliente, isso não basta. Um profissional tem um **critério de pronto**: uma lista de coisas que ele consegue checar e que respondem "passou" ou "falhou".
+
+O truque é pedir ao próprio Claude que **escreva a conferência**, e **você** a roda. Assim você não depende da palavra dele. O pedido:
+
+```text
+Crie um arquivo conferir.mjs que confere o index.html contra o briefing.md: (1) todo preço em R$ que aparece no HTML também aparece no briefing; (2) as três cores do briefing estão no HTML; (3) existe um link do WhatsApp; (4) existe um formulário com os campos nome, produto, quantidade e data. Para cada item, imprima OK ou FALHOU. Depois rode node conferir.mjs e me mostre o resultado.
+```
+
+Saída da nossa execução, rodada por nós depois:
+
+```text
+(1) Todo preço em R$ do HTML aparece no briefing: OK
+    - 6 preços distintos no HTML
+(2) As três cores do briefing estão no HTML: OK
+(3) Existe um link do WhatsApp: OK
+(4) Existe um formulário com nome, produto, quantidade e data: OK
+
+4 de 4 itens OK
+```
+
+O arquivo termina com **código de saída 1 quando algo falha**, e com 0 quando tudo passa. Isso permite que qualquer ferramenta (ou o próprio Claude) saiba se o trabalho está bom.
+
+### Uma conferência que nunca falha não vale nada
+
+Antes de confiar no roteiro, **estrague de propósito** e veja se ele reclama. Trocamos `R$ 9,00` por `R$ 10,00` no HTML e rodamos de novo:
+
+```text
+(1) Todo preço em R$ do HTML aparece no briefing: FALHOU
+    - não está no briefing: R$ 10,00
+...
+3 de 4 itens OK
+```
+
+Ele pegou. Esse é o gesto de um profissional: provocar a falha para saber que o alarme funciona.
+
+### O ponto cego
+
+A conferência passa, e a página ainda pode ter defeito. Testamos o formulário num navegador de verdade e achamos um: ao pedir uma caixa de brigadeiros para **amanhã** (sábado), o aviso diz "escolha uma data a partir de **15/11**". Mas 15/11 de 2026 é **domingo**, dia em que a loja fecha. O formulário rejeitaria a própria sugestão.
+
+O roteiro nunca checou isso, porque você nunca pediu. Duas lições:
+
+1. **A conferência só pega o que você mandou ela pegar.** Quanto mais você pensa no que pode dar errado, melhor o roteiro.
+2. **Teste a página você mesma.** Na Ficha 2 você faz quatro testes manuais em dois minutos.
+
+### Licenças específicas
+
+Para rodar `node conferir.mjs`, o Claude precisa de licença para executar um comando. Na tela interativa, ele pergunta. Sem tela, o comando é **negado**, a não ser que você o libere de antemão. Foi o que fizemos: `--allowedTools "Bash(node conferir.mjs)"`. Repare no detalhe: liberamos **um comando só**, não o terminal inteiro. Quando o Claude tentou rodar outra coisa, foi barrado.
+
+Esse "liberar só o necessário" é a ideia central da segurança no Claude Code. A Temporada 2 volta a ela com calma.
+
+### A conversa tem tamanho
+
+Tudo o que você e o Claude dizem fica numa **memória de trabalho** chamada janela de contexto. Ela tem limite. Conforme enche, o Claude fica mais lento, mais caro e mais propenso a perder detalhes. A regra prática: **um assunto por conversa**. Quando mudar de assunto (do formulário para o logotipo, por exemplo), digite `/clear`: a conversa recomeça limpa. O [M2 (Como o Claude Code pensa)](../m2/) mostra a janela enchendo em tempo real.
+
+### Como vender isso
+
+- **O plano é o seu orçamento visual.** Mostre ao cliente o plano em linguagem simples antes de construir. Se ele disser "não, eu queria sem o campo de data", você descobriu o ajuste de graça, não depois de pronto.
+- **A conferência é o seu relatório de entrega.** "Rodei 4 verificações, as 4 passaram" é uma frase que o cliente entende e que justifica o seu preço.
+- **Combine o que cada revisão inclui.** Quantas rodadas de ajuste, em que prazo e o que conta como mudança de escopo. Isso evita conflito, e o plano é a prova do que foi combinado.
+
+<Camada tipo="capo" titulo="Por baixo do capô: plano, aprovação e conferência">
+
+### O que o modo plano deixa fazer
+
+No modo plano, o Claude lê arquivos e roda comandos de exploração, mas não edita o seu código. Quando o plano fica pronto, ele pergunta como seguir, e as opções dependem da sua conta. O [M3 (Conduzindo no dia a dia)](../m3/) descreve cada uma e o atalho <kbd>Ctrl</kbd>+<kbd>G</kbd> para ajustar o plano no seu editor.
+
+### Por que `-p` nega comandos
+
+No modo sem tela, não há ninguém para aprovar um pedido de licença. Por isso o Claude Code **nega** o que exigiria pergunta. Na execução do formulário, ele tentou rodar uma checagem e foi barrado duas vezes. Está certo: o comportamento seguro é negar.
+
+### O que é o `.mjs`
+
+É um arquivo de roteiro em JavaScript, rodado pelo Node.js. O Claude escolheu esse formato porque o Node é comum e roda igual em qualquer sistema. Você não precisa entender o código para usá-lo, mas pode pedir: "explique o conferir.mjs linha por linha".
+
+### Exit code
+
+O número que o programa devolve ao terminar. `0` significa sucesso e qualquer outro valor, falha. É por isso que o roteiro funciona também em automações, como as que a Temporada 2 mostra.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Aprovar o plano sem lê-lo
+
+O plano é o seu momento de barrar. Leia pelo menos os títulos dos blocos e as decisões que ele deixa para você.
+
+### Confiar em "está pronto"
+
+O Claude não viu o navegador. Abra a página e teste os casos que importam.
+
+### Conferência que só pega o óbvio
+
+Se o roteiro nunca falhou, desconfie. Estrague de propósito e confirme que ele reclama.
+
+### Liberar todo o terminal para "não ser incomodado"
+
+Liberar `Bash` sem detalhe deixa o Claude rodar qualquer comando. Libere só o que o trabalho exige.
+
+### Misturar assuntos na mesma conversa
+
+Formulário, logotipo e preços na mesma sessão confundem o Claude. Use `/clear` entre assuntos.
+
+### Esquecer que o Node precisa estar instalado
+
+O `node conferir.mjs` só roda se o Node.js existir no computador. A Ficha 2 mostra como checar.
+
+</Camada>
+
+## Fichas de campo
+
+As fichas desta estação começam do site da estação anterior. Se você fez a T1A, siga com a sua pasta. Se não, baixe a nossa:
+
+- [Ponto de partida: `t1a-gabarito.zip`](../lab/t1a-gabarito.zip) (briefing e site)
+
+<Ficha
+  id="t1b-e1"
+  n={1}
+  titulo="Plano antes da obra"
+  objetivo="Pedir um plano para o formulário de encomenda, ler e decidir antes de qualquer arquivo mudar."
+  minutos={25}
+  pre="T1A concluída (ou o ZIP acima)"
+  versao="2.1.325"
+>
+
+1. Entre na pasta da Doce Esquina e confirme que o site está lá:
+
+   <SO unix="cd ~/Documents/doce-esquina && ls" win={`cd "$HOME\\Documents\\doce-esquina"; Get-ChildItem`} />
+
+   Devem aparecer `briefing.md` e `index.html`.
+
+2. Abra o Claude:
+
+   ```bash
+   claude
+   ```
+
+3. Ative o modo plano: aperte <kbd>Shift</kbd>+<kbd>Tab</kbd> até aparecer **plan mode on** perto do campo de texto.
+4. Cole o pedido e aperte Enter:
+
+   ```text
+   Quero adicionar à página um formulário de encomenda com nome, produto, quantidade e data de retirada. Ao enviar, o formulário deve abrir o WhatsApp da Marta com a mensagem de encomenda já escrita. Faça um plano e me mostre. Não altere nenhum arquivo ainda.
+   ```
+
+5. **Leia o plano.** Procure três coisas: o que muda, o que **não** muda e as perguntas que ele deixa para você.
+6. Responda às perguntas. Na nossa execução, decidimos: "liste os seis itens do cardápio e peça só a data".
+
+<Nota rotulo="Sem a tela interativa">
+Para repetir sem abrir a conversa: `claude -p "<o pedido acima>" --permission-mode plan`. Foi assim que executamos. O plano fica salvo em `~/.claude/plans/`.
+</Nota>
+
+<Prova>
+
+O Claude devolve um plano com blocos e **duas perguntas finais**, e a pasta continua igual: nenhum arquivo foi alterado. Na nossa execução (6 passos, 0 pedidos negados):
+
+| O que apareceu no plano | Por quê importa |
+|---|---|
+| Só o `index.html` muda | Você sabe o tamanho da obra |
+| Lista de produtos = os 6 itens, "sem itens nem preços novos" | Ele repetiu a regra do briefing |
+| Domingo recusado e 48 horas para bolo inteiro e caixa | Ele leu a regra do cardápio |
+| Perguntas: lista completa ou só encomendas? Só data ou hora? | As decisões que são suas |
+
+</Prova>
+
+<Gabarito>
+
+O seu plano será parecido, com palavras diferentes. O teste é este: dá para você explicar o plano em duas frases à Marta? Se não, peça: "refaça o plano em linguagem mais simples, sem termo técnico".
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude mexeu no arquivo mesmo pedindo plano.** Você provavelmente não estava no modo plano. Confira o "plan mode on" e repita.
+- **A frase "plan mode on" não aparece.** O <kbd>Shift</kbd>+<kbd>Tab</kbd> percorre vários modos. Aperte de novo até chegar nele.
+- **O plano ficou longo demais.** Peça: "resuma o plano em cinco linhas".
+
+</DeuErro>
+
+<Desafio>
+
+Peça um plano para **outra** mudança que a Marta poderia querer (por exemplo, uma galeria de fotos). Compare: o plano pede dados que você não tem? O que o Claude propõe fazer com as fotos que ainda não existem?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t1b-e2"
+  n={2}
+  titulo="Construir, conferir e quebrar de propósito"
+  objetivo="Executar o plano, pedir uma conferência, rodá-la e provar que ela detecta um erro."
+  minutos={35}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+Esta ficha usa o **Node.js** para rodar o roteiro de conferência. Se você não o tem, instale a versão LTS em [nodejs.org](https://nodejs.org). Confirme com `node --version`. Se preferir não instalar, peça ao Claude: "confira cada item do briefing contra o index.html e diga como provou cada um". Funciona, mas é menos confiável do que um roteiro.
+
+1. Na mesma sessão da Ficha 1, saia do modo plano (<kbd>Shift</kbd>+<kbd>Tab</kbd> até o modo normal) e diga:
+
+   ```text
+   Pode implementar o plano. Liste os seis itens do cardápio e peça só a data de retirada.
+   ```
+
+2. Abra a página e faça **quatro testes à mão**, no celular se puder:
+   1. Envie com um campo vazio: o navegador deve barrar.
+   2. Escolha um domingo: deve aparecer um aviso.
+   3. Escolha "Caixa com 12 brigadeiros" para amanhã: deve aparecer o aviso das 48 horas.
+   4. Escolha "Café coado" para a semana que vem: o WhatsApp deve abrir com a mensagem pronta.
+3. Peça a conferência:
+
+   ```text
+   Crie um arquivo conferir.mjs que confere o index.html contra o briefing.md: (1) todo preço em R$ que aparece no HTML também aparece no briefing; (2) as três cores do briefing estão no HTML; (3) existe um link do WhatsApp; (4) existe um formulário com os campos nome, produto, quantidade e data. Para cada item, imprima OK ou FALHOU. Depois rode node conferir.mjs e me mostre o resultado.
+   ```
+
+   Aprove o pedido de licença para rodar o `node`.
+
+4. **Você mesma** roda o roteiro:
+
+   ```bash
+   node conferir.mjs
+   ```
+
+5. Estrague de propósito: abra o `index.html` num editor de texto (o Bloco de Notas serve), troque `R$ 9,00` por `R$ 10,00`, salve e rode de novo:
+
+   ```bash
+   node conferir.mjs
+   ```
+
+6. Desfaça o estrago: troque de volta para `R$ 9,00`, salve e rode de novo.
+
+<Nota rotulo="Sem a tela interativa">
+As linhas equivalentes, com `-p`: `claude -p "Pode implementar o plano..." --continue --permission-mode acceptEdits` e, para a conferência, `claude -p "<o pedido do passo 3>" --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`. O `--continue` retoma a conversa anterior.
+</Nota>
+
+<Prova>
+
+O passo 4 mostra `4 de 4 itens OK`. O passo 5 mostra **FALHOU** no item 1, com a linha "não está no briefing: R$ 10,00", e termina em `3 de 4 itens OK`. O passo 6 volta a `4 de 4`. Na nossa execução:
+
+| Passo | Resultado |
+|---|---|
+| Implementar o plano | 7 passos, 1 arquivo alterado, 2 comandos negados (o `-p` não deixa rodar comandos sem licença) |
+| Conferência pedida | 7 passos, `conferir.mjs` criado, `4 de 4 itens OK` |
+| Preço estragado | Item 1 em **FALHOU**, código de saída 1, `3 de 4 itens OK` |
+| Teste no navegador (4 casos) | Domingo e caixa para amanhã recusados; café válido abre o WhatsApp com a mensagem completa |
+
+Achado no teste manual: o aviso das 48 horas sugere uma data que cai num **domingo** (15/11/2026), e o formulário recusa o domingo.
+
+</Prova>
+
+<Gabarito>
+
+O seu roteiro pode ter outro formato. O que importa: ele diz OK ou FALHOU por item, termina com um número de itens e **falha de verdade quando você estraga algo**. Nossa versão está em [`t1b-gabarito.zip`](../lab/t1b-gabarito.zip). Ela inclui o defeito do domingo, de propósito: é o seu Desafio.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`node` não é reconhecido.** O Node.js não está instalado, ou o terminal foi aberto antes da instalação. Instale, feche o terminal e abra de novo.
+- **O Claude disse que o comando precisa de aprovação e não rodou.** Na tela interativa, aprove. Sem tela, libere só aquele comando com `--allowedTools "Bash(node conferir.mjs)"`.
+- **A conferência dá `4 de 4` mesmo com o preço errado.** Provavelmente você salvou o arquivo em outra pasta, ou o roteiro compara o texto errado. Peça ao Claude: "mostre onde o conferir.mjs lê os preços".
+
+</DeuErro>
+
+<Desafio>
+
+Corrija o defeito do domingo: peça ao Claude que, quando a data mínima cair num domingo, o aviso sugira a segunda-feira seguinte. Depois **acrescente um quinto item** ao `conferir.mjs`, que garanta que o aviso nunca sugere um domingo. Teste de novo, estragando de propósito.
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Peço um plano antes de mudanças maiores e leio as decisões que ele deixa para mim.
+- Aprovo e mando executar sabendo exatamente quais arquivos vão mudar.
+- Peço uma conferência automática, rodo eu mesma e vejo o resultado.
+- Estrago de propósito para provar que a conferência enxerga erros.
+- Testo a página de verdade, porque nenhuma conferência pega tudo.
+- Libero só o comando necessário, e uso `/clear` quando mudo de assunto.
+
+</Saida>
+
+**Próxima estação:** [T1C, A memória do cliente](../t1c/): amanhã você abre uma conversa nova e o Claude esqueceu tudo o que a Marta prefere. Você vai aprender a escrever um caderno que ele lê todo dia.
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): modo plano e como revisar antes de executar.
+- [Permission modes](https://code.claude.com/docs/en/permission-modes.md): modos de permissão e comportamento no `-p`.
+- [Best practices](https://code.claude.com/docs/en/best-practices.md): critério de verificação e gerenciamento de contexto.
+- Execuções locais registradas em `VERIFICATION/t1b.md`.
+
+</Fontes>

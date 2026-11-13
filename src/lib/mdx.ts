@@ -18,6 +18,7 @@ import Figura from '../components/Figura.astro';
 import Cartas from '../components/Cartas.astro';
 import Tabela from '../components/Tabela.astro';
 import LinkInterno from '../components/LinkInterno.astro';
+import Conceitos from '../components/Conceitos.astro';
 
 export const componentes = {
   Camada,
@@ -37,6 +38,7 @@ export const componentes = {
   Replay,
   Figura,
   Cartas,
+  Conceitos,
   // Elementos HTML do Markdown trocados por componentes:
   table: Tabela,
   a: LinkInterno,

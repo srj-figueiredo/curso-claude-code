@@ -12,8 +12,9 @@ interface Props {
   pre?: string;
   custo?: 'gratis' | 'opcional-pago';
   verificacao?: 'executado' | 'nao-testado' | 'ilustrativo';
+  versao?: string;
 }
-const { id, n, titulo, objetivo, minutos, pre = 'nenhum', custo = 'gratis', verificacao = 'executado' } = Astro.props;
+const { id, n, titulo, objetivo, minutos, pre = 'nenhum', custo = 'gratis', verificacao = 'executado', versao = VERSAO_CLI } = Astro.props;
 ---
 
 <section class="ficha" id={id} aria-labelledby={`${id}-t`}>
@@ -29,7 +30,7 @@ const { id, n, titulo, objetivo, minutos, pre = 'nenhum', custo = 'gratis', veri
   </header>
   <div class="ficha__corpo"><slot /></div>
   <footer class="ficha__pe">
-    {verificacao === 'executado' && <Selo versao={VERSAO_CLI} data={DATA_VERIFICACAO} />}
+    {verificacao === 'executado' && <Selo versao={versao} data={DATA_VERIFICACAO} />}
     {verificacao === 'nao-testado' && <Selo tipo="nao-testado" data={DATA_VERIFICACAO} />}
     {verificacao === 'ilustrativo' && <Selo tipo="ilustrativo" />}
     <button class="ficha__marca nao-imprimir" type="button" data-marca={id} aria-pressed="false">

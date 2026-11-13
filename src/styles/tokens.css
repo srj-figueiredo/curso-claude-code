@@ -63,6 +63,8 @@
   --linha-6-t: #101820;
   --linha-7: #0b7d74;
   --linha-7-t: #ffffff;
+  --linha-8: #6d3fc0;
+  --linha-8-t: #ffffff;
   /* Linha da página atual (o layout troca por data-parte). */
   --linha: var(--linha-1);
   --linha-t: var(--linha-1-t);

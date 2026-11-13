@@ -10,11 +10,20 @@ const RAIZ = 'lab';
 const DESTINO = 'public/lab';
 const PASTA_NO_ZIP = 'pendencias';
 const MANIFESTO = '_camadas.json';
+// Um manifesto pode ser uma lista de camadas (estado do Pendências) ou um objeto
+// { "projeto": "doce-esquina", "camadas": [...] }: projeto próprio, sem a base do Pendências.
 const estados = {};
+const pastas = {};
 for (const nome of readdirSync(join(RAIZ, 'estados'))) {
   const manifesto = join(RAIZ, 'estados', nome, MANIFESTO);
-  const abaixo = existsSync(manifesto) ? JSON.parse(readFileSync(manifesto, 'utf8')) : [];
-  estados[nome] = ['base', ...abaixo, nome];
+  const lido = existsSync(manifesto) ? JSON.parse(readFileSync(manifesto, 'utf8')) : [];
+  if (Array.isArray(lido)) {
+    estados[nome] = ['base', ...lido, nome];
+    pastas[nome] = PASTA_NO_ZIP;
+  } else {
+    estados[nome] = [...(lido.camadas ?? []), nome];
+    pastas[nome] = lido.projeto;
+  }
 }
 
 function arquivosDe(pasta) {
@@ -37,7 +46,7 @@ export function compor(camadas) {
   return arvore;
 }
 
-function zip(arvore) {
+function zip(arvore, pasta = PASTA_NO_ZIP) {
   const locais = [];
   const centrais = [];
   let deslocamento = 0;
@@ -46,7 +55,7 @@ function zip(arvore) {
   const dia = ((2026 - 1980) << 9) | (11 << 5) | 12;
 
   for (const [nome, dados] of [...arvore].sort(([a], [b]) => a.localeCompare(b))) {
-    const caminho = Buffer.from(`${PASTA_NO_ZIP}/${nome}`, 'utf8');
+    const caminho = Buffer.from(`${pasta}/${nome}`, 'utf8');
     const comprimido = deflateRawSync(dados);
     const soma = crc32(dados);
 
@@ -105,7 +114,7 @@ if (opcao === '--extrair') {
   mkdirSync(DESTINO, { recursive: true });
   for (const [nome, camadas] of Object.entries(estados)) {
     const arvore = compor(camadas);
-    writeFileSync(join(DESTINO, `${nome}.zip`), zip(arvore));
+    writeFileSync(join(DESTINO, `${nome}.zip`), zip(arvore, pastas[nome]));
     console.log(`${nome}.zip · ${arvore.size} arquivos · ${camadas.join(' + ')}`);
   }
 }

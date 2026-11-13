@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doce Esquina · Confeitaria de bairro</title>
+  <meta name="description" content="Doce Esquina: bolos, tortas e doces para festas e café da manhã. Cardápio, horários e pedidos pelo WhatsApp.">
+  <style>
+    :root {
+      --caramelo: #B4682B;
+      --creme: #FFF6E8;
+      --marrom: #3B2418;
+      --branco: #FFFDF8;
+      --linha: #E9D7BE;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--creme);
+      color: var(--marrom);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 56px 0 40px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--marrom);
+    }
+
+    .tagline {
+      margin: 0 0 28px;
+      font-size: 1.1rem;
+      color: var(--marrom);
+    }
+
+    .btn-whatsapp {
+      display: inline-block;
+      background: var(--caramelo);
+      color: var(--branco);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 14px 26px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(59, 36, 24, 0.18);
+      transition: background 0.2s ease;
+    }
+
+    .btn-whatsapp:hover,
+    .btn-whatsapp:focus-visible {
+      background: #9A5622;
+      outline: none;
+    }
+
+    .status {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: var(--marrom);
+    }
+
+    section {
+      padding: 36px 0;
+      border-top: 1px solid var(--linha);
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.6rem;
+      color: var(--caramelo);
+    }
+
+    .menu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: var(--branco);
+      border: 1px solid var(--linha);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .menu li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--linha);
+    }
+
+    .menu li:last-child { border-bottom: none; }
+
+    .menu .item {
+      flex: 1;
+    }
+
+    .menu .preco {
+      font-weight: 700;
+      color: var(--caramelo);
+      white-space: nowrap;
+    }
+
+    .nota {
+      margin: 16px 0 0;
+      font-size: 0.95rem;
+      color: var(--marrom);
+    }
+
+    .horarios {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .horarios li {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--linha);
+    }
+
+    .horarios li:last-child { border-bottom: none; }
+
+    .endereco p {
+      margin: 0 0 8px;
+    }
+
+    .contato-cta {
+      text-align: center;
+      padding: 36px 0 56px;
+      border-top: 1px solid var(--linha);
+    }
+
+    .contato-cta p {
+      margin: 0 0 18px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 0 0 32px;
+      font-size: 0.9rem;
+      color: var(--marrom);
+      opacity: 0.8;
+    }
+
+    .form-encomenda {
+      background: var(--branco);
+      border: 1px solid var(--linha);
+      border-radius: 14px;
+      padding: 20px 18px;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .campo label {
+      font-weight: 600;
+    }
+
+    .campo input,
+    .campo select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 16px;
+      color: var(--marrom);
+      background: #FFFFFF;
+      border: 1px solid var(--linha);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .campo input:focus-visible,
+    .campo select:focus-visible {
+      outline: 3px solid var(--caramelo);
+      outline-offset: 2px;
+    }
+
+    .erro {
+      min-height: 1.4em;
+      margin: 0 0 12px;
+      font-weight: 600;
+      color: #9A3B1B;
+    }
+
+    .btn-form {
+      display: block;
+      width: 100%;
+      border: 0;
+      font-family: inherit;
+      font-size: 1rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    @media (min-width: 600px) {
+      header h1 { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="container">
+    <h1>Doce Esquina</h1>
+    <p class="tagline">Bem-vindo à Doce Esquina. Há seis anos fazemos bolos, tortas e doces para o seu dia a dia e para as suas festas.</p>
+    <a class="btn-whatsapp" href="https://wa.me/5511900000000?text=Oi!%20Quero%20fazer%20um%20pedido." target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    <p class="status" id="status" aria-live="polite"></p>
+  </header>
+
+  <main class="container">
+
+    <section id="cardapio" aria-labelledby="titulo-cardapio">
+      <h2 id="titulo-cardapio">Cardápio</h2>
+      <ul class="menu">
+        <li><span class="item">Bolo de cenoura com chocolate (fatia)</span><span class="preco">R$ 9,00</span></li>
+        <li><span class="item">Bolo de cenoura com chocolate (inteiro, 1,5 kg)</span><span class="preco">R$ 68,00</span></li>
+        <li><span class="item">Torta de limão (fatia)</span><span class="preco">R$ 12,00</span></li>
+        <li><span class="item">Brigadeiro gourmet (unidade)</span><span class="preco">R$ 4,50</span></li>
+        <li><span class="item">Caixa com 12 brigadeiros</span><span class="preco">R$ 48,00</span></li>
+        <li><span class="item">Café coado</span><span class="preco">R$ 5,00</span></li>
+      </ul>
+      <p class="nota">Encomendas de bolo inteiro e de caixas de brigadeiro precisam de 48 horas de antecedência.</p>
+    </section>
+
+    <section id="encomenda" aria-labelledby="titulo-encomenda">
+      <h2 id="titulo-encomenda">Faça sua encomenda</h2>
+      <p class="nota">Preencha e a gente abre o WhatsApp com tudo pronto.</p>
+      <form id="form-encomenda" class="form-encomenda" style="margin-top: 16px;">
+        <div class="campo">
+          <label for="enc-nome">Nome</label>
+          <input id="enc-nome" name="nome" type="text" autocomplete="name" required>
+        </div>
+        <div class="campo">
+          <label for="enc-produto">Produto</label>
+          <select id="enc-produto" name="produto" required>
+            <option value="">Escolha um item</option>
+            <option value="Bolo de cenoura com chocolate (fatia)">Bolo de cenoura com chocolate (fatia)</option>
+            <option value="Bolo de cenoura com chocolate (inteiro, 1,5 kg)" data-dias="2">Bolo de cenoura com chocolate (inteiro, 1,5 kg)</option>
+            <option value="Torta de limão (fatia)">Torta de limão (fatia)</option>
+            <option value="Brigadeiro gourmet (unidade)">Brigadeiro gourmet (unidade)</option>
+            <option value="Caixa com 12 brigadeiros" data-dias="2">Caixa com 12 brigadeiros</option>
+            <option value="Café coado">Café coado</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="enc-qtd">Quantidade</label>
+          <input id="enc-qtd" name="quantidade" type="number" min="1" value="1" inputmode="numeric" required>
+        </div>
+        <div class="campo">
+          <label for="enc-data">Data de retirada</label>
+          <input id="enc-data" name="data" type="date" required>
+        </div>
+        <p class="erro" id="enc-erro" aria-live="polite"></p>
+        <button type="submit" class="btn-whatsapp btn-form">Enviar pelo WhatsApp</button>
+      </form>
+    </section>
+
+    <section id="horarios" aria-labelledby="titulo-horarios">
+      <h2 id="titulo-horarios">Horários</h2>
+      <ul class="horarios">
+        <li><span>Segunda a sexta</span><span>8h às 18h</span></li>
+        <li><span>Sábado</span><span>8h às 14h</span></li>
+        <li><span>Domingo</span><span>Fechado</span></li>
+      </ul>
+    </section>
+
+    <section id="endereco" aria-labelledby="titulo-endereco">
+      <h2 id="titulo-endereco">Endereço</h2>
+      <div class="endereco">
+        <p>Rua das Acácias, 120</p>
+        <p>Bairro Jardim</p>
+      </div>
+    </section>
+
+    <section class="contato-cta" aria-labelledby="titulo-contato">
+      <h2 id="titulo-contato">Quer encomendar ou tirar uma dúvida?</h2>
+      <p>Mande uma mensagem no WhatsApp.</p>
+      <a class="btn-whatsapp" href="https://wa.me/5511900000000?text=Oi!%20Quero%20fazer%20um%20pedido." target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Doce Esquina · Rua das Acácias, 120, Bairro Jardim</p>
+  </footer>
+
+  <script>
+    // Mostra se a confeitaria está aberta agora, no horário de Brasília.
+    (function () {
+      var agora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+      var dia = agora.getDay(); // 0 = domingo, 6 = sábado
+      var minutos = agora.getHours() * 60 + agora.getMinutes();
+      var aberto = false;
+
+      if (dia >= 1 && dia <= 5) {
+        aberto = minutos >= 8 * 60 && minutos < 18 * 60;
+      } else if (dia === 6) {
+        aberto = minutos >= 8 * 60 && minutos < 14 * 60;
+      }
+
+      document.getElementById("status").textContent = aberto
+        ? "Estamos abertos agora."
+        : "Estamos fechados agora. Confira os horários abaixo.";
+    })();
+
+    // Formulário de encomenda: valida e abre o WhatsApp com a mensagem pronta.
+    (function () {
+      var form = document.getElementById("form-encomenda");
+      var nome = document.getElementById("enc-nome");
+      var produto = document.getElementById("enc-produto");
+      var qtd = document.getElementById("enc-qtd");
+      var data = document.getElementById("enc-data");
+      var erro = document.getElementById("enc-erro");
+
+      function pad(n) { return n < 10 ? "0" + n : String(n); }
+
+      function paraIso(d) {
+        return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+      }
+
+      // "Hoje" no horário de Brasília, mesma técnica do status de abertura.
+      var agora = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+      var hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+      data.min = paraIso(hoje);
+
+      form.addEventListener("submit", function (evento) {
+        evento.preventDefault();
+        erro.textContent = "";
+
+        if (!form.reportValidity()) return;
+
+        var textoNome = nome.value.trim();
+        if (!textoNome) {
+          erro.textContent = "Escreva seu nome.";
+          nome.focus();
+          return;
+        }
+
+        var partes = data.value.split("-");
+        var dataRetirada = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+
+        if (dataRetirada.getDay() === 0) {
+          erro.textContent = "Domingo a loja está fechada. Escolha outro dia.";
+          data.focus();
+          return;
+        }
+
+        var opcao = produto.options[produto.selectedIndex];
+        var dias = Number(opcao.getAttribute("data-dias") || 0);
+        var dataMinima = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + dias);
+
+        if (dataRetirada < dataMinima) {
+          var dd = pad(dataMinima.getDate()) + "/" + pad(dataMinima.getMonth() + 1);
+          erro.textContent = dias > 0
+            ? "Bolo inteiro e caixas precisam de 48 horas. Escolha uma data a partir de " + dd + "."
+            : "Escolha uma data a partir de hoje.";
+          data.focus();
+          return;
+        }
+
+        var dataBR = pad(dataRetirada.getDate()) + "/" + pad(dataRetirada.getMonth() + 1) + "/" + dataRetirada.getFullYear();
+
+        var mensagem =
+          "Oi, Marta! Quero fazer uma encomenda.\n" +
+          "Nome: " + textoNome + "\n" +
+          "Produto: " + produto.value + "\n" +
+          "Quantidade: " + qtd.value + "\n" +
+          "Retirada: " + dataBR;
+
+        window.open("https://wa.me/5511900000000?text=" + encodeURIComponent(mensagem), "_blank", "noopener");
+      });
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,336 @@
+---
+id: t1c
+titulo: "A memória do cliente: o CLAUDE.md"
+parte: p8
+ordem: 103
+minutos: 50
+pre_requisitos: [t1b]
+objetivos:
+  - Explicar por que uma conversa nova do Claude não lembra o que você combinou na anterior.
+  - Escrever um CLAUDE.md curto, com regras que dá para conferir.
+  - Provar a diferença entre trabalhar com e sem o CLAUDE.md.
+  - Dizer o que o CLAUDE.md garante e o que ele não garante.
+tldr:
+  - O Claude começa cada conversa do zero. O CLAUDE.md é o caderno que ele lê toda vez que abre uma pasta.
+  - Escreva regras que dá para conferir ("não invente preço"), não adjetivos ("seja profissional").
+  - O CLAUDE.md orienta, mas não obriga. Para garantir de verdade, a Temporada 2 mostra permissões e hooks.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t1c-e1, titulo: Ver o Claude sem regra, minutos: 15, custo: gratis }
+  - { id: t1c-e2, titulo: Escrever o CLAUDE.md e repetir o teste, minutos: 30, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Sessão', simples: 'Uma conversa com o Claude, do `claude` ao `/exit`. Cada sessão nova começa sem lembrar da anterior.' },
+    { termo: 'CLAUDE.md', simples: 'Um arquivo de texto na pasta do projeto. O Claude o lê no início de toda sessão, como quem abre um caderno de regras.' },
+    { termo: 'Regra permanente x pedido avulso', simples: 'O pedido vale para hoje. A regra vale para sempre, em toda conversa.' },
+    { termo: 'Instrução verificável', simples: 'Uma regra que você consegue conferir: "não invente preços". Frases como "seja profissional" não dá para conferir.' },
+    { termo: '/init', simples: 'Um comando que pede ao Claude para escrever um primeiro rascunho do CLAUDE.md olhando o projeto.' },
+  ]}
+  depois={[
+    { termo: 'Memória automática', quando: 'o Claude anota preferências sozinho em outra pasta. Entra no módulo de referência.', ref: 'm6' },
+    { termo: 'Skills', quando: 'receitas completas e reutilizáveis ("faça um relatório do jeito da casa"). Entram na Temporada 2.', ref: 'm8' },
+    { termo: 'Hooks e permissões', quando: 'o que realmente obriga o Claude, em vez de só pedir. Entram na Temporada 2.', ref: 'm7' },
+  ]}
+/>
+
+Segunda-feira. Você abre o Claude na pasta da Doce Esquina para ajustar o cardápio e se dá conta de uma coisa chata: ele **não lembra de nada** do que vocês fizeram na semana passada. Não sabe que a Marta detesta exclamação, que nenhum preço pode ser inventado e que toda mudança deve ser conferida pelo `conferir.mjs`.
+
+Você poderia repetir tudo todo dia. Seria o equivalente a contratar uma pessoa e apresentar a empresa de novo toda manhã. Há um jeito melhor: **deixar um caderno na mesa**.
+
+### O Claude começa toda conversa do zero
+
+Cada sessão do Claude Code é uma folha em branco. Ele lê o que está na pasta, mas **não lembra** do que se falou antes. Isso é bom (não vaza assunto de um cliente para outro) e ruim (você repete a mesma instrução cem vezes).
+
+A solução se chama **CLAUDE.md**: um arquivo de texto com esse nome exato, na pasta do projeto. Ao abrir uma sessão, o Claude Code o lê **antes de qualquer pedido**. Tudo o que está escrito nele vale para a conversa inteira, como se você o tivesse dito na primeira frase.
+
+### O que escrever (e o que não escrever)
+
+O CLAUDE.md não é um manual. É um caderno curto, com o que o Claude **não consegue descobrir sozinho** olhando a pasta. Três blocos bastam:
+
+1. **A marca:** cores, tom de voz.
+2. **As regras de conteúdo:** o que nunca pode acontecer.
+3. **Como trabalhar:** o que fazer antes e depois de mexer.
+
+O da Doce Esquina fica assim:
+
+```markdown
+# Doce Esquina
+
+Site de uma página da confeitaria Doce Esquina (cliente fictício do curso). Arquivo principal: `index.html`.
+
+## Marca
+- Cores: caramelo #B4682B, creme #FFF6E8 (fundo) e marrom #3B2418 (texto). Não use outras cores.
+- Tom de voz: acolhedor, como conversa no balcão. Frases curtas. No máximo uma exclamação por página.
+
+## Regras de conteúdo
+- Não invente depoimentos, prêmios, fotos, selos nem itens de cardápio.
+- Todo preço vem do `briefing.md`. Se faltar um dado, pergunte; não preencha por conta própria.
+
+## Como trabalhar
+- Antes de mudar o conteúdo, leia o `briefing.md`.
+- Depois de qualquer mudança no `index.html`, rode `node conferir.mjs` e mostre o resultado.
+```
+
+Repare no padrão. Toda linha é uma **instrução verificável**: dá para olhar o resultado e dizer "cumpriu" ou "não cumpriu". "Não invente preços" é verificável. "Seja profissional" não é: cada pessoa entende uma coisa. E o arquivo é curto: a doc recomenda menos de 200 linhas.
+
+### O teste que prova (o mesmo pedido, duas respostas)
+
+Nada convence mais do que ver. Pedimos a mesma coisa em duas cópias da pasta: uma **sem** o CLAUDE.md e outra **com**.
+
+```text
+No cardápio, coloque um selo 'Mais vendido' no bolo de cenoura e, no fim da página, adicione dois depoimentos de clientes elogiando o bolo.
+```
+
+É um pedido que **contraria** as regras da Marta: o selo não está no briefing e os depoimentos seriam inventados.
+
+| | Sem o CLAUDE.md | Com o CLAUDE.md |
+|---|---|---|
+| **O que fez** | Colocou o selo e escreveu **dois depoimentos** com a "Juliana" e o "Carlos" | **Não mexeu** no arquivo |
+| **O que disse** | Avisou no fim: "os depoimentos que escrevi são **inventados**, então não devem ir ao ar assim" | Explicou que as regras proíbem inventar selos e depoimentos, e pediu: "me passe dois comentários reais de clientes" |
+| **Conferência** | `4 de 4 itens OK`, mesmo com o conteúdo inventado no ar | Não precisou rodar: nada mudou |
+
+A diferença é a **ordem das coisas**. Sem a regra, o Claude **faz** e depois avisa. Com a regra, ele **para**, explica e pergunta. Para um cliente real, essa diferença é a que separa um site que passa em revista de um que vira problema.
+
+Repare também no que o teste mostra sobre a estação anterior: a **conferência passou com conteúdo inventado**, porque você nunca pediu que ela procurasse depoimentos. A regra escrita é a camada que faltava.
+
+<Nota rotulo="Uma amostra só">
+Rodamos cada lado uma vez. Outra execução pode sair com palavras diferentes, e às vezes o Claude também recusa sem o CLAUDE.md. O ponto não é "sem arquivo ele sempre inventa". É que **com** o arquivo, a recusa deixa de depender de sorte.
+</Nota>
+
+### Deixar o Claude escrever o primeiro rascunho
+
+Se você não quer começar de uma folha em branco, digite `/init` dentro de uma sessão. O Claude olha o projeto e escreve um CLAUDE.md. Dois cuidados, ambos vistos no [M6 (Memória e CLAUDE.md)](../m6/): o resultado pode sair **em inglês**, mesmo num projeto em português (peça em português), e é um **rascunho**: enxugue o que for óbvio.
+
+### O que o CLAUDE.md não faz
+
+O CLAUDE.md é **contexto**, não **lei**. O Claude o lê e, na imensa maioria das vezes, segue. Mas não há garantia técnica. Se uma regra é crítica (por exemplo, "nunca leia o arquivo de senhas"), o caminho é uma **permissão** ou um **hook**, que obrigam de verdade. Esse é o tema da Temporada 2.
+
+### Como vender isso
+
+- **O CLAUDE.md é parte da entrega.** Quando você entregar o projeto, entregue também o caderno. Quem mexer depois (você, outro profissional ou outra IA) começa sabendo as regras da marca.
+- **Um CLAUDE.md por cliente.** Marcas diferentes, regras diferentes. É o que impede o Claude de misturar o tom de uma confeitaria com o de uma clínica.
+- **Manutenção vira serviço.** "Atualizo o cardápio todo mês, seguindo as regras do seu caderno" é uma proposta clara e fácil de entender.
+
+<Camada tipo="capo" titulo="Por baixo do capô: onde o arquivo mora e como é lido">
+
+### Quatro lugares possíveis
+
+O Claude Code lê CLAUDE.md de quatro lugares, do mais amplo ao mais específico: da organização (política gerenciada), do **usuário** (`~/.claude/CLAUDE.md`, vale para todos os seus projetos), do **projeto** (na pasta do projeto, que é o que usamos) e **local** (só seu, neste projeto, e fora do git). O [M6 (Memória e CLAUDE.md)](../m6/) detalha a ordem de carga.
+
+### Quando ele é lido
+
+No começo da sessão. **Editar o arquivo no meio da conversa não muda nada até a próxima sessão** (ou até `/clear` ou `/compact`). Por isso, depois de mudar o CLAUDE.md, feche e abra o `claude`.
+
+### Importar outros arquivos
+
+Dentro do CLAUDE.md, uma linha como `@briefing.md` importa aquele arquivo inteiro. Isso não economiza espaço: o conteúdo entra na conversa do mesmo jeito.
+
+### Instruções que se contradizem
+
+Se o CLAUDE.md diz uma coisa e outra seção diz o contrário, o Claude pode escolher qualquer uma. Releia o arquivo de vez em quando.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Salvar como `CLAUDE.md.txt`
+
+O Bloco de Notas pode acrescentar `.txt` ao nome sem avisar. O nome precisa ser exatamente `CLAUDE.md`, em maiúsculas.
+
+### Frases vagas
+
+"Seja profissional", "escreva bem" e "capriche" não dão para conferir. Troque por regras que um terceiro consiga verificar.
+
+### Editar o arquivo e esperar efeito na mesma conversa
+
+O Claude lê o CLAUDE.md na abertura. Para a mudança valer, comece uma sessão nova.
+
+### Escrever demais
+
+Um manual de 500 linhas é pior que um caderno de 15: o Claude perde as regras importantes no meio.
+
+### Guardar segredo no CLAUDE.md
+
+Senha, chave de API ou dado pessoal de cliente não entram nesse arquivo. Ele é lido a cada sessão e costuma ir para o git.
+
+### Esperar obediência de ferro
+
+É contexto, não trava. Para regras críticas, use permissão ou hook.
+
+</Camada>
+
+## Fichas de campo
+
+As fichas usam duas cópias da mesma pasta: uma sem regra e outra com. Comece do site da estação anterior. Se você fez a T1B, copie a sua pasta duas vezes. Se não, baixe a nossa:
+
+- [Ponto de partida: `t1b-gabarito.zip`](../lab/t1b-gabarito.zip) (briefing, site com formulário e `conferir.mjs`)
+
+<Ficha
+  id="t1c-e1"
+  n={1}
+  titulo="Ver o Claude sem regra"
+  objetivo="Fazer um pedido que contraria as regras da Marta, numa pasta sem CLAUDE.md, e ver o que acontece."
+  minutos={15}
+  pre="T1B concluída (ou o ZIP acima)"
+  versao="2.1.325"
+>
+
+1. Faça **duas cópias** da pasta. Extraia o ZIP duas vezes e renomeie:
+
+   <SO unix={`unzip ~/Downloads/t1b-gabarito.zip -d ~/Documents && mv ~/Documents/doce-esquina ~/Documents/doce-sem-regra && unzip ~/Downloads/t1b-gabarito.zip -d ~/Documents && mv ~/Documents/doce-esquina ~/Documents/doce-com-regra`} win={`Expand-Archive "$HOME\\Downloads\\t1b-gabarito.zip" -DestinationPath "$HOME\\Documents" -Force; Rename-Item "$HOME\\Documents\\doce-esquina" doce-sem-regra; Expand-Archive "$HOME\\Downloads\\t1b-gabarito.zip" -DestinationPath "$HOME\\Documents" -Force; Rename-Item "$HOME\\Documents\\doce-esquina" doce-com-regra`} />
+
+2. Entre na pasta **sem** regra e abra o Claude:
+
+   <SO unix="cd ~/Documents/doce-sem-regra && claude" win={`cd "$HOME\\Documents\\doce-sem-regra"; claude`} />
+
+3. Cole o pedido que contraria as regras:
+
+   ```text
+   No cardápio, coloque um selo 'Mais vendido' no bolo de cenoura e, no fim da página, adicione dois depoimentos de clientes elogiando o bolo.
+   ```
+
+4. Aprove o que ele pedir e leia a resposta. Abra o `index.html` e veja se aparecem depoimentos.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`, dentro da pasta.
+</Nota>
+
+<Prova>
+
+Na nossa execução (9 passos, 0 negações), o Claude **escreveu** os dois depoimentos (de "Juliana" e "Carlos") e pôs o selo no bolo inteiro. No fim, ele mesmo avisou: "o `briefing.md` diz 'Não inventar depoimentos de clientes'. Os depoimentos que escrevi são inventados, então não devem ir ao ar assim." Deixou ainda um comentário no código marcando isso. O `conferir.mjs` mostrou `4 de 4 itens OK`.
+
+</Prova>
+
+<Gabarito>
+
+O seu Claude pode, nesta amostra, ter recusado ou feito. Ambas as saídas são válidas. O ponto é perceber que **sem regra escrita** o comportamento depende da conversa, e que a conferência não detecta conteúdo inventado se você não mandar.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude disse que não encontrou a pasta.** Você abriu o `claude` em outro lugar. Saia com `/exit` e use o `cd` da Ficha.
+- **Aparece só texto, nenhum arquivo mudou.** Você pode ter negado a licença. Responda de novo e aprove a edição.
+- **O Claude recusou fazer os depoimentos.** Boa notícia: a regra do briefing o segurou sozinha. Anote isso e passe para a ficha seguinte.
+
+</DeuErro>
+
+<Desafio>
+
+Peça também: "mude o telefone para (11) 91111-1111". O Claude avisa que o número não está no briefing? Ou aceita?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t1c-e2"
+  n={2}
+  titulo="Escrever o CLAUDE.md e repetir o teste"
+  objetivo="Criar o caderno de regras da Marta e provar que o mesmo pedido agora é tratado diferente."
+  minutos={30}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+1. Entre na pasta **com** regra e abra o Claude:
+
+   <SO unix="cd ~/Documents/doce-com-regra && claude" win={`cd "$HOME\\Documents\\doce-com-regra"; claude`} />
+
+2. Peça ao Claude que crie o caderno (cole todo o texto):
+
+   ```text
+   Crie na raiz um arquivo chamado CLAUDE.md com exatamente este conteúdo:
+
+   # Doce Esquina
+
+   Site de uma página da confeitaria Doce Esquina (cliente fictício do curso). Arquivo principal: `index.html`.
+
+   ## Marca
+   - Cores: caramelo #B4682B, creme #FFF6E8 (fundo) e marrom #3B2418 (texto). Não use outras cores.
+   - Tom de voz: acolhedor, como conversa no balcão. Frases curtas. No máximo uma exclamação por página.
+
+   ## Regras de conteúdo
+   - Não invente depoimentos, prêmios, fotos, selos nem itens de cardápio.
+   - Todo preço vem do `briefing.md`. Se faltar um dado, pergunte; não preencha por conta própria.
+
+   ## Como trabalhar
+   - Antes de mudar o conteúdo, leia o `briefing.md`.
+   - Depois de qualquer mudança no `index.html`, rode `node conferir.mjs` e mostre o resultado.
+   ```
+
+3. Aprove a criação. Depois **saia** (`/exit`) e **abra de novo** o `claude`: o arquivo só vale numa sessão nova.
+4. Cole o mesmo pedido da Ficha 1:
+
+   ```text
+   No cardápio, coloque um selo 'Mais vendido' no bolo de cenoura e, no fim da página, adicione dois depoimentos de clientes elogiando o bolo.
+   ```
+
+5. Leia a resposta. Confirme que o `index.html` **não mudou**.
+
+<Prova>
+
+O Claude recusa e pergunta. Na nossa execução (3 passos, 0 negações, `index.html` intacto), a resposta foi esta, resumida:
+
+```text
+Não fiz as duas alterações, porque as regras do projeto proíbem as duas coisas.
+
+- Selo "Mais vendido": o CLAUDE.md proíbe inventar selos, e o briefing.md não diz que o bolo
+  de cenoura é o mais vendido.
+- Dois depoimentos: o CLAUDE.md e o briefing.md proíbem inventar depoimentos de clientes.
+
+Para eu seguir em frente, preciso de uma destas coisas:
+1. Selo: confirme com a Marta se o bolo de cenoura é mesmo o mais vendido.
+2. Depoimentos: me passe dois comentários reais de clientes, com permissão para publicar.
+```
+
+</Prova>
+
+<Gabarito>
+
+O texto do seu Claude será parecido, não igual. O teste é: ele **parou e perguntou**, em vez de inventar. Nossa pasta final (site, conferência e `CLAUDE.md`) está em [`t1c-gabarito.zip`](../lab/t1c-gabarito.zip).
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude fez os depoimentos de qualquer jeito.** Provavelmente você não reabriu o `claude` depois de criar o arquivo, e a sessão não leu o CLAUDE.md. Saia, abra de novo e repita.
+- **O arquivo foi criado com outro nome.** Confira com `ls` ou `Get-ChildItem`: precisa ser `CLAUDE.md`, sem `.txt`.
+- **O Claude pediu licença para algo que eu não esperava.** Leia com cuidado antes de aprovar. Se for só criar o `CLAUDE.md`, pode aprovar.
+
+</DeuErro>
+
+<Desafio>
+
+Acrescente a regra "Antes de mudar qualquer preço, pergunte". Peça "mude o café coado para R$ 6,00", numa sessão nova. O Claude pergunta, ou mexe? Depois acrescente uma regra que **contradiga** outra e veja o que ele faz com a contradição.
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei por que uma conversa nova do Claude não lembra da anterior.
+- Escrevi um CLAUDE.md curto, com regras que dá para conferir.
+- Provei a diferença: sem o arquivo ele faz e avisa depois, com o arquivo ele para e pergunta.
+- Sei que o CLAUDE.md orienta mas não obriga, e que regras críticas pedem permissão ou hook.
+- Entendo o CLAUDE.md como parte da entrega ao cliente.
+
+</Saida>
+
+**Próxima estação:** [T1D, Guardar e publicar](../t1d/): o site da Marta está pronto. Você vai guardar o histórico do trabalho, voltar atrás de um erro e colocar a página no ar.
+
+<Fontes>
+
+- [How Claude remembers your project](https://code.claude.com/docs/en/memory.md): CLAUDE.md, onde mora, quando é lido e como escrever instruções eficazes.
+- [Best practices](https://code.claude.com/docs/en/best-practices.md): o CLAUDE.md como arquivo curto e verificável.
+- Execuções locais registradas em `VERIFICATION/t1c.md`.
+
+</Fontes>

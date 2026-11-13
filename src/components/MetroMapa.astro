@@ -13,7 +13,7 @@ const { autoplay = false } = Astro.props;
 const escritas = await paginasEscritas();
 
 // Fileiras em serpentina. Cada fileira lista as partes que ela carrega.
-const FILEIRAS: string[][] = [['p0', 'p1'], ['p2'], ['p3', 'p4'], ['p5'], ['p6'], ['p7']];
+const FILEIRAS: string[][] = [['p0', 'p8'], ['p1'], ['p2'], ['p3', 'p4'], ['p5'], ['p6'], ['p7']];
 const X0 = 120;
 const X1 = 1120;
 const Y0 = 96;
@@ -23,7 +23,7 @@ const LARGURA = 1240;
 const ALTURA = Y0 + DY * (FILEIRAS.length - 1) + 110;
 
 type Ponto = { x: number; y: number };
-type No = Ponto & { id: string; parte: number; titulo: string; curto: string; fileira: number };
+type No = Ponto & { id: string; parte: number; cor: number; titulo: string; curto: string; fileira: number };
 
 const nos: No[] = [];
 FILEIRAS.forEach((partes, f) => {
@@ -33,7 +33,7 @@ FILEIRAS.forEach((partes, f) => {
   daFileira.forEach((s, i) => {
     const t = n === 1 ? 0 : i / (n - 1);
     const x = paraDireita ? X0 + t * (X1 - X0) : X1 - t * (X1 - X0);
-    nos.push({ ...s, x, y: Y0 + f * DY, parte: PARTES.findIndex((p) => p.id === s.parte), fileira: f });
+    nos.push({ ...s, x, y: Y0 + f * DY, parte: PARTES.findIndex((p) => p.id === s.parte), cor: Number(s.parte.slice(1)), fileira: f });
   });
 });
 
@@ -53,7 +53,7 @@ function trecho(a: No, b: No): string {
   ].join('');
 }
 
-const trechos = nos.slice(1).map((b, i) => ({ d: trecho(nos[i], b), parte: b.parte, de: nos[i].id, ate: b.id }));
+const trechos = nos.slice(1).map((b, i) => ({ d: trecho(nos[i], b), parte: b.parte, cor: b.cor, de: nos[i].id, ate: b.id }));
 const trilhasDe = (id: string) =>
   Object.entries(TRILHAS)
     .filter(([, t]) => t.ids.includes(id))
@@ -68,13 +68,13 @@ const passos = PARTES.length;
     <svg class="metro__svg" viewBox={`0 0 ${LARGURA} ${ALTURA}`} role="group" aria-labelledby="metro-t" aria-describedby="metro-d">
       <title id="metro-t">Mapa do Metrô do curso</title>
       <desc id="metro-d">
-        Oito linhas, uma por parte do curso, ligando {ESTACOES.length} estações em ordem: do M0 ao projeto final.
+        {PARTES.length} linhas, uma por parte do curso, ligando {ESTACOES.length} estações em ordem: do M0 ao projeto final.
       </desc>
 
       <g class="metro__trilhos" fill="none">
         {
           trechos.map((t) => (
-            <g class={`metro__trecho metro__trecho--${t.parte}`} data-de={t.parte + 1}>
+            <g class={`metro__trecho metro__trecho--${t.cor}`} data-de={t.parte + 1}>
               <path class="metro__fundo" d={t.d} />
               <path class="metro__fio" d={t.d} pathLength="1" />
             </g>

@@ -1,0 +1,464 @@
+---
+id: t1d
+titulo: "Guardar e publicar: histórico e site no ar"
+parte: p8
+ordem: 104
+minutos: 70
+pre_requisitos: [t1c]
+objetivos:
+  - Guardar versões do trabalho com o git e desfazer um erro voltando ao último ponto salvo.
+  - Separar o que vai para a internet do que é só seu e do cliente.
+  - Publicar o site de graça no GitHub Pages e abrir o endereço público.
+  - Montar o pacote de entrega da Temporada 1 e dizer o que ele inclui.
+tldr:
+  - O git guarda o histórico em pontos de salvamento. Com ele, errar deixa de ser perigoso.
+  - Tudo o que vai para a internet é público. Publique só a pasta do site, nunca o briefing do cliente.
+  - Uma entrega profissional tem endereço, histórico, caderno de regras e conferência. Não só a página.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t1d-e1, titulo: Pontos de salvamento com o git, minutos: 20, custo: gratis }
+  - { id: t1d-e2, titulo: Estragar e desfazer, minutos: 15, custo: gratis }
+  - { id: t1d-e3, titulo: Separar o que vai ao ar, minutos: 15, custo: gratis }
+  - { id: t1d-e4, titulo: Colocar no ar, minutos: 20, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Git', simples: 'Um programa que guarda o histórico do projeto, como os pontos de salvamento de um jogo. Dá para voltar a qualquer um.' },
+    { termo: 'Commit', simples: 'Um ponto de salvamento com nome e descrição. "Primeira versão do site" é um commit.' },
+    { termo: 'Repositório', simples: 'A pasta do projeto junto com todo o seu histórico.' },
+    { termo: 'GitHub', simples: 'Um site onde o repositório fica guardado na internet. Funciona como cofre e como vitrine.' },
+    { termo: 'GitHub Pages', simples: 'O serviço gratuito do GitHub que transforma uma pasta de site em um endereço na internet.' },
+    { termo: 'Público x privado', simples: 'O que vai para a internet pode ser lido por qualquer pessoa. Nem tudo do projeto deve ir.' },
+  ]}
+  depois={[
+    { termo: 'Branches e Pull Requests', quando: 'trabalhar em paralelo e revisar mudanças antes de aplicar. Entram quando houver mais de uma pessoa.', ref: 'm4' },
+    { termo: 'Domínio próprio e HTTPS', quando: 'o endereço "www.doceesquina.com.br" no lugar do endereço do GitHub.', ref: 'm5' },
+    { termo: 'Segredos e .gitignore', quando: 'como não publicar senhas por engano. Entram na Temporada 2, com dados reais.', ref: 'm7' },
+  ]}
+/>
+
+A Marta abriu o site no celular dela e adorou. Duas perguntas na sequência: "E se eu pedir uma mudança amanhã e você estragar?" e "Como as pessoas veem isso? Eu posso mandar o endereço?"
+
+Esta estação responde às duas. A primeira é sobre **voltar atrás** (git). A segunda, sobre **colocar no ar** (GitHub Pages). No meio, uma pergunta que quem está começando raramente faz: **o que não pode ir para a internet?**
+
+### Pontos de salvamento: o git
+
+Quem joga sabe o valor de salvar antes da fase difícil. O **git** é isso para um projeto. A cada marco, você registra um **commit**: uma foto da pasta inteira com um nome ("Primeira versão do site"). Se um dia algo quebrar, você volta para uma foto anterior, e o resto do trabalho continua lá.
+
+O melhor é que você não precisa decorar comando. Peça ao Claude:
+
+```text
+Comece o controle de versão nesta pasta (git, branch main) e faça o primeiro commit com todos os arquivos, com uma mensagem clara em português.
+```
+
+Na nossa execução, ele fez em 3 passos o que normalmente exige uma sequência de comandos, e escreveu uma mensagem útil:
+
+```text
+3d27e40  Primeira versão do site da Doce Esquina
+
+Adiciona a página única da confeitaria (index.html), o briefing com
+os dados do cliente, o script de conferência (conferir.mjs) e as
+instruções do projeto (CLAUDE.md).
+```
+
+Dois detalhes que podem aparecer:
+
+- Um aviso sobre "LF para CRLF" no Windows. É só o computador ajustando como as quebras de linha são gravadas. Não impede nada.
+- Uma linha `Co-Authored-By: Claude ...` no fim da mensagem. É uma assinatura que registra que o Claude ajudou. Pode ficar ou sair, conforme a política do seu trabalho.
+
+### Errar sem medo: desfazer com o git
+
+Agora a prova de valor. Estragamos o site de propósito: o título virou "DOCE" e o preço do bolo inteiro caiu de R$ 68,00 para R$ 6,80. O roteiro de conferência da T1B gritou na hora:
+
+```text
+(1) Todo preço em R$ do HTML aparece no briefing: FALHOU
+3 de 4 itens OK
+```
+
+Aí o pedido:
+
+```text
+Mexi no index.html sem querer e quero desfazer. Volte o index.html para o último commit e confirme que o git não mostra mais nenhuma mudança.
+```
+
+O Claude voltou o arquivo, mostrou que o git estava limpo ("nothing to commit, working tree clean") e rodar a conferência de novo voltou a `4 de 4`. Um detalhe: ele **não rodou** o `conferir.mjs`, porque só tínhamos liberado comandos do git, e avisou isso. Era exatamente o comportamento certo: licença só para o que foi combinado.
+
+Estas duas ferramentas (o roteiro de conferência e o git) trabalham juntas. A conferência avisa que algo quebrou. O git permite voltar.
+
+### O que vai para a internet é público
+
+Chegou a hora de publicar, e aqui mora o erro mais caro de quem está começando. Pense assim: **tudo o que você publica pode ser lido por qualquer pessoa**, inclusive o código-fonte da página. E o repositório inteiro no GitHub, se for público, também.
+
+Olhe a pasta do projeto:
+
+| Arquivo | Deve ir para a internet? |
+|---|---|
+| `index.html` (o site) | **Sim**: é o que o cliente vai mostrar |
+| `briefing.md` | **Não**: tem dados do cliente e as regras da conversa |
+| `CLAUDE.md` | Não: são as suas regras de trabalho |
+| `conferir.mjs` | Não: é a sua ferramenta |
+
+A solução simples: **separar o site numa pasta própria**. O GitHub Pages sabe publicar uma pasta chamada `docs`. Você pede:
+
+```text
+Quero publicar só o site, sem o briefing e os outros arquivos. Crie uma pasta docs e mova o index.html para dentro dela (use git mv). Ajuste o conferir.mjs e o CLAUDE.md para o novo caminho, rode node conferir.mjs, mostre o resultado e faça um commit.
+```
+
+Na nossa execução, ele fez tudo, a conferência continuou em `4 de 4` e ainda levantou uma questão certeira: "`briefing.md`, `CLAUDE.md` e `conferir.mjs` continuam rastreados na raiz do repositório. Se a publicação for só a pasta `docs/`, isso já basta. Se o repositório inteiro for publicado, esses arquivos ainda vão junto."
+
+Repare no que isso significa: mesmo publicando só a pasta `docs`, **o repositório do GitHub continua público e visível**, com o briefing dentro. Para o curso, o cliente é fictício e não faz mal. Para um cliente real, escolha uma de duas saídas: um **repositório só com o site** (o briefing fica fora), ou um repositório **privado**. Antes de escolher o privado, confira se o seu plano do GitHub permite o Pages em repositório privado: nem todo plano permite.
+
+### Colocar no ar
+
+Com o site separado, são três passos:
+
+1. **Enviar o repositório ao GitHub.** Você precisa de uma conta e do programa `gh` (o [M4 (Git e GitHub do zero)](../m4/) ensina). Depois, peça ao Claude: "Crie um repositório público no meu GitHub chamado doce-esquina e envie este projeto para lá."
+2. **Ligar o Pages.** No GitHub, abra o repositório: **Settings**, **Pages**, em **Build and deployment** escolha **Deploy from a branch**, depois a branch `main` e a pasta `/docs`, e clique em **Save**.
+3. **Esperar uns minutos e abrir o endereço**, que tem este formato:
+
+```text
+https://SEU-USUARIO.github.io/doce-esquina/
+```
+
+Sua página só tem um arquivo e nenhum caminho relativo, então funciona dentro de `/doce-esquina/` sem ajuste. O [M5 (Do computador para a internet)](../m5/) explica o que muda quando o site cresce.
+
+<Nota rotulo="Cuidado: vitrine ou loja?">
+Os termos do GitHub não permitem usar o Pages como hospedagem gratuita para um negócio comercial. Uma página-vitrine de portfólio ou demonstração é uma coisa; o site oficial de uma confeitaria que recebe pedidos é outra. Para clientes reais, leia os termos e considere uma hospedagem própria (o [M5](../m5/) discute as opções).
+</Nota>
+
+### O pacote de entrega
+
+Quando você entrega o trabalho, entrega um pacote, não só uma página:
+
+- o **endereço** do site no ar;
+- o **repositório**, com todo o histórico (o cliente é dono do que pagou);
+- o **CLAUDE.md**, para quem for mexer depois;
+- o **conferir.mjs**, a prova de que o site cumpre o combinado.
+
+Isso é o que separa "alguém que fez uma página" de "um profissional que entrega um sistema que dá para manter".
+
+### Como vender isso
+
+- **Mostre o pacote, não só o link.** "Seu site está no ar, o histórico está guardado e dá para voltar atrás se algo quebrar" justifica o valor e dá confiança.
+- **Ofereça manutenção.** Atualizar preços e horários todo mês, com conferência, é um serviço recorrente e fácil de explicar.
+- **Seja claro sobre os custos.** O Pages é grátis. O domínio próprio (`www.doceesquina.com.br`) tem custo anual, e quem paga deve estar combinado desde o início. O [M5 (Do computador para a internet)](../m5/) mostra como funciona.
+- **Informe o que a IA fez.** Alguns clientes querem saber. A transparência é uma vantagem competitiva, não um problema.
+
+<Camada tipo="capo" titulo="Por baixo do capô: o que o git guarda de verdade">
+
+### Três lugares
+
+O git trabalha com **três lugares**: a pasta onde você edita, uma "sala de espera" onde você escolhe o que vai no próximo commit, e o histórico. O [M4 (Git e GitHub do zero)](../m4/) desenha esse modelo mental e mostra branches, conflitos e como recuperar um commit perdido.
+
+### Por que o Claude consegue operar o git
+
+Ele roda os comandos do git por você, e cada um passa pela permissão. Na nossa execução, liberamos `Bash(git *)`. Como o `*` cobre qualquer subcomando do git, é uma liberação ampla: a Temporada 2 explica como liberar só `git log` ou `git status`.
+
+### O que o GitHub Pages faz
+
+Cada vez que você envia mudanças, o GitHub atualiza o site a partir da pasta escolhida. O endereço não muda.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Publicar o repositório com o briefing
+
+Quando o repositório é público, o briefing do cliente também é. Separe o site ou use um repositório só com ele.
+
+### Commits sem nome
+
+"Atualização" não ajuda ninguém. Peça ao Claude mensagens que digam o que mudou e por quê.
+
+### Esquecer de fazer o commit antes de uma mudança grande
+
+O ponto de salvamento só ajuda se existir. Faça um commit antes de pedir algo grande.
+
+### Achar que o git guarda tudo
+
+Ele guarda o que foi commitado. Mudanças que você não salvou voltam a se perder se você pedir para descartar.
+
+### Pages que "não atualiza"
+
+Às vezes o navegador guarda a versão antiga. Recarregue com <kbd>Ctrl</kbd>+<kbd>F5</kbd> e aguarde alguns minutos.
+
+### Usar o GitHub Pages para um negócio comercial
+
+Leia os termos do GitHub antes de usar o Pages no site oficial de um cliente que vende pela página.
+
+</Camada>
+
+## Fichas de campo
+
+As fichas começam da pasta da estação anterior. Se você fez a T1C, siga com a sua. Se não, baixe a nossa:
+
+- [Ponto de partida: `t1c-gabarito.zip`](../lab/t1c-gabarito.zip) (briefing, site com formulário, `conferir.mjs` e `CLAUDE.md`)
+
+Você precisa do **git** instalado (o [M4 (Git e GitHub do zero)](../m4/) mostra como). Confirme com `git --version`.
+
+<Ficha
+  id="t1d-e1"
+  n={1}
+  titulo="Pontos de salvamento com o git"
+  objetivo="Pedir ao Claude para começar o histórico do projeto e fazer o primeiro commit."
+  minutos={20}
+  pre="T1C concluída (ou o ZIP acima) e git instalado"
+  versao="2.1.325"
+>
+
+1. Entre na pasta do projeto e abra o Claude:
+
+   <SO unix="cd ~/Documents/doce-esquina && claude" win={`cd "$HOME\\Documents\\doce-esquina"; claude`} />
+
+2. Cole o pedido:
+
+   ```text
+   Comece o controle de versão nesta pasta (git, branch main) e faça o primeiro commit com todos os arquivos, com uma mensagem clara em português.
+   ```
+
+3. Aprove o que ele pedir (comandos do git). Quando terminar, saia com `/exit`.
+4. Veja o histórico:
+
+   ```bash
+   git log --oneline
+   ```
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits --allowedTools "Bash(git *)"`.
+</Nota>
+
+<Prova>
+
+O `git log --oneline` mostra uma linha, com um código curto e a mensagem em português. Na nossa execução (3 passos, 0 negações):
+
+```text
+3d27e40 Primeira versão do site da Doce Esquina
+```
+
+O código é diferente no seu computador. O Claude também avisou do LF/CRLF e que não criou `.gitignore`, porque nada precisava ficar de fora.
+
+</Prova>
+
+<Gabarito>
+
+O que importa: o histórico existe e o commit tem nome claro. Se o git reclamar de "identidade" (`Please tell me who you are`), siga o passo 1 da Ficha 1 do [M4 (Git e GitHub do zero)](../m4/): ele pede seu nome e e-mail uma vez.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`git` não é reconhecido.** O git não está instalado. Siga o [M4 (Git e GitHub do zero)](../m4/).
+- **O commit falhou pedindo identidade.** Veja o Gabarito: configurar nome e e-mail uma vez resolve.
+- **O Claude pediu licença para comandos além do git.** Leia antes de aprovar. Para o primeiro commit, só o git é necessário.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "mostre o que mudou entre este commit e a versão anterior" depois de fazer uma pequena mudança, e leia o resultado. O que o git considera uma mudança?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t1d-e2"
+  n={2}
+  titulo="Estragar e desfazer"
+  objetivo="Provocar um erro no site, ver a conferência avisar e voltar ao último ponto salvo."
+  minutos={15}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+1. Abra o `index.html` num editor de texto (o Bloco de Notas serve). Troque `Doce Esquina</h1>` por `DOCE</h1>` e `R$ 68,00` por `R$ 6,80`. Salve.
+2. Veja que o git percebeu:
+
+   ```bash
+   git status --short
+   ```
+
+3. Rode a conferência:
+
+   ```bash
+   node conferir.mjs
+   ```
+
+4. Abra o Claude e peça para desfazer:
+
+   ```text
+   Mexi no index.html sem querer e quero desfazer. Volte o index.html para o último commit e confirme que o git não mostra mais nenhuma mudança.
+   ```
+
+5. Depois, confirme você mesma:
+
+   ```bash
+   git status --short
+   node conferir.mjs
+   ```
+
+<Prova>
+
+No passo 2, aparece ` M index.html` (M de "modificado"). O passo 3 termina em `3 de 4 itens OK`, com "FALHOU" no item 1. Depois do passo 4, o `git status --short` não imprime nada e o `node conferir.mjs` volta a `4 de 4 itens OK`. Na nossa execução, o Claude voltou o arquivo e deixou o git limpo, mas **não rodou a conferência**: só liberamos comandos do git, e ele avisou que o `node` exigia aprovação.
+
+</Prova>
+
+<Gabarito>
+
+Voltar um arquivo ao último commit descarta o que você mudou desde então. Por isso o commit antes de qualquer mudança grande vale ouro. Se você já tivesse feito um commit **depois** do estrago, o git voltaria ao estrago: o histórico é sobre o que foi salvo.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O git não mostra nenhuma mudança no passo 2.** Você salvou o arquivo em outra pasta, ou o editor não salvou. Confira o caminho.
+- **O Claude voltou mais do que eu queria.** Ele só restaurou o `index.html`. Se algo mais mudou, veja `git status`.
+- **O `node conferir.mjs` dá `4 de 4` mesmo estragado.** Você provavelmente salvou o arquivo errado. Rode `git diff` para ver o que o git enxerga.
+
+</DeuErro>
+
+<Desafio>
+
+Estrague de novo, mas **faça um commit** do estrago. Agora peça ao Claude: "volte o site para a versão do primeiro commit". O que o histórico mostra?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t1d-e3"
+  n={3}
+  titulo="Separar o que vai ao ar"
+  objetivo="Mover o site para a pasta docs e deixar o briefing e as ferramentas fora da publicação."
+  minutos={15}
+  pre="Ficha 2"
+  versao="2.1.325"
+>
+
+1. Abra o Claude e cole o pedido:
+
+   ```text
+   Quero publicar só o site, sem o briefing e os outros arquivos. Crie uma pasta docs e mova o index.html para dentro dela (use git mv). Ajuste o conferir.mjs e o CLAUDE.md para o novo caminho, rode node conferir.mjs, mostre o resultado e faça um commit.
+   ```
+
+2. Aprove o que for do git e o `node conferir.mjs`.
+3. Confira a nova estrutura:
+
+   <SO unix="ls && ls docs" win="Get-ChildItem; Get-ChildItem docs" />
+
+4. Leia a resposta do Claude: ele aponta o que **ainda** está na raiz do repositório?
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits --allowedTools "Bash(git *)" "Bash(node conferir.mjs)"`.
+</Nota>
+
+<Prova>
+
+A raiz fica com `CLAUDE.md`, `briefing.md`, `conferir.mjs` e a pasta `docs`; dentro de `docs/` está o `index.html`. O `node conferir.mjs` ainda dá `4 de 4`. Na nossa execução (9 passos, 1 pedido negado, novo commit `f5859af`), o `CLAUDE.md` passou a dizer `docs/index.html` e a lembrar que só a pasta `docs/` é publicada. O Claude avisou: "`briefing.md`, `CLAUDE.md` e `conferir.mjs` continuam rastreados na raiz... Se o repositório inteiro for publicado, esses arquivos ainda vão junto."
+
+</Prova>
+
+<Gabarito>
+
+Separar a pasta resolve **o que o Pages publica**, não **quem vê o repositório**. Nossa versão final está em [`t1d-gabarito.zip`](../lab/t1d-gabarito.zip). Para um cliente real, o briefing fica fora do repositório público.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O `conferir.mjs` passou a falhar.** O caminho do `index.html` não foi atualizado. Peça: "ajuste o conferir.mjs para ler docs/index.html".
+- **O Claude disse que o `git mv` precisa de aprovação.** Aprove, ou libere `Bash(git *)` se estiver rodando sem tela.
+- **Não existe a pasta `docs`.** Rode `git status` para ver o que aconteceu e peça de novo.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude um `.gitignore` que mantenha o `briefing.md` **fora** do repositório. Depois, rode `git status` e veja o que mudou. Isso resolve o problema do briefing público?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t1d-e4"
+  n={4}
+  titulo="Colocar no ar"
+  objetivo="Enviar o projeto ao GitHub, ligar o Pages e abrir o endereço público."
+  minutos={20}
+  pre="Ficha 3, conta no GitHub e o gh instalado e conectado (M4)"
+  verificacao="nao-testado"
+>
+
+Esta ficha **não foi executada aqui**: ela exige criar um repositório e publicar na conta de quem faz, o que o nosso ambiente de teste não faz. Os passos seguem a documentação do GitHub e o [M5 (Do computador para a internet)](../m5/).
+
+1. No Claude, na pasta do projeto, peça:
+
+   ```text
+   Crie um repositório público no meu GitHub chamado doce-esquina e envie este projeto para lá.
+   ```
+
+   Aprove os comandos do `gh` e do git.
+
+2. No navegador, abra o repositório no GitHub: **Settings**, **Pages**. Em **Build and deployment**, escolha **Deploy from a branch**; em **Branch**, `main` e a pasta `/docs`; clique em **Save**.
+3. Espere de um a três minutos e abra:
+
+   ```text
+   https://SEU-USUARIO.github.io/doce-esquina/
+   ```
+
+4. Abra no celular e faça os quatro testes do formulário da T1B.
+
+<Prova>
+
+A página da Doce Esquina abre no endereço do GitHub, igual à que você via no seu computador. Depois, peça a um amigo para abrir no celular dele: se ele vê, está no ar para todo mundo. (Não executado: segundo a documentação.)
+
+</Prova>
+
+<Gabarito>
+
+O que prova a publicação é um terceiro conseguir abrir o endereço. Se só você abre, pode ser cache do navegador.
+
+</Gabarito>
+
+<DeuErro>
+
+- **Erro 404 ao abrir o endereço.** O Pages ainda está publicando ou apontou para a pasta errada. Confira em Settings, Pages: branch `main`, pasta `/docs`.
+- **A página abriu sem estilo.** O arquivo `index.html` na pasta `docs` está incompleto. Confira com `conferir.mjs`.
+- **O `gh` pede login.** Rode `gh auth login` e siga a tela, como no [M4 (Git e GitHub do zero)](../m4/).
+
+</DeuErro>
+
+<Desafio>
+
+Mude o horário de sábado no `index.html` (peça ao Claude), faça o commit, envie ao GitHub e veja quanto tempo leva para o site mudar.
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Guardei versões do trabalho com o git e sei como pedir ao Claude para fazer isso.
+- Desfiz um erro voltando ao último ponto salvo, e vi a conferência avisar do estrago.
+- Separei o que vai à internet (a pasta `docs`) do que é só meu e do cliente.
+- Sei como publicar no GitHub Pages e quais cuidados tomar com cliente real.
+- Sei montar o pacote de entrega: endereço, histórico, CLAUDE.md e conferência.
+
+</Saida>
+
+**Próxima estação:** a Temporada 2, em construção: um sistema com login e dados reais para a clínica de um cliente. Quando ela sair, você vai precisar de segurança, e o que esta temporada só apresentou volta com profundidade. Enquanto isso, os módulos de referência já aprofundam o que você viu: o [M4 (Git e GitHub do zero)](../m4/), o [M5 (Do computador para a internet)](../m5/) e o [M6 (Memória e CLAUDE.md)](../m6/).
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): o Claude operando git e commits.
+- [Permission modes](https://code.claude.com/docs/en/permission-modes.md): licenças e modos de permissão.
+- Execuções locais registradas em `VERIFICATION/t1d.md`. A publicação no GitHub Pages segue o [M5 (Do computador para a internet)](../m5/) e a documentação do GitHub, e não foi testada aqui.
+
+</Fontes>

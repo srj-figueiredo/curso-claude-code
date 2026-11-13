@@ -1,7 +1,7 @@
 # Guia do autor
 
 Contrato para quem escreve uma página do curso (pessoa ou subagente). O molde vivo é
-`src/content/modulos/m3.mdx`: leia-o inteiro antes de começar. As regras de conteúdo estão no
+`src/content/modulos/m3.mdx` (estrutura) e, para páginas novas, as estações `t1a` a `t1d` (seção 10): leia-os inteiros antes de começar. As regras de conteúdo estão no
 `BRIEFING.md`, seções 1, 3, 8, 10 e 12.
 
 ## 1. O que você entrega
@@ -181,3 +181,31 @@ O MDX da seção: `## Essencial` curto (o que a seção resolve, uma tabela "que
 ensina sobre menus que mudam quando for pertinente à seção), depois `<Cartas cat="R3" />`, as camadas, e
 **uma** ficha de campo: a **volta guiada**, que usa cada comando testável da seção ao menos uma vez no
 laboratório, com Prova. `minutos` entre 30 e 60. Meta de texto visível: 900 a 1.800 palavras (as cartas não contam).
+
+## 10. Estações das Temporadas (roteiro v2, D017)
+
+**Vale para toda página nova.** O molde vivo passa a ser `src/content/modulos/t1a.mdx` a `t1d.mdx` (o M7 piloto serve de exemplo de reescrita). As regras das seções 2 e 3 (verdade e execução) continuam valendo sem mudança.
+
+**Público:** pessoa que **não programa** e quer vender serviços a pequenas empresas. Nenhum conhecimento prévio de terminal, git ou JSON. Leitura fluida e agradável, sem perder profundidade.
+
+**Ordem de cada estação** (a sequência visual é a de sempre):
+`<Conceitos>` → cena do cliente (3 a 5 linhas) → seções do Essencial → "Como vender isso" → `<Camada capo>` → `<Camada armadilhas>` → fichas → `<Saida>` → **Próxima estação** → `<Fontes>`.
+
+**Conceitos de abertura.** Toda estação começa o `## Essencial` com `<Conceitos aprender={[{ termo, simples }]} depois={[{ termo, quando, ref }]} />`:
+- `aprender`: 4 a 6 termos que a estação ensina, cada um com uma frase em palavras simples.
+- `depois`: termos que a estação **menciona** mas só ensina adiante; `ref` é o id do módulo de referência (o link sai como "Referência: M7 (Configurações, permissões e segurança)").
+- Todo termo técnico novo deve estar em um dos dois. Rode `node scripts/mapa-de-conceitos.mjs` e atualize a tabela `FEITO` do script: nenhum conceito dos módulos antigos pode ficar sem destino até o fim do curso.
+
+**Regras de escrita:**
+1. **Dor antes da ferramenta.** Mostre o problema do cliente, depois o recurso que o resolve. Nunca abra com tabela de regras.
+2. **Primeiro resultado em até 10 minutos.** O aluno vê funcionar antes de entender; só depois vem o "por que funcionou".
+3. **Analogia do dia a dia antes do termo técnico** (porteiro, caderno, ponto de salvamento). Termo técnico só depois de uma frase simples.
+4. **Nada de JSON ou sintaxe na camada principal.** Configuração: peça ao Claude e confira o resultado. A sintaxe fica em "Por baixo do capô".
+5. **Cada comando traz o motivo antes e o que esperar depois.**
+6. **O erro real vira lição.** Se a execução mostrou um defeito (como o domingo da T1B), conte; não esconda.
+7. **Cada estação termina com algo que o aluno pode mostrar e com "Como vender isso"** (o que prometer, o que não prometer, como cobrar; sem tabela de preços inventada).
+8. Tom de conversa, frases curtas, nome do módulo sempre entre parênteses ao citá-lo ("M6 (Memória e CLAUDE.md)").
+
+**Fichas:** os passos usam a tela interativa, que é o que o aluno vai ver. Quando a execução de verdade foi com `claude -p` (a tela interativa não é automatizável), a ficha traz uma `<Nota rotulo="Sem a tela interativa">` com o equivalente. Aceite apenas o que foi executado: `verificacao="nao-testado"` para o que exige conta ou publicação do aluno. Passe `versao="x.y.z"` na `<Ficha>` quando a CLI da execução for diferente da global.
+
+**Laboratório do cliente:** pasta em `lab/estados/<id>/` com `_camadas.json` no formato `{ "projeto": "doce-esquina", "camadas": ["t1a-inicio"] }` (projeto próprio, sem a base do Pendências). Um estado novo que **remove** arquivos de uma camada anterior não pode empilhar essa camada: copie os arquivos (como o `t1d-gabarito`).

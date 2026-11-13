@@ -116,3 +116,15 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
 - Fila de escrita e estado: `PROGRESS.md`. Decisões e riscos: `DECISIONS.md` (D012 a D014).
 - Registros de verificação por página: `VERIFICATION/m0.md` a `m5.md`.
 - **Próximo item de escrita, quando você mandar:** M6, Memória e CLAUDE.md.
+
+---
+
+## 7. Temporada 1 (13/11/2026)
+
+- **7.1** Ficha 4 da T1D (criar repositório, ligar o Pages, abrir o endereço público) não foi executada: precisa da conta GitHub de quem faz. Marcada `nao-testado`.
+- **7.2** Fichas das estações novas foram executadas com `claude -p`; a tela interativa (licença, aprovação do plano, `/exit`) segue descrita pela documentação.
+- **7.3** Pages em repositório privado depende do plano do GitHub: a T1D manda conferir; não verificado.
+- **7.4** O Pages não permite hospedagem gratuita de negócio comercial: a T1D avisa; decidir com o autor se o curso recomenda outra hospedagem para clientes reais.
+- **7.5** O gabarito `t1b-gabarito` carrega de propósito um defeito real (o aviso das 48 horas pode sugerir um domingo); é o Desafio da T1B.
+- **7.6** `VERSAO_CLI` em `src/data/curso.ts` ainda diz 2.1.323; as estações novas foram executadas na 2.1.325. Atualizar o selo global quando os módulos antigos forem reexecutados.
+- **7.7** O M7 piloto e a T1 aguardam a leitura do autor (tom, tamanho, lacunas).

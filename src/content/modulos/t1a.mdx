@@ -1,0 +1,326 @@
+---
+id: t1a
+titulo: "Seu primeiro cliente: o site no navegador"
+parte: p8
+ordem: 101
+minutos: 50
+pre_requisitos: [m0]
+objetivos:
+  - Explicar com suas palavras o que o Claude Code faz que o chat não faz.
+  - Abrir o terminal na pasta certa e iniciar uma sessão do Claude Code.
+  - Transformar o briefing de um cliente em um pedido e conseguir uma primeira página.
+  - Abrir o resultado no navegador e conferir item por item contra o briefing.
+tldr:
+  - O Claude Code mora no seu computador, lê os arquivos da pasta e escreve neles. É isso que o separa do chat.
+  - Um briefing bem escrito já é quase o pedido pronto. Entregue o material em vez de descrevê-lo.
+  - O Claude preenche lacunas por conta própria. Leia o resumo final e confira o que ele decidiu sem você pedir.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t1a-e1, titulo: Instalar e conferir, minutos: 15, custo: gratis }
+  - { id: t1a-e2, titulo: O primeiro site da Doce Esquina, minutos: 30, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Claude Code', simples: 'Um assistente que trabalha dentro do seu computador: lê os arquivos de uma pasta, escreve novos e roda comandos.' },
+    { termo: 'Terminal', simples: 'A janela onde você conversa com o computador por texto. Aqui ele vira a "janela de conversa" com o Claude.' },
+    { termo: 'Pasta de trabalho', simples: 'A pasta onde você abriu o Claude. Ele só enxerga e mexe no que está ali dentro.' },
+    { termo: 'Pedido', simples: 'A instrução que você escreve. Quanto mais material você entrega, melhor ele sai.' },
+    { termo: 'Licença (permissão)', simples: 'O Claude pede a sua autorização antes de mexer em arquivos. Você decide quanto confiar.' },
+    { termo: 'Briefing', simples: 'O resumo do que o cliente quer. Vai virar a base do seu pedido.' },
+  ]}
+  depois={[
+    { termo: 'Modos de permissão e segurança', quando: 'quanta liberdade dar ao Claude, e como travar o que ele nunca pode fazer. Entra na Temporada 2, quando houver dados de cliente.', ref: 'm7' },
+    { termo: 'Janela de contexto', quando: 'por que uma conversa longa fica confusa. Aparece na próxima estação.', ref: 'm2' },
+    { termo: 'Git e GitHub', quando: 'o histórico do trabalho e a publicação. Entram na última estação desta temporada.', ref: 'm4' },
+  ]}
+/>
+
+Marta toca uma confeitaria de bairro, a **Doce Esquina**. Faz bolos, tortas e brigadeiros há seis anos, e só tem Instagram. Todo dia alguém pergunta por mensagem o preço do bolo, o horário e se ela abre no domingo. Ela cansou de repetir as mesmas respostas e te procurou: "dá para fazer um site simples pra mim?"
+
+Este é o seu primeiro cliente. Daqui a uns 40 minutos, você terá uma página funcionando no navegador, feita por você e pelo Claude Code. E vai entender o que aconteceu em cada passo.
+
+### O que é o Claude Code (e o que ele não é)
+
+Você provavelmente já conversou com o Claude num chat. O chat é ótimo para pensar, planejar e escrever. Mas ele só **conversa**: se pedir um site, ele escreve o código na tela, e você copia, cola, salva e abre.
+
+O **Claude Code** é o mesmo cérebro, mas **dentro do seu computador**. Ele enxerga uma pasta, abre os arquivos que estão lá, cria novos, roda programas e confere o resultado. Pense na diferença entre um consultor que te dá a receita por telefone e um cozinheiro que entra na sua cozinha e faz o prato.
+
+Isso tem um preço de atenção: como ele mexe em arquivos de verdade, você precisa saber **em que pasta** ele está e **o que autorizou**. É o que o resto desta estação ensina.
+
+### A janela de conversa: o terminal
+
+O Claude Code funciona numa janela chamada **terminal**. Sem mistério: é uma tela onde você digita um texto, aperta Enter e o computador responde com texto. No Windows ela se chama **PowerShell**; no Mac, **Terminal**.
+
+Dois comandos bastam por enquanto:
+
+| Você digita | O que faz |
+|---|---|
+| `cd pasta` | Entra numa pasta (`cd` vem de "change directory", mudar de diretório) |
+| `claude` | Abre uma conversa com o Claude Code **na pasta onde você está** |
+
+A segunda linha é a que importa. O Claude trabalha na pasta em que você o abriu. Abriu na pasta errada, ele não vê o projeto do cliente.
+
+### Instalar, uma vez só
+
+A instalação é um comando, e a Ficha 1 mostra o passo a passo. Para entrar no Claude Code, você precisa de uma conta paga da Anthropic (um plano Pro ou superior, ou uma conta de API). O [M0 (Mapa do Claude Code e regras do jogo)](../m0/) explica as opções e os custos. Se o terminal reclamar do comando `claude`, o [M1 (Instalação e primeiro contato)](../m1/) tem a lista dos tropeços mais comuns.
+
+### O pedido: o briefing já é quase tudo
+
+Todo trabalho de cliente começa com um **briefing**: o resumo do que ele quer, da marca, do conteúdo e do que **não** pode acontecer. O da Marta já está pronto no laboratório, num arquivo chamado `briefing.md`. Ele diz:
+
+- quem é a Marta e o que ela vende;
+- o que o site precisa mostrar (nome, cardápio com preços, horários, botão de WhatsApp);
+- as cores e o tom de voz da marca;
+- o que **não** fazer: inventar depoimentos, prêmios, fotos ou preços.
+
+Repare no ganho. Em vez de descrever tudo no pedido, você **entrega o arquivo** e manda o Claude lê-lo. O pedido fica curto e o resultado, mais fiel. É uma regra de ouro que você vai repetir em quase todo trabalho: se a informação existe num arquivo, aponte o arquivo, não a resuma de memória.
+
+O pedido da Ficha 2 é este:
+
+```text
+Leia o briefing.md e crie o site da Doce Esquina em uma página só, pronto para abrir no navegador. Siga o briefing à risca, inclusive as regras do que não fazer.
+```
+
+Três coisas num só pedido: **o que fazer** (criar o site), **de onde tirar as informações** (o briefing) e **o que não pode acontecer** (as regras de não fazer). O [M3 (Conduzindo no dia a dia)](../m3/) destrincha isso.
+
+### Quando ele pede licença
+
+Na primeira vez que o Claude quiser criar um arquivo, o Claude Code **para e pergunta** se pode. Leia o que ele quer fazer e responda. É a sua licença: nada é gravado sem o seu aval, a menos que você tenha liberado de antemão. Existe uma escala de confiança (perguntar tudo, aceitar edições, deixar rodar sozinho), e escolher o nível certo é o assunto de segurança que a Temporada 2 aborda.
+
+### Ele preencheu lacunas: confira
+
+Na nossa execução, o Claude entregou o site em cerca de 20 segundos, com 4 passos. E, no resumo final, avisou de **três decisões que ninguém pediu**:
+
+> **Indicador "aberto agora":** um pequeno script mostra se a loja está aberta, usando o horário de Brasília. Ele não estava no briefing; se preferir, é só remover.
+>
+> **Mensagem pré-preenchida:** o botão do WhatsApp abre a conversa com "Oi! Quero fazer um pedido.".
+>
+> **Frase de boas-vindas:** usei "Há seis anos fazemos bolos, tortas e doces...", baseada no tempo de casa que o briefing menciona.
+
+Ele ainda admitiu: "Não verifiquei no navegador visual, só revisei o código." Isso ensina dois hábitos profissionais:
+
+1. **Leia o resumo final do Claude.** Ali estão as decisões dele, e algumas são suas.
+2. **Abra o resultado e olhe você mesma.** Quem ainda não viu a página não pode prometer que ela está pronta.
+
+### Como vender isso
+
+O que você acabou de fazer é um serviço vendável: transformar o que um pequeno comerciante tem na cabeça (e no Instagram) numa página no ar. Duas ideias para levar:
+
+- **O briefing é o seu contrato informal.** Antes de abrir o Claude, escreva (ou peça ao cliente) o que o site mostra e o que ele **não** pode dizer. Isso evita discussão depois.
+- **Não prometa o que você ainda não viu no navegador.** Mostre a página ao cliente antes de dizer que está pronta. Na próxima estação você aprende a conferir de forma mais robusta.
+
+<Camada tipo="capo" titulo="Por baixo do capô: o que o Claude fez nesses 20 segundos">
+
+### As ferramentas dele
+
+Quando você pede "crie o site", o Claude não "escreve de uma vez". Ele usa **ferramentas**: uma para **ler** arquivos (o `briefing.md`), uma para **escrever** (o `index.html`) e, quando preciso, uma para **rodar comandos**. Entre uma e outra, ele olha o resultado e decide o próximo passo. Esse vaivém se chama laço agêntico, e o [M2 (Como o Claude Code pensa)](../m2/) o mostra com um desenho animado.
+
+### Por que o resultado varia
+
+Peça a mesma coisa duas vezes e o site sairá um pouco diferente: outro tom na frase de boas-vindas, outra ordem das seções. Isso é normal. O que você controla é o **briefing** e o **critério de pronto**: o que precisa estar lá e o que não pode estar.
+
+### Instalação e login em detalhe
+
+O instalador nativo é o caminho recomendado. Há também Homebrew, WinGet e instalação por npm, e a conta pode ser de assinatura ou de API. Tudo isso, mais a verificação do PATH, está no [M1 (Instalação e primeiro contato)](../m1/).
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Abrir o Claude na pasta errada
+
+Se você digitar `claude` no Desktop em vez de na pasta `doce-esquina`, ele não vê o briefing e vai inventar. Confira com `pwd` (Mac/Linux) ou `Get-Location` (PowerShell): o caminho que aparece é onde ele está.
+
+### Dar o pedido sem entregar o material
+
+"Faça um site de confeitaria" gera algo genérico, com cardápio inventado. Aponte o briefing.
+
+### Aprovar sem ler
+
+Cada licença é uma decisão. Leia o que ele pede para criar ou rodar antes de aprovar, principalmente comandos de terminal.
+
+### Entregar ao cliente sem abrir no navegador
+
+O Claude pode dizer que está tudo certo e errar um detalhe. Abra a página, no celular se puder.
+
+### Esperar o mesmo resultado sempre
+
+Duas execuções do mesmo pedido saem diferentes. Compare com o briefing, não com a execução anterior.
+
+</Camada>
+
+## Fichas de campo
+
+As fichas desta temporada giram em torno de um mesmo cliente fictício, a Doce Esquina. Todo o material (briefing, cardápio, regras) vem em um ZIP.
+
+- [Ponto de partida: `t1a-inicio.zip`](../lab/t1a-inicio.zip) (só o briefing)
+
+<Ficha
+  id="t1a-e1"
+  n={1}
+  titulo="Instalar e conferir"
+  objetivo="Ter o Claude Code funcionando no seu computador e confirmar com um comando."
+  minutos={15}
+  pre="Conta com acesso ao Claude Code (veja o M0)"
+  verificacao="ilustrativo"
+  versao="2.1.325"
+>
+
+A instalação segue a documentação oficial, e o login abre o navegador. Por isso esta ficha é ilustrativa: o `claude --version` foi executado de verdade, o resto, não.
+
+1. Abra o terminal. No Windows, procure **PowerShell** no menu Iniciar (não precisa abrir como administrador). No Mac, abra o app **Terminal**.
+2. Cole a linha do seu sistema e aperte Enter. Ela não mostra barra de progresso: espere terminar.
+
+   <SO unix="curl -fsSL https://claude.ai/install.sh | bash" win="irm https://claude.ai/install.ps1 | iex" />
+
+3. **Feche o terminal e abra um novo.** Sem isso, o computador não enxerga o programa recém-instalado.
+4. Confira:
+
+   ```bash
+   claude --version
+   ```
+
+5. Entre na sua conta. Digite `claude`, aperte Enter e siga o que a tela pedir: ele abre uma página do navegador para você fazer login. Depois de entrar, pode sair com `/exit`.
+
+<Prova>
+
+O passo 4 imprime um número de versão seguido de `(Claude Code)`. Na nossa máquina:
+
+```text
+2.1.325 (Claude Code)
+```
+
+O seu número pode ser maior. O que importa é a resposta ter a forma `número (Claude Code)`.
+
+</Prova>
+
+<Gabarito>
+
+O `claude --version` só prova que o programa existe e que o terminal o encontra. O login prova que a sua conta tem acesso. Se os dois funcionam, a instalação está completa.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`claude` não é reconhecido.** O terminal não achou o programa. Feche e abra um terminal novo. Se continuar, siga a seção "Verificar, e o tal do PATH" do [M1 (Instalação e primeiro contato)](../m1/).
+- **A linha de instalação não funciona.** No Windows, ela só vale no PowerShell. Se a linha de comando começa com `C:\>`, você está no CMD.
+- **Entrei, mas diz que não tenho acesso.** O plano gratuito do Claude não inclui o Claude Code. Veja os planos no [M0 (Mapa do Claude Code e regras do jogo)](../m0/).
+
+</DeuErro>
+
+<Desafio>
+
+Rode `claude doctor` e leia o relatório. Ele só lê e relata: mostra como o programa foi instalado e se há algo errado.
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t1a-e2"
+  n={2}
+  titulo="O primeiro site da Doce Esquina"
+  objetivo="Transformar o briefing da Marta em uma página que abre no navegador e conferir com o cliente."
+  minutos={30}
+  pre="Ficha 1, e o ZIP baixado"
+  versao="2.1.325"
+>
+
+Baixe o `t1a-inicio.zip` acima. Ele traz uma pasta `doce-esquina` com o `briefing.md`.
+
+1. Extraia a pasta para o seu **Documentos** e entre nela:
+
+   <SO unix="unzip ~/Downloads/t1a-inicio.zip -d ~/Documents && cd ~/Documents/doce-esquina" win={`Expand-Archive "$HOME\\Downloads\\t1a-inicio.zip" -DestinationPath "$HOME\\Documents" -Force; cd "$HOME\\Documents\\doce-esquina"`} />
+
+2. Confirme que está na pasta certa e que o briefing está lá:
+
+   <SO unix="pwd && ls" win="Get-Location; Get-ChildItem" />
+
+   Deve aparecer o caminho terminando em `doce-esquina` e a lista com `briefing.md`.
+
+3. Abra o Claude nessa pasta:
+
+   ```bash
+   claude
+   ```
+
+4. Cole o pedido e aperte Enter:
+
+   ```text
+   Leia o briefing.md e crie o site da Doce Esquina em uma página só, pronto para abrir no navegador. Siga o briefing à risca, inclusive as regras do que não fazer.
+   ```
+
+5. Quando o Claude pedir licença para criar um arquivo, leia o que ele quer fazer e aprove.
+6. Quando ele terminar, leia o resumo. Depois saia com `/exit` e abra a página:
+
+   <SO mac="open index.html" linux="xdg-open index.html" win="start index.html" />
+
+<Nota rotulo="Sem a tela interativa">
+Para testar sem abrir a conversa, uma linha faz o mesmo: `claude -p "..." --permission-mode acceptEdits`. O `-p` responde e sai; o `acceptEdits` libera a criação de arquivos sem perguntar. Foi assim que executamos esta ficha.
+</Nota>
+
+<Prova>
+
+Aparece um arquivo `index.html` ao lado do `briefing.md`, e ele abre no navegador. Na nossa execução (4 passos, 0 pedidos negados, cerca de 20 segundos, 6,6 KB):
+
+| Item do briefing | O que a página mostrou |
+|---|---|
+| Nome e boas-vindas | "Doce Esquina" e uma frase sobre os seis anos de casa |
+| Cardápio | Os 6 itens, com os preços exatos de R$ 9,00 a R$ 68,00, e a nota das 48 horas |
+| Horários e endereço | Segunda a sexta 8h às 18h, sábado 8h às 14h, domingo fechado; Rua das Acácias, 120 |
+| Botão de WhatsApp | Aparece no topo e de novo no fim |
+| Cores | `#B4682B`, `#FFF6E8`, `#3B2418` no código |
+| Regras de não fazer | Nenhum depoimento, prêmio ou foto |
+
+Mais o "aberto agora", que ninguém pediu. O resumo final dele avisou.
+
+</Prova>
+
+<Gabarito>
+
+O seu resultado será parecido, não igual. Confira cada linha da tabela acima contra a sua página. Se algo faltar ou sobrar, **diga ao Claude** ("tire o indicador de aberto agora", "o endereço está errado"). Nossa versão está em [`t1a-gabarito.zip`](../lab/t1a-gabarito.zip), caso queira comparar ou seguir para a próxima estação com a mesma base.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude disse que não encontrou o `briefing.md`.** Você abriu o `claude` em outra pasta. Saia (`/exit`), confira com `Get-Location` ou `pwd`, entre na `doce-esquina` e abra de novo.
+- **O `start index.html` não abre nada.** Procure o arquivo no Explorador de Arquivos e dê dois cliques. Ele abre no navegador padrão.
+- **A página abriu sem cor ou sem preços.** Provavelmente o Claude seguiu só uma parte do pedido. Escreva o que falta: "faltou o cardápio com os seis preços, use a tabela do briefing".
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude para trocar a frase de boas-vindas por outra, mais curta, no tom do briefing. Depois recarregue a página (F5). Quantas palavras você precisou para obter o ajuste?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei dizer a diferença entre o chat e o Claude Code, e que o segundo mexe em arquivos de verdade.
+- Abro o terminal, entro numa pasta e abro o Claude nela.
+- Escrevi um pedido curto que aponta o briefing em vez de resumi-lo.
+- Li o resumo final do Claude, vi o que ele decidiu sozinho e conferi a página no navegador.
+- Sei por que não prometo ao cliente algo que ainda não vi.
+
+</Saida>
+
+**Próxima estação:** [T1B, Conduzir o trabalho](../t1b/): o cliente pediu um formulário de encomenda. Você vai aprender a planejar antes de construir e a conferir de forma que não dependa da sua boa vontade.
+
+<Fontes>
+
+- [Quickstart](https://code.claude.com/docs/en/quickstart.md): instalar, entrar na conta e iniciar a primeira sessão.
+- [Setup](https://code.claude.com/docs/en/setup.md): instalação, requisitos e métodos de login.
+- [Overview](https://code.claude.com/docs/en/overview.md): o que o Claude Code faz e onde roda.
+- Execuções locais registradas em `VERIFICATION/t1a.md`.
+
+</Fontes>

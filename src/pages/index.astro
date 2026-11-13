@@ -5,7 +5,7 @@ import MetroMini from '../components/MetroMini.astro';
 import Replay from '../components/Replay.astro';
 import Icone from '../components/Icone.astro';
 import Mascote from '../components/Mascote.astro';
-import { TRILHAS, ESTACOES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
+import { TRILHAS, ESTACOES, PARTES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
 import { pagina, u } from '../lib/url';
 import { paginasEscritas, apendicesEscritos } from '../lib/paginas';
 
@@ -45,7 +45,7 @@ const apendicesProntos = await apendicesEscritos();
     <header class="mapa__topo">
       <h2 id="mapa-t">O mapa</h2>
       <p>
-        {ESTACOES.length} estações em oito linhas. Ande na ordem ou pule de linha: nada é trancado. Escolher uma
+        {ESTACOES.length} estações em {PARTES.length} linhas. Ande na ordem ou pule de linha: nada é trancado. Escolher uma
         trilha só apaga do mapa o que você pode deixar para depois.
       </p>
     </header>

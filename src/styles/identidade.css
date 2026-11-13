@@ -11,6 +11,7 @@
 [data-parte='p5'] { --linha: var(--linha-5); --linha-t: var(--linha-5-t); }
 [data-parte='p6'] { --linha: var(--linha-6); --linha-t: var(--linha-6-t); }
 [data-parte='p7'] { --linha: var(--linha-7); --linha-t: var(--linha-7-t); }
+[data-parte='p8'] { --linha: var(--linha-8); --linha-t: var(--linha-8-t); }
 
 /* No modo Console a linha preta da Parte 0 some no fundo escuro: usa o creme. */
 :root[data-tema='console'] [data-parte='p0'] { --linha: #fff4e0; --linha-t: #14100c; }
@@ -225,6 +226,7 @@ pre {
 .metro__trecho--5 .metro__fio { stroke: var(--linha-5); }
 .metro__trecho--6 .metro__fio { stroke: var(--linha-6); }
 .metro__trecho--7 .metro__fio { stroke: var(--linha-7); }
+.metro__trecho--8 .metro__fio { stroke: var(--linha-8); }
 
 /* A linha 0 é preta: sem contorno distinto, então fica com o fio mais fino por cima. */
 .metro__trecho--0 .metro__fundo { stroke: var(--papel); stroke-width: 11; }
@@ -237,6 +239,7 @@ pre {
 .mini__linha--5 .mini__estacoes::before { background: var(--linha-5); }
 .mini__linha--6 .mini__estacoes::before { background: var(--linha-6); }
 .mini__linha--7 .mini__estacoes::before { background: var(--linha-7); }
+.mini__linha--8 .mini__estacoes::before { background: var(--linha-8); }
 
 /* O desenho com linha dupla da versão antiga deixa de existir: todas as linhas são cheias. */
 .mini__linha--2 .mini__estacoes::before,
