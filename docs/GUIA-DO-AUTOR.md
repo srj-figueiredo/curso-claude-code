@@ -22,8 +22,8 @@ tempo e o build é único); o integrador constrói. **Não faça commit.**
 ## 2. Verdade primeiro (inegociável)
 
 - Fonte de verdade: a documentação oficial em cache, `.docs-cache/en/*.md` (203 páginas, baixadas em
-  12/11/2026; índice em `.docs-cache/llms.txt`; `/` do caminho vira `__` no nome do arquivo, ex.:
-  `agent-sdk__overview.md`), e a CLI instalada (`claude --version` → 2.1.323, `claude --help`).
+  12/11/2026; índice em `.docs-cache/llms.txt`; `/` do caminho vira `_` no nome do arquivo, ex.:
+  `agent-sdk_overview.md`), e a CLI instalada (`claude --version` → 2.1.323, `claude --help`).
 - Use `Grep`/`Read` no cache. **Nunca** descreva comando, flag, tecla, campo, evento, limite ou preço de memória.
   Seu conhecimento prévio sobre o Claude Code está desatualizado: confie no cache.
 - Não achou na doc nem conseguiu executar? Omita, ou escreva "não verificado em 12/11/2026".

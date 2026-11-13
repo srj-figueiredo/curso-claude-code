@@ -16,7 +16,7 @@ for (let i = 0; i < urls.length; i += 8) {
     urls.slice(i, i + 8).map(async (url) => {
       const resposta = await fetch(url, { headers: cabecalho });
       if (!resposta.ok) return void falhas++;
-      const nome = url.replace('https://code.claude.com/docs/en/', '').replaceAll('/', '__');
+      const nome = url.replace('https://code.claude.com/docs/en/', '').replaceAll('/', '_');
       writeFileSync(`.docs-cache/en/${nome}`, await resposta.text());
     }),
   );
