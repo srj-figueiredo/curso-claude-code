@@ -4,6 +4,9 @@ import '@fontsource-variable/fraunces/opsz-italic.css';
 import '@fontsource-variable/newsreader/opsz.css';
 import '@fontsource-variable/newsreader/opsz-italic.css';
 import '@fontsource-variable/jetbrains-mono/wght.css';
+import fonteDisplay from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import fonteTexto from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url';
+import fonteMono from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import '../styles/base.css';
 import '../styles/componentes.css';
 import Icone from '../components/Icone.astro';
@@ -38,6 +41,7 @@ const canonica = new URL(Astro.url.pathname, Astro.site);
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonica} />
+    {[fonteDisplay, fonteTexto, fonteMono].map((f) => <link rel="preload" href={f} as="font" type="font/woff2" crossorigin />)}
     <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml" />
     <meta property="og:title" content={tituloCompleto} />
     <meta property="og:description" content={descricao} />

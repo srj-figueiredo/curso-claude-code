@@ -3,9 +3,10 @@
 
 :root {
   /* Tipografia */
-  --f-display: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --f-texto: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
-  --f-mono: 'JetBrains Mono Variable', 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+  /* Pilhas curtas de propósito: cada família ausente custa uma busca no sistema antes do primeiro layout. */
+  --f-display: 'Fraunces Variable', Georgia, serif;
+  --f-texto: 'Newsreader Variable', Georgia, serif;
+  --f-mono: 'JetBrains Mono Variable', Consolas, monospace;
 
   --t-xs: 0.78rem;
   --t-sm: 0.9rem;

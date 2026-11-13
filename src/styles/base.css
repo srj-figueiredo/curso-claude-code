@@ -28,7 +28,6 @@ body {
   font-size: var(--t-base);
   line-height: 1.62;
   font-optical-sizing: auto;
-  text-rendering: optimizeLegibility;
   overflow-wrap: break-word;
 }
 
@@ -97,10 +96,6 @@ table,
 blockquote,
 figure {
   margin: 0 0 var(--e-4);
-}
-
-p {
-  text-wrap: pretty;
 }
 
 .prosa p,
@@ -261,11 +256,8 @@ pre[data-language='plaintext'] {
   margin: 0 0 var(--e-5);
 }
 
-/* Tabela rola sozinha no celular, sem contêiner extra. */
 table {
-  display: block;
-  max-width: 100%;
-  overflow-x: auto;
+  width: 100%;
   border-collapse: collapse;
   font-size: var(--t-sm);
   line-height: 1.4;

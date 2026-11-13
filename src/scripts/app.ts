@@ -144,7 +144,7 @@ function progresso() {
   const atual = document.body.dataset.estacaoAtual;
   if (atual) {
     const titulo = $('h1')?.textContent?.trim() || atual;
-    gravar((e) => (e.ultimo = { id: atual, titulo, href: location.pathname }));
+    return gravar((e) => (e.ultimo = { id: atual, titulo, href: location.pathname }));
   }
   pintar();
 }
@@ -175,16 +175,6 @@ function copiar() {
   });
 }
 
-/* ---------- Tabelas largas: a rolagem horizontal precisa ser alcançável pelo teclado ---------- */
-
-function tabelas() {
-  $$<HTMLTableElement>('.prosa table').forEach((t) => {
-    if (t.scrollWidth <= t.clientWidth) return;
-    t.tabIndex = 0;
-    t.setAttribute('aria-label', 'Tabela com rolagem horizontal');
-  });
-}
-
 /* ---------- Notas laterais: abertas na margem em telas largas ---------- */
 
 function notas() {
@@ -208,6 +198,7 @@ function players() {
     const legendas = $$('[data-legenda]', fig);
     if (!total || !faixa || !botao) return;
     let relogio: number | undefined;
+    const tela = $('.terminal__tela', fig);
 
     const ir = (n: number) => {
       const passo = Math.max(0, Math.min(total, n));
@@ -221,8 +212,8 @@ function players() {
       });
       const texto = legendas.find((l) => Number(l.dataset.legenda) === passo)?.textContent;
       if (legenda && texto) legenda.textContent = texto;
-      const tela = $('.terminal__tela', fig);
-      if (tela) tela.scrollTop = tela.scrollHeight;
+      // Só acompanha o fim da tela enquanto toca; no estado parado não força layout.
+      if (relogio && tela) tela.scrollTop = tela.scrollHeight;
     };
     const parar = () => {
       clearInterval(relogio);
@@ -417,7 +408,6 @@ tema();
 sistema();
 progresso();
 copiar();
-tabelas();
 notas();
 players();
 dialogos();

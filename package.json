@@ -11,7 +11,8 @@
     "teste:a11y": "playwright test",
     "fotos": "node scripts/screenshots.mjs",
     "lab": "node scripts/empacotar-lab.mjs",
-    "replays": "node scripts/gerar-replays.mjs"
+    "replays": "node scripts/gerar-replays.mjs",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.5",

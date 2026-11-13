@@ -16,6 +16,7 @@ import Selo from '../components/Selo.astro';
 import Replay from '../components/Replay.astro';
 import Figura from '../components/Figura.astro';
 import Cartas from '../components/Cartas.astro';
+import Tabela from '../components/Tabela.astro';
 
 export const componentes = {
   Camada,
@@ -35,4 +36,6 @@ export const componentes = {
   Replay,
   Figura,
   Cartas,
+  // Elementos HTML do Markdown trocados por componentes:
+  table: Tabela,
 };

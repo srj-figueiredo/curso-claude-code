@@ -1,14 +1,21 @@
-// Monta os ZIPs do projeto-laboratório em public/lab/ a partir de lab/estados.json.
-// Cada estado é a pilha de camadas: lab/base + lab/estados/<camada> (arquivos da camada de cima vencem).
+// Monta os ZIPs do projeto-laboratório em public/lab/.
+// Cada pasta de lab/estados/ é um estado: lab/base + as camadas de _camadas.json (se houver) + a própria pasta.
+// Arquivos da camada de cima vencem.
 // Sem dependências: escreve o formato ZIP direto, com deflate do próprio Node.
-import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync, rmSync, cpSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { deflateRawSync, crc32 } from 'node:zlib';
 
 const RAIZ = 'lab';
 const DESTINO = 'public/lab';
 const PASTA_NO_ZIP = 'pendencias';
-const estados = JSON.parse(readFileSync(join(RAIZ, 'estados.json'), 'utf8'));
+const MANIFESTO = '_camadas.json';
+const estados = {};
+for (const nome of readdirSync(join(RAIZ, 'estados'))) {
+  const manifesto = join(RAIZ, 'estados', nome, MANIFESTO);
+  const abaixo = existsSync(manifesto) ? JSON.parse(readFileSync(manifesto, 'utf8')) : [];
+  estados[nome] = ['base', ...abaixo, nome];
+}
 
 function arquivosDe(pasta) {
   return readdirSync(pasta).flatMap((nome) => {
@@ -23,7 +30,8 @@ export function compor(camadas) {
   for (const camada of camadas) {
     const pasta = camada === 'base' ? join(RAIZ, 'base') : join(RAIZ, 'estados', camada);
     for (const arquivo of arquivosDe(pasta)) {
-      arvore.set(relative(pasta, arquivo).replaceAll('\\', '/'), readFileSync(arquivo));
+      const nome = relative(pasta, arquivo).replaceAll('\', '/');
+      if (nome !== MANIFESTO) arvore.set(nome, readFileSync(arquivo));
     }
   }
   return arvore;

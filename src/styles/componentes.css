@@ -86,9 +86,18 @@
 
 @media (max-width: 52rem) {
   .cabeca__corrente,
-  .acao__texto,
   .acao__tecla {
     display: none;
+  }
+
+  /* O texto some da vista, mas continua sendo o nome do link para leitores de tela. */
+  .acao__texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }
 
@@ -567,6 +576,22 @@ dialog::backdrop {
   font-weight: 800;
 }
 
+/* Página longa: o navegador só calcula o texto que está perto da tela.
+   (O primeiro layout de um módulo inteiro custava segundos em celular lento.)
+   Só entra em blocos sem sombra nem conteúdo para fora da própria caixa. */
+.prosa > :is(p, ul, ol, .tabela-rolagem, pre, .bloco-codigo, .saida, .fontes),
+.ficha__corpo {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 10rem;
+}
+
+@media print {
+  .prosa > *,
+  .ficha__corpo {
+    content-visibility: visible;
+  }
+}
+
 /* ============ Notas laterais ============ */
 
 .nota {
@@ -595,7 +620,7 @@ dialog::backdrop {
     float: right;
     clear: right;
     width: var(--margem-nota);
-    margin-right: calc(-1 * var(--margem-nota) - var(--e-6));
+    margin-right: 0;
     margin-top: 0.3rem;
     border-left: 0;
     border-top: 3px solid var(--marca);
