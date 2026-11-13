@@ -136,3 +136,48 @@ externa, com `<title>` e `<desc>`. `viewBox` de 800 de largura; confira que nenh
 Máximo 25 linhas: arquivos criados; contagem de palavras visíveis; execuções reais feitas e resultado; o que
 ficou "não testado" e por quê; mudanças necessárias em arquivos compartilhados; dúvidas que você decidiu
 sozinho (e como).
+
+## 9. Páginas R1–R8 (o menu `/` dissecado)
+
+Além do MDX em `src/content/menu/<id>.mdx`, você entrega `src/content/comandos/partes/<id>.json`: um array com
+**uma carta por comando** da sua seção, exatamente os nomes de `docs/comandos-por-secao.json` (nem a mais, nem a
+menos). Fonte: `.docs-cache/en/commands.md` (a linha do comando) + a página de detalhe que ela liga + a CLI.
+
+```json
+{
+  "id": "compact",
+  "nome": "/compact",
+  "aliases": [],
+  "categoria": "R3",
+  "argumentos": "[instruções]",
+  "o_que_faz": "Uma frase, palavras próprias, até 160 caracteres.",
+  "quando_usar": "Situação concreta em que este comando é a escolha certa.",
+  "exemplo": "/compact mantenha as decisões sobre o banco",
+  "armadilha": "O erro que realmente acontece com ele. Se não houver, a limitação mais relevante.",
+  "tipo": "embutido",
+  "disponibilidade": { "plano": "Todos", "plataforma": "CLI e apps", "requisitos": "" },
+  "versao_minima": "",
+  "status": "estável",
+  "testado_localmente": false,
+  "verificado_em_versao": "2.1.323",
+  "verificado_em_data": "12/11/2026",
+  "fonte": "https://code.claude.com/docs/en/commands.md"
+}
+```
+
+- `tipo`: `embutido` | `skill embutida` | `workflow` | `removido` | `oculto`, como a página oficial indica.
+- `aliases`: com barra (`["/reset", "/new"]`). `versao_minima`: só se a doc declarar (ex.: `"2.1.221"`).
+- `disponibilidade.plano`: `"Todos"` quando a doc não restringe; senão o que a doc diz (ex.: `"Pro, Max e Ultra"`).
+- `status`: `depende-de-plano` quando plano ou plataforma restringem; `beta` só se a doc disser.
+- `testado_localmente`: `true` **somente** se você executou o comando nesta máquina e viu o resultado. Muitos
+  comandos de barra funcionam em modo não interativo: teste com `claude -p "/comando args"` num diretório de
+  teste e registre a saída em `VERIFICATION/<id>.md`. Os que abrem painel interativo, exigem navegador, outro
+  app, plano ou conta que você não pode usar ficam `false` (a carta mostra "não testado localmente").
+  Não rode comandos que publicam, gastam, enviam feedback, alteram a conta ou a configuração global
+  (`/login`, `/logout`, `/upgrade`, `/feedback`, `/bug`, `/install-*`, `/passes`, `/usage-credits`, etc.).
+- Comando removido: carta com `tipo: "removido"`, dizendo desde quando e o que usar no lugar.
+
+O MDX da seção: `## Essencial` curto (o que a seção resolve, uma tabela "quero X → comando Y", e o que a doc
+ensina sobre menus que mudam quando for pertinente à seção), depois `<Cartas cat="R3" />`, as camadas, e
+**uma** ficha de campo: a **volta guiada**, que usa cada comando testável da seção ao menos uma vez no
+laboratório, com Prova. `minutos` entre 30 e 60. Meta de texto visível: 900 a 1.800 palavras (as cartas não contam).

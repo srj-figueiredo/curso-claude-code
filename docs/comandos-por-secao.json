@@ -1,0 +1,12 @@
+{
+  "_nota": "Distribuição dos comandos pelas seções R1–R8 (BRIEFING seção 9), reconciliada com a página oficial em 12/11/2026. Linhas de alias da página oficial (/review, /cost, /stats, '/design consent, /design revoke') não viram carta: entram na carta do comando principal.",
+  "R1": ["init", "memory", "config", "status", "doctor", "model", "effort", "fast", "advisor", "output-style", "theme", "color", "statusline", "keybindings", "terminal-setup", "tui", "focus", "scroll-speed", "voice", "update-config", "import", "login", "logout", "privacy-settings", "restart", "vim"],
+  "R2": ["permissions", "fewer-permission-prompts", "sandbox", "auto-mode-setup", "add-dir", "cd", "security-review"],
+  "R3": ["plan", "goal", "btw", "context", "compact", "autocompact", "clear", "rewind", "resume", "branch", "rename", "recap", "copy", "export", "diff", "help", "powerup", "release-notes", "exit", "ultraplan"],
+  "R4": ["agents", "tasks", "background", "fork", "subtask", "batch", "list-agents", "stop", "workflows", "workflow-authoring", "deep-research", "loop", "schedule"],
+  "R5": ["skills", "skill-doctor", "reload-skills", "plugin", "reload-plugins", "plugin-authoring", "mcp", "hooks", "run-skill-generator", "claude-api"],
+  "R6": ["code-review", "ultrareview", "simplify", "verify", "run", "debug", "autofix-pr", "install-github-app", "install-slack-app", "pr-comments"],
+  "R7": ["desktop", "teleport", "remote-control", "remote-env", "web-setup", "chrome", "claude-in-chrome", "ide", "mobile", "artifacts", "artifact-capabilities", "artifact-diagramming", "design", "design-login", "design-sync", "slides", "dataviz"],
+  "R8": ["usage", "usage-credits", "rate-limit-options", "upgrade", "insights", "team-onboarding", "passes", "feedback", "bug", "heapdump", "setup-bedrock", "setup-vertex", "stickers", "radio"],
+  "_aliases_sem_carta": { "review": "code-review", "cost": "usage", "stats": "usage" }
+}
