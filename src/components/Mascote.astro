@@ -46,7 +46,7 @@ if (humor === 'feliz') {
 
 const desenho =
   forma([[5, 14, 3, 3], [12, 14, 3, 3]], 'mq-c') + bracos + forma([[4, 4, 12, 11]], 'mq-b') + rosto;
-const a11y = titulo ? { role: 'img', 'aria-label': titulo } : { 'aria-hidden': 'true' };
+const a11y = titulo ? { role: 'img' as const, 'aria-label': titulo } : { 'aria-hidden': 'true' as const };
 ---
 
 <svg
