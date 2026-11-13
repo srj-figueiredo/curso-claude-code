@@ -579,7 +579,7 @@ dialog::backdrop {
 /* Página longa: o navegador só calcula o texto que está perto da tela.
    (O primeiro layout de um módulo inteiro custava segundos em celular lento.)
    Só entra em blocos sem sombra nem conteúdo para fora da própria caixa. */
-.prosa > :is(p, ul, ol, .tabela-rolagem, pre, .bloco-codigo, .saida, .fontes),
+.prosa > :is(p, ul, ol, .tabela-rolagem, pre, .bloco-codigo, .saida),
 .ficha__corpo {
   content-visibility: auto;
   contain-intrinsic-size: auto 10rem;

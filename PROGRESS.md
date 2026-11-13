@@ -6,7 +6,7 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 ## Onde parou
 
 13/11/2026: modo de trabalho trocado para o do `CONTINUAR.md` (plano Pro, uma página por vez, sem subagentes).
-M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). Próximo item: M1 nos gates.
+M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). Próximo item: M0 nos gates (falta `VERIFICATION/m0.md`).
 
 ## Fila
 
@@ -21,7 +21,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
       navegador) + atalho "Manual de Bordo" na Área de Trabalho apontando para ele.
 - [x] **Script de um clique.** `scripts/proxima-pagina.ps1` + atalho "Manual de Bordo · próxima página"
       (CONTINUAR.md §7). `logs/` no `.gitignore`.
-- [ ] **M1 nos gates.** Conferir build, axe, uma foto em 390 px; ajustar o que destoar do M3.
+- [x] **M1 nos gates.** (build e axe ok 13/11; foto 390/1280 fica para o fim da Parte I) Conferir build, axe, uma foto em 390 px; ajustar o que destoar do M3.
 - [ ] **M0 nos gates.** Falta `VERIFICATION/m0.md` (o autor foi interrompido): conferir as afirmações do M0
       contra a doc em cache e registrar; depois build, axe, foto.
 - [ ] **M2.** Escrever do zero (só existe `lab/estados/m2-inicio/`; confira se serve ou apague). Tem as
@@ -66,8 +66,8 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 | Página | Fatos | Execução | Estilo | Visual/a11y | Grátis↔Pago | Estado |
 |---|---|---|---|---|---|---|
 | M3 | ok | ok (ficha 2 ilustrativa) | autor | axe ok; LH desempenho 80 | n/a | verificado, ressalva de desempenho |
-| M1 | ok (VERIFICATION/m1.md) | ok (instalação não testada: máquina já instalada) | autor | pendente | n/a | escrito |
-| M0 | sem registro | pendente | autor | pendente | pendente | escrito, falta verificação |
+| M1 | ok (VERIFICATION/m1.md) | ok (instalação não testada: máquina já instalada) | autor | axe ok; foto pendente | n/a | escrito |
+| M0 | sem registro | pendente | autor | axe ok; foto pendente | pendente | escrito, falta verificação |
 
 ## Fase 0, o que foi feito
 
