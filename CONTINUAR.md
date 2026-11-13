@@ -17,6 +17,8 @@ Estado e fila: `PROGRESS.md`.
 3. Pegue **o primeiro item não feito da Fila** e execute (seção 3). Ao terminar, faça o checkpoint
    (seção 5) e pegue o próximo. Continue até o limite de uso ou até o autor pedir para parar.
 4. Não peça aprovação para nada que esteja na Fila: o autor já aprovou (seção 6).
+5. Leia também o **`PENDENCIAS.md`**: o que está aberto e precisa do autor. Não tente contornar os itens bloqueados;
+   lembre o autor deles no resumo final.
 
 ## 2. Economia (o autor usa o plano Pro)
 

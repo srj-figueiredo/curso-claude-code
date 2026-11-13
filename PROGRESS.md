@@ -8,6 +8,7 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 13/11/2026: Onda 1 fechada (M0 a M3 verificados, atalho local e script de um clique prontos), exceto a **Publicação**,
 bloqueada por permissão (aguarda o autor). Onda 2 em andamento: M4 e M5 feitos e verificados; auditoria geral feita
 (ver D014). **Próximo item: M6.**
+Tudo que depende do autor (publicação, e-mail dos commits, testes com GitHub, telas interativas, decisões) está em `PENDENCIAS.md`.
 Pendências que dependem da Publicação: ficha de PR do M4, deploy e domínio do M5, `upload-pages-artifact` v3 para v4 no
 `deploy.yml`, e trocar o e-mail pessoal dos commits por um endereço noreply antes de tornar o repositório público (D014).
 
