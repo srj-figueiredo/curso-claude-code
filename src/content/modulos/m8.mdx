@@ -1,0 +1,594 @@
+---
+id: m8
+titulo: Skills
+parte: p4
+ordem: 8
+minutos: 80
+pre_requisitos: [m6, m7]
+objetivos:
+  - Decidir se uma instrução vira CLAUDE.md, skill, hook, MCP ou subagente.
+  - Criar uma skill com SKILL.md e escolher quem pode chamá-la, você, o Claude ou os dois.
+  - Passar argumentos a uma skill e injetar contexto vivo com um comando de shell.
+  - Fazer uma skill carregar sozinha só quando o Claude mexe em certos arquivos.
+  - Medir quanto cada skill custa em contexto e desligar as que não valem.
+tldr:
+  - Uma skill é um procedimento num arquivo SKILL.md. Só a descrição fica sempre em contexto; o corpo carrega quando a skill é usada.
+  - Procedimento com etapas vira skill. Fato que vale sempre vira CLAUDE.md. O que precisa rodar sempre vira hook.
+  - Toda skill listada custa contexto em todo turno. O /skill-doctor mostra o custo e o uso de cada uma.
+verificado_em_versao: 2.1.323
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: m8-e1, titulo: Uma skill de commit em português, minutos: 20, custo: gratis }
+  - { id: m8-e2, titulo: Uma skill com argumentos e a invocação automática, minutos: 20, custo: gratis }
+  - { id: m8-e3, titulo: Uma skill que carrega sozinha por caminho, minutos: 15, custo: gratis }
+  - { id: m8-e4, titulo: Medir o custo das skills, minutos: 15, custo: gratis }
+---
+
+## Essencial
+
+No [M6](../m6/) você viu que o `CLAUDE.md` guarda **fatos** que valem em toda sessão. Mas há coisas que não são fatos: são **procedimentos**, com etapas, que você só quer de vez em quando. "Faça o commit do meu jeito." "Revise este PR com a nossa lista." Para isso existem as **skills**.
+
+### O que é uma skill
+
+Uma skill é uma pasta com um arquivo `SKILL.md`: um cabeçalho que diz **quando** usá-la e um corpo com as **instruções**. O Claude a usa quando acha relevante, ou você a chama com `/nome-da-skill`.
+
+A diferença para o `CLAUDE.md` é o **custo**. O `CLAUDE.md` entra inteiro em toda sessão. Numa skill, só a descrição fica sempre em contexto; o corpo carrega **quando a skill é usada**. Por isso material longo de referência quase não custa até você precisar.
+
+Três coisas que ajudam a situar:
+
+- **Comandos customizados viraram skills.** Um arquivo `.claude/commands/deploy.md` e uma skill `.claude/skills/deploy/SKILL.md` criam o mesmo `/deploy`. Os arquivos antigos continuam funcionando; a skill acrescenta pasta de apoio, controle de quem chama e carga automática.
+- **Há skills prontas.** O Claude Code traz as **embutidas**, como `/doctor`, `/code-review`, `/batch`, `/debug`, `/loop` e `/claude-api`. Elas aparecem junto dos comandos, marcadas como **Skill**. Dá para desligá-las com `disableBundledSkills`.
+- **É um padrão aberto.** As skills seguem o padrão **Agent Skills**, que funciona em várias ferramentas de IA. O Claude Code acrescenta recursos próprios (controle de chamada, execução em subagente, injeção de contexto).
+
+### Skill, CLAUDE.md, hook, MCP ou subagente?
+
+Cada extensão resolve uma coisa. A tabela, adaptada da documentação:
+
+| Extensão | O que faz | Quando usar | Custo de contexto |
+|---|---|---|---|
+| **CLAUDE.md** | Contexto fixo, toda conversa | Convenções do projeto, "sempre faça X" | Todo pedido |
+| **Skill** | Instruções e fluxos que o Claude usa quando preciso | Tarefa repetível, referência longa | Baixo: descrição a cada pedido, corpo só no uso |
+| **Subagente** | Contexto isolado que devolve um resumo | Tarefa paralela ou que despeja muita saída | Isolado da sessão |
+| **MCP** | Liga serviços externos | Dados e ações de fora | Baixo até a ferramenta ser usada |
+| **Hook** | Roda um script em um evento | Algo que **tem** que acontecer toda vez | Zero, salvo se devolver contexto |
+| **Plugin** | Empacota as demais e distribui | Reusar em outros repositórios | Soma o que carrega |
+
+A própria documentação dá os gatilhos para adicionar cada uma:
+
+- O Claude errou a mesma convenção duas vezes: **CLAUDE.md**.
+- Você digita o mesmo pedido para começar uma tarefa, ou cola o mesmo passo a passo pela terceira vez: **skill**.
+- Uma tarefa lateral enche a conversa de saída que você não vai reler: **subagente** ([M12](../m12/)).
+- Você quer que algo aconteça sempre, sem pedir: **hook** ([M9](../m9/)).
+- Um segundo repositório precisa da mesma configuração: **plugin** ([M13](../m13/)).
+
+Se você notou que uma seção do seu `CLAUDE.md` virou procedimento em vez de fato, é hora de ela ser skill.
+
+### Anatomia de uma skill
+
+```text
+.claude/skills/commit-pt/
+└── SKILL.md        (obrigatório)
+```
+
+O arquivo tem duas partes: o **frontmatter** (YAML entre dois `---`, na primeira linha) e o **corpo** em Markdown:
+
+```markdown
+---
+description: Cria um commit em português a partir das mudanças preparadas. Use quando o usuário pedir para commitar.
+disable-model-invocation: true
+---
+
+Escreva a mensagem no imperativo, em português, com no máximo 60 caracteres.
+```
+
+O nome do comando vem do nome da **pasta** (`/commit-pt`), ou do campo `name`. Se o cabeçalho tiver erro de YAML, a skill ainda carrega, mas **sem metadados**: o `/nome` funciona e o Claude não a encontra pela descrição. Um campo escrito errado é ignorado **sem aviso**, então confira os nomes.
+
+**Onde a skill mora** decide quem a vê:
+
+| Local | Caminho | Vale em |
+|---|---|---|
+| Pessoal | `~/.claude/skills/<nome>/SKILL.md` | Todos os seus projetos |
+| Projeto | `.claude/skills/<nome>/SKILL.md` | Este repositório (commite para o time) |
+| Aninhado | `<subpasta>/.claude/skills/<nome>/SKILL.md` | Quando o Claude trabalha ali |
+| Plugin | `<plugin>/skills/<nome>/SKILL.md` | Onde o plugin está ligado, como `/plugin:nome` |
+| Organização | Pasta de configurações gerenciadas | Todos os usuários |
+
+O Claude Code **observa** as pastas de skills: criar, editar ou apagar uma skill vale na sessão em curso, sem reiniciar. A exceção é uma pasta `skills/` de topo que ainda não existia quando a sessão começou: rode `/reload-skills`.
+
+### Os campos do cabeçalho que mais importam
+
+Todos são opcionais. Só a `description` é recomendada.
+
+| Campo | O que faz |
+|---|---|
+| `description` | O que a skill faz **e quando usar**. É o que o Claude lê para decidir. Ponha o caso principal primeiro: descrição somada ao `when_to_use` é cortada em 1.536 caracteres na lista |
+| `disable-model-invocation: true` | O Claude **não** a chama sozinho. Para fluxos com efeito colateral (`/commit`, `/deploy`) |
+| `user-invocable: false` | Só o Claude a chama: conhecimento de fundo, que não é um comando para você |
+| `allowed-tools` | Ferramentas liberadas **só no turno** em que a skill roda |
+| `argument-hint`, `arguments` | Dica de argumento no autocompletar e nomes dos argumentos |
+| `paths` | A skill só carrega sozinha quando o Claude trabalha em arquivos que casam |
+| `context: fork`, `agent` | Roda a skill num subagente |
+| `model`, `effort` | Modelo e esforço durante o turno da skill |
+| `hooks` | Hooks registrados enquanto a skill estiver ativa |
+
+**Quem pode chamar:**
+
+| Cabeçalho | Você | O Claude | Descrição em contexto |
+|---|---|---|---|
+| (padrão) | Sim | Sim | Sempre |
+| `disable-model-invocation: true` | Sim | Não por conta própria | **Fora do contexto** |
+| `user-invocable: false` | Não | Sim | Sempre |
+
+Para rodar uma skill direto, ponha o nome **no começo** da mensagem (`/commit-pt`). No meio de uma frase, o nome só **autoriza** o Claude a usá-la.
+
+### Argumentos
+
+O que vem depois do nome entra na skill. Três formas:
+
+| No corpo | Vira |
+|---|---|
+| `$ARGUMENTS` | Tudo o que você digitou depois do nome |
+| `$0`, `$1`... (ou `$ARGUMENTS[0]`) | O argumento daquela posição |
+| `$nome` | O argumento nomeado, declarado em `arguments:` |
+
+Se você passa argumentos e o corpo não tem nenhum marcador, o Claude Code anexa `ARGUMENTS: ...` ao final, para o Claude ao menos ver o que você digitou. Um marcador numerado sem argumento **fica literal**; um nomeado sem argumento vira vazio. Valores com espaço vão entre aspas.
+
+### Contexto vivo: `!` e um comando
+
+A sintaxe `` !`comando` `` roda um comando de shell **antes** de o Claude ler a skill e troca a linha pela saída. O Claude recebe o dado, não o comando. Para vários comandos, use um bloco aberto com ` ```! `.
+
+```markdown
+## Mudanças preparadas
+
+!`git diff --staged`
+```
+
+Detalhes que importam: **se o comando falha, a skill inteira falha** (o Claude nem vê o conteúdo), com a mensagem `Shell command failed for pattern ...`; qualquer código de saída diferente de zero conta como falha (use `|| true` num comando que pode sair com 1); e o `!` precisa estar no começo da linha ou depois de um espaço. No Windows sem Git Bash, a doc mostra o erro `requires bash`, e o campo `shell: powershell` troca o shell. Para proibir esse recurso, a configuração `disableSkillShellExecution`.
+
+<Nota rotulo="Segurança, ligada ao M7">
+O campo `allowed-tools` de uma skill **de projeto** vale mesmo em pasta nunca confiada e em `claude -p`. Uma skill pode, portanto, liberar ferramentas por conta própria. Leia o `allowed-tools` de skills de um repositório que você não escreveu antes de rodar o Claude Code nele ([M7](../m7/)).
+</Nota>
+
+### Vida e custo de uma skill
+
+Quando você ou o Claude invocam uma skill, o corpo entra na conversa **como uma mensagem e fica lá** nos turnos seguintes. O arquivo não é relido. Por isso escreva instruções para a tarefa inteira ("rode os testes depois de toda edição"), não passos de uma vez só. Se o Claude parar de seguir a skill no meio da sessão, a documentação sugere três saídas: mover a regra que **tem** que valer sempre para um hook, redigir a orientação para a tarefa toda, ou reinvocar a skill depois de uma compactação.
+
+A compactação ([M2](../m2/)) leva as skills adiante com orçamento: guarda os **5.000 primeiros tokens** de cada skill invocada e **25.000** no total, começando pelas mais recentes. Ponha o mais importante **no topo** do `SKILL.md`.
+
+O custo fixo é a **lista**: nome e descrição de cada skill, a cada turno. O orçamento da lista é 1% da janela de contexto, e quando estoura o Claude Code corta descrições, começando pelas skills menos usadas, o que tira dali as palavras que fazem o Claude achar a skill. Três ferramentas medem e controlam:
+
+- **`/context`**: a linha **Skills** mostra o tamanho da lista.
+- **`/skill-doctor`**: para cada skill, o custo na lista e quantas vezes foi usada, e aponta as que nunca foram. Pede o Claude Code 2.1.252 ou mais novo.
+- **`/skills`**: lista, filtra e alterna a visibilidade de cada skill. O que isso grava é a configuração `skillOverrides`:
+
+| `skillOverrides` | Claude vê | Menu `/` |
+|---|---|---|
+| `"on"` | Nome e descrição | Sim |
+| `"name-only"` | Só o nome | Sim |
+| `"user-invocable-only"` | Nada | Sim |
+| `"off"` | Nada | Não |
+
+Skills de **plugin** não são afetadas por `skillOverrides`: desligue o plugin em `/plugin`.
+
+### Distribuir
+
+Uma skill de projeto vai com o repositório. Para reusar em outros projetos ou entregar a terceiros, o caminho é o **plugin** e o **marketplace** ([M13](../m13/)). Se você pretende subir a skill para o claude.ai ou para a API de Skills, use **só os seis campos do padrão** (`name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`): qualquer outro campo, como `argument-hint`, faz o envio **falhar** com `Unexpected key(s) in SKILL.md frontmatter`. Os recursos de corpo exclusivos do Claude Code, como o `!` de contexto vivo, não funcionam no chat do claude.ai nem na API.
+
+<Camada tipo="capo" titulo="Nomes, descrições e limites">
+
+### De onde vem o nome do comando
+
+Skill em `~/.claude/skills/` ou `.claude/skills/`: o campo `name` ou o nome da pasta. Arquivo em `.claude/commands/`: o nome do arquivo sem extensão, e uma subpasta vira `pasta:arquivo`. Skill aninhada cujo nome colide com outra ganha um prefixo de pasta (`/apps/web:deploy`). Skill de plugin leva o prefixo do plugin (`/meu-plugin:revisar`).
+
+### Nomes que o Claude Code recusa
+
+Uma skill não carrega se o nome da pasta tiver um espaço de largura zero, caractere de controle, `<` ou `>`, ou espaço que não seja um único espaço entre palavras. Os nomes `synced` e `anthropic-skills` são reservados. Para achar o culpado, `claude --debug` e procure `[names]` no log.
+
+### Descrição cortada
+
+A lista sempre contém todos os nomes, mas, passando do orçamento, descrições são cortadas. Suba o orçamento com `skillListingBudgetFraction` (por exemplo, `0.02`) ou reduza descrições longas. O `/doctor` estima o custo da lista e quem mais pesa.
+
+### Validar cabeçalhos
+
+`claude plugin validate .claude/skills` acha `SKILL.md` com YAML quebrado (Claude Code 2.1.233 ou mais novo). Para medir **se** uma skill dispara, compare fresh sessions com e sem ela, e o `claude plugin eval` automatiza isso para skills de plugin.
+
+### Arquivos de apoio e variáveis
+
+A pasta da skill pode ter scripts e referências, citados no corpo, que só carregam quando o Claude os lê. `${CLAUDE_SKILL_DIR}` aponta para a pasta da skill, e `${CLAUDE_PROJECT_DIR}` para a raiz do projeto. Usar a mesma variável no corpo e em `allowed-tools` deixa a skill rodar um script próprio sem pedir permissão.
+
+### Dica de design
+
+O Claude Code traz uma dica embutida que sugere o plugin `frontend-design`. Plugins de design e front-end são distribuídos como qualquer outro, e o [C4](../c4/) volta a eles no case da landing page.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Descrição que diz o quê, mas não quando
+
+"Utilitário de commits" não dá ao Claude pista de quando carregar. Escreva "Use quando o usuário pedir para commitar".
+
+### Skill de efeito colateral sem `disable-model-invocation`
+
+O Claude pode decidir sozinho que "agora é hora de dar deploy". Fluxo com consequência vai com `disable-model-invocation: true`.
+
+### Campo do cabeçalho com nome errado
+
+É ignorado sem erro. Compare com a tabela, hífens incluídos.
+
+### Corpo que narra em vez de instruir
+
+Cada linha da skill é custo recorrente depois que ela carrega. Diga o que fazer, não por quê, e mantenha o corpo curto.
+
+### Instrução que tem que valer toda vez, escrita só na skill
+
+O Claude pode deixar de segui-la no meio da sessão. Regra obrigatória vai para um hook ([M9](../m9/)).
+
+### Dezenas de skills com descrições longas
+
+A lista estoura o orçamento e o Claude passa a não achar as skills certas. Rode `/skill-doctor` e desligue as que nunca foram usadas.
+
+### Esperar que a skill saiba o que mudou depois de compactar
+
+Reinvoque a skill depois da compactação, e ponha o essencial no topo.
+
+### Subir ao claude.ai uma skill com `argument-hint`
+
+O envio falha. Mantenha uma versão com só os seis campos do padrão.
+
+</Camada>
+
+## Fichas de campo
+
+As quatro fichas usam o laboratório **Pendências**.
+
+- [Ponto de partida: `m8-inicio.zip`](../lab/m8-inicio.zip)
+
+```bash
+cd pendencias
+git init -b main
+git add -A
+git commit -m "Ponto de partida"
+npm test
+```
+
+O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [M4](../m4/). As skills das fichas ficam em `.claude/skills/` **da pasta do laboratório**, sem tocar na sua configuração pessoal.
+
+<Nota rotulo="O que foi testado">
+Executei as quatro fichas com `claude -p`, em Sonnet 5.5. Uma skill pode ser chamada em `claude -p` com `/nome` no começo do pedido. A tela interativa (`/skills`, o menu `/` e a aba Stats do `/plugin`) é descrita pela documentação. Nas execuções, o `/context` e o `/skill-doctor` do autor traziam as skills de plugins pessoais dele, então os números absolutos variam: confie na **diferença** antes e depois.
+</Nota>
+
+<Ficha
+  id="m8-e1"
+  n={1}
+  titulo="Uma skill de commit em português"
+  objetivo="Criar uma skill só manual, com contexto vivo e ferramenta pré-aprovada."
+  minutos={20}
+  pre="Laboratório baixado e commitado"
+>
+
+1. Crie a pasta da skill:
+
+   <SO unix="mkdir -p .claude/skills/commit-pt" win="New-Item -ItemType Directory -Force .claude/skills/commit-pt | Out-Null" />
+
+2. No editor, crie `.claude/skills/commit-pt/SKILL.md` com este conteúdo:
+
+   ```markdown
+   ---
+   description: Cria um commit em português a partir das mudanças preparadas. Use quando o usuário pedir para commitar ou fazer um commit.
+   disable-model-invocation: true
+   allowed-tools: Bash(git commit *)
+   ---
+
+   ## Mudanças preparadas
+
+   !`git diff --staged`
+
+   ## Instruções
+
+   Escreva uma mensagem de commit **em português, no imperativo**, com no máximo 60 caracteres no título (por exemplo: "Adiciona filtro por prioridade"). Se o diff acima estiver vazio, diga que não há nada preparado e pare. Caso contrário, rode `git commit -m "<título>"` e mostre o título usado.
+   ```
+
+3. Faça uma mudança pequena e prepare-a:
+
+   <SO unix='echo "// ajuste de teste" >> src/cli.js' win='Add-Content src/cli.js "// ajuste de teste" -Encoding ascii' />
+
+   ```bash
+   git add src/cli.js
+   ```
+
+4. Chame a skill:
+
+   ```bash
+   claude -p "/commit-pt"
+   ```
+
+5. Confira:
+
+   ```bash
+   git log --format="%h %s" -2
+   ```
+
+<Prova>
+
+O Claude cria o commit, sem nenhuma permissão negada, porque o `allowed-tools` liberou o `git commit` **só neste turno**. A mensagem está em português e no imperativo. Na nossa execução:
+
+```text
+Commit criado: Adiciona comentário de ajuste em cli.js (07a6831).
+07a6831 Adiciona comentário de ajuste em cli.js
+67538c0 base
+```
+
+</Prova>
+
+<Gabarito>
+
+Três mecanismos trabalharam juntos. O `` !`git diff --staged` `` rodou **antes** do Claude ler a skill e trouxe o diff real. O `disable-model-invocation: true` garante que o Claude não decida commitar sozinho. E o `allowed-tools` pré-aprovou só o `git commit` durante essa chamada, sem abrir permanentemente.
+
+</Gabarito>
+
+<DeuErro>
+
+- **No Git Bash, `claude -p "/commit-pt"` fala de um caminho `C:/Program Files/Git/commit-pt`.** O Git Bash converte a barra. Use `MSYS_NO_PATHCONV=1` antes do comando, ou o PowerShell.
+- **A skill não é encontrada.** Confira o caminho exato (`.claude/skills/commit-pt/SKILL.md`) e o `---` na **primeira linha** do arquivo.
+- **O commit ficou em inglês ou longo demais.** O Claude seguiu a mensagem de exemplo? Aperte a instrução e rode de novo.
+
+</DeuErro>
+
+<Desafio>
+
+Tire o `disable-model-invocation` e peça, sem a barra, "faça um commit do que está preparado". O Claude usou a skill por conta própria? Por que um fluxo de commit merece o campo?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m8-e2"
+  n={2}
+  titulo="Uma skill com argumentos e a invocação automática"
+  objetivo="Passar um argumento nomeado e ver a descrição fazer o Claude achar a skill."
+  minutos={20}
+  pre="Ficha 1"
+>
+
+1. Crie a pasta e o arquivo `.claude/skills/resumo-arquivo/SKILL.md`:
+
+   <SO unix="mkdir -p .claude/skills/resumo-arquivo" win="New-Item -ItemType Directory -Force .claude/skills/resumo-arquivo | Out-Null" />
+
+   ```markdown
+   ---
+   description: Resume um arquivo do projeto em uma frase. Use quando o usuário pedir o resumo de um arquivo.
+   argument-hint: "[arquivo]"
+   arguments: [arquivo]
+   ---
+
+   Leia o arquivo `$arquivo` e responda com **uma única frase** dizendo para que ele serve. Comece a frase com "Serve para".
+   ```
+
+2. Chame com um argumento, e depois sem:
+
+   ```bash
+   claude -p "/resumo-arquivo src/cli.js"
+   claude -p "/resumo-arquivo"
+   ```
+
+3. **Invocação automática.** Sem a barra, peça algo que case com a descrição:
+
+   ```bash
+   claude -p "Pode resumir o arquivo src/pendencias.js para mim?"
+   ```
+
+4. **Controle.** Desligue a skill e repita o passo 3. Crie `.claude/settings.local.json`:
+
+   <SO unix={`echo '{"skillOverrides":{"resumo-arquivo":"off"}}' > .claude/settings.local.json`} win={`Set-Content .claude/settings.local.json '{"skillOverrides":{"resumo-arquivo":"off"}}' -Encoding ascii`} />
+
+   Rode o passo 3 de novo e depois apague o arquivo.
+
+<Prova>
+
+No passo 2, a primeira chamada resume o `src/cli.js` numa frase que começa com "Serve para"; a segunda, sem argumento, avisa que faltou o nome do arquivo. No passo 3, a resposta **começa com "Serve para"**: o Claude achou a skill pela descrição. No passo 4, com a skill desligada, a resposta é um resumo comum, sem o marcador. Na nossa execução:
+
+```text
+passo 2:   Serve para ser a interface de linha de comando de um gerenciador de pendências...
+sem arg.:  O comando /resumo-arquivo chegou sem o nome do arquivo, então não tenho o que ler.
+passo 3:   Serve para concentrar as regras da lista de pendências... (4 turnos)
+passo 4:   `src/pendencias.js` reúne as regras da lista de pendências... (2 turnos)
+```
+
+</Prova>
+
+<Gabarito>
+
+O `$arquivo` veio do `arguments: [arquivo]`, que mapeia o primeiro argumento. A diferença entre os passos 3 e 4 é **a skill sendo carregada**: o marcador "Serve para" é uma convenção arbitrária da skill, então só aparece se ela rodou. A descrição ("Use quando o usuário pedir o resumo de um arquivo") foi o que fez o Claude achá-la, sem você escrever o nome.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O passo 3 não usou a skill.** A descrição não bate com o pedido. Acrescente as palavras que você usa ("resumir", "resumo", "o que faz este arquivo").
+- **`$arquivo` apareceu literal no texto.** O nome em `arguments:` não bate com o do corpo, ou você escreveu o campo errado (`argument:`). Campo errado é ignorado sem aviso.
+- **O passo 4 ainda usou a skill.** O `settings.local.json` não carregou: confira o JSON e o nome da skill.
+
+</DeuErro>
+
+<Desafio>
+
+Troque `$arquivo` por `$0` e retire o `arguments:`. Funciona igual? E se o corpo não tiver nenhum marcador, o que o Claude recebe?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m8-e3"
+  n={3}
+  titulo="Uma skill que carrega sozinha por caminho"
+  objetivo="Fazer uma convenção valer só quando o Claude mexe em arquivos de teste."
+  minutos={15}
+  pre="Ficha 1"
+>
+
+1. Crie a pasta e o arquivo `.claude/skills/testes-pt/SKILL.md`:
+
+   <SO unix="mkdir -p .claude/skills/testes-pt" win="New-Item -ItemType Directory -Force .claude/skills/testes-pt | Out-Null" />
+
+   ```markdown
+   ---
+   description: Convenções para escrever testes neste projeto. Use ao criar ou editar arquivos de teste.
+   paths:
+     - "test/**/*.js"
+   ---
+
+   Todo teste novo deste projeto segue a convenção da casa:
+
+   - O título do `test(...)` começa com a palavra "Cenário:" (com os dois-pontos).
+   - Um comentário `// Arrange / Act / Assert` separa as três partes do teste.
+   ```
+
+2. Peça um teste novo:
+
+   ```bash
+   claude -p "Adicione em test/pendencias.test.js um teste para a função abertas(). Pronto quando npm test passar." --permission-mode acceptEdits --allowedTools "Bash(npm test)"
+   ```
+
+3. Procure a convenção no teste que o Claude escreveu:
+
+   <SO unix='grep -n "Cenário\|Arrange" test/pendencias.test.js' win='Select-String -Path test/pendencias.test.js -Pattern "Cenário","Arrange" -Encoding utf8' />
+
+<Prova>
+
+O teste novo traz as duas marcas da convenção, que você **não** pediu no prompt, e o `npm test` passa. Na nossa execução:
+
+```text
+62:test('Cenário: abertas devolve só as pendências não feitas, sem alterar a lista original', () => {
+63:  // Arrange / Act / Assert
+npm test: 11 testes, 0 falhas
+```
+
+</Prova>
+
+<Gabarito>
+
+O `paths: ["test/**/*.js"]` mantém a skill **fora** do contexto até o Claude ler ou editar um arquivo que casa. Quando ele tocou em `test/pendencias.test.js`, a skill carregou e a convenção entrou. É o equivalente, para procedimentos, da regra com `paths:` do [M6](../m6/): carga sob demanda, sem peso nos pedidos que não têm a ver. A marca "Cenário:" é arbitrária de propósito, para que o acerto não possa ser acaso.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O teste saiu sem "Cenário:".** Os padrões são relativos à pasta onde você abriu o Claude. Abra a sessão **na raiz do laboratório**, e confira que o arquivo editado fica dentro dela.
+- **A skill aparece no `/skill-doctor` mesmo sem ter sido usada.** Esperado: o `paths` limita o **carregamento automático**, não a existência.
+- **Arquivo em outra pasta (por exemplo, um worktree irmão).** Fora do diretório atual, não casa. Abra o Claude lá, ou use `/cd`.
+
+</DeuErro>
+
+<Desafio>
+
+Mude o `paths` para `"src/**/*.js"` e peça o mesmo teste. A convenção ainda aparece? Por quê?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m8-e4"
+  n={4}
+  titulo="Medir o custo das skills"
+  objetivo="Ver quanto cada skill pesa na lista e desligar a que não vale."
+  minutos={15}
+  pre="Fichas 1 a 3"
+>
+
+1. Meça o ponto de partida:
+
+   ```bash
+   claude -p "/context"
+   ```
+
+   Anote a linha **Skills**.
+
+2. Crie uma skill **de propósito pesada**: descrição longa, corpo mínimo. Crie `.claude/skills/enciclopedia/SKILL.md` com uma descrição de cerca de mil caracteres, repetindo palavras como "pendência, tarefa, lista, prioridade, prazo, lembrete":
+
+   <SO unix="mkdir -p .claude/skills/enciclopedia" win="New-Item -ItemType Directory -Force .claude/skills/enciclopedia | Out-Null" />
+
+   ```markdown
+   ---
+   description: Referência enorme sobre pendências. Use quando o usuário mencionar pendência, tarefa, lista, prioridade, prazo, lembrete, agenda, checklist ou afazer. (repita a frase de uso umas 7 vezes, até ~1.000 caracteres)
+   ---
+
+   Conteúdo da enciclopédia.
+   ```
+
+3. Meça de novo e veja o relatório:
+
+   ```bash
+   claude -p "/context"
+   claude -p "/skill-doctor"
+   ```
+
+4. Desligue a que não vale: apague a pasta `enciclopedia` (a mudança vale na hora) ou use `"enciclopedia": "off"` em `skillOverrides`. Meça outra vez.
+
+<Prova>
+
+A linha **Skills** do `/context` sobe, e o `/skill-doctor` lista as skills do projeto com o custo de cada uma na lista. Na nossa execução (o ponto de partida inclui plugins pessoais do autor, então olhe a **diferença**):
+
+| Skill | Custo na lista | Uso |
+|---|---|---|
+| `enciclopedia` | **~320 tokens** | `never` |
+| `resumo-arquivo` | ~40 tokens | usada hoje |
+| `commit-pt` | **-** (zero) | usada hoje |
+
+```text
+/context, linha Skills:  8,3k antes   ->   8,7k depois da enciclopedia
+```
+
+`commit-pt` não pesa nada na lista porque tem `disable-model-invocation: true`: a descrição não entra no contexto.
+
+</Prova>
+
+<Gabarito>
+
+O custo de uma skill na lista depende do tamanho da **descrição**, não do corpo: a `enciclopedia` pesa 8 vezes mais que a `resumo-arquivo` só pela descrição longa. Skills só manuais (`disable-model-invocation: true`) saem da lista. O `/skill-doctor` marca o que **nunca** foi usado e diz onde desligar, e a doc manda começar pelas de maior custo. Descrições boas são curtas, com o caso de uso na frente.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O `/skill-doctor` diz que não está disponível.** Ele exige o Claude Code 2.1.252 ou mais novo e não existe em sessões que pulam a busca de feature flags.
+- **A linha Skills não mudou.** Uma skill curta, ou só manual, pesa quase nada. Para ver a diferença, use uma descrição longa.
+- **A skill apagada ainda aparece.** Pastas de skills são observadas, mas confira se apagou a pasta certa, não só o arquivo.
+
+</DeuErro>
+
+<Desafio>
+
+Rode o `/doctor` completo no laboratório (numa sessão interativa, pois ele pede confirmação antes de alterar algo). O que ele diz da lista de skills? Compare com o `/skill-doctor`.
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei dizer, para uma instrução, se ela vira CLAUDE.md, skill, hook, MCP ou subagente.
+- Criei uma skill com `SKILL.md` e controlei quem pode chamá-la.
+- Passei um argumento e injetei contexto vivo com `!` e um comando.
+- Fiz uma skill carregar sozinha por `paths`.
+- Medi o custo das skills com `/context` e `/skill-doctor` e desliguei uma.
+
+</Saida>
+
+**Próxima estação:** o [M9, Hooks](../m9/): o que precisa acontecer toda vez, sem depender de o Claude lembrar.
+
+<Fontes>
+
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills.md): anatomia, frontmatter, argumentos, contexto dinâmico, ciclo de vida, `/skill-doctor` e solução de problemas.
+- [Extend Claude Code](https://code.claude.com/docs/en/features-overview.md): quando usar CLAUDE.md, skill, hook, MCP, subagente e plugin, e o custo de contexto de cada um.
+- [Commands](https://code.claude.com/docs/en/commands.md): `/skills`, `/skill-doctor`, `/reload-skills`, `/doctor` e as skills embutidas.
+- [Agent Skills](https://agentskills.io): o padrão aberto.
+- [Explore the context window](https://code.claude.com/docs/en/context-window.md): o que sobrevive à compactação.
+- Execuções locais registradas em `VERIFICATION/m8.md`.
+
+</Fontes>

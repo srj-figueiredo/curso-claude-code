@@ -55,6 +55,8 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
   demanda (aparece uma linha `Loaded` no terminal). Rodei só em `-p`.
 - [ ] **3.5 (M7)** `/permissions` e o diálogo de confiança da pasta (só interativos); `/fewer-permission-prompts` (não
   executei: ela lê o histórico das suas sessões; rode num projeto seu); regras `ask`.
+- [ ] **3.7 (M8)** `/skills` (menu), o menu `/` com skills, a aba Stats do `/plugin`, `/doctor` completo e `context: fork`
+  em skill. Rodei só em `-p`.
 - [ ] **3.6 (M7) Sandbox e dev container.** A ficha 4 está "não testado": o sandbox não existe no Windows nativo e esta
   máquina não tem WSL2 nem Docker. Para testar: instalar o WSL2 (`wsl --install`, instalação global que eu não faço
   sem você) e rodar `/sandbox` lá; e conferir se o sandbox realmente fecha o desvio do `ler-env.mjs` da ficha 1.
