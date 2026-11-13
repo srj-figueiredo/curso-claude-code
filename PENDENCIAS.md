@@ -51,6 +51,8 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
 - [ ] **3.2** Menu de rewind (`Esc Esc`) e o ciclo do `Shift+Tab` (M3, ficha 2 já marcada "ilustrativo").
 - [ ] **3.3** Pergunta de confiança ao abrir `claude` numa pasta nova e instalação nativa (M1; a máquina já tem tudo
   instalado, então a instalação do zero não foi testada).
+- [ ] **3.4 (M6)** `/init` interativo (`CLAUDE_CODE_NEW_INIT=1`), tela do `/memory` e `CLAUDE.md` de subpasta com carga sob
+  demanda (aparece uma linha `Loaded` no terminal). Rodei só em `-p`.
   *Como resolver juntos:* você roda cada passo na tela e me diz se bate com o texto; eu ajusto e troco o selo.
 
 ## 4. Scripts e atalhos na sua máquina (🟡)
