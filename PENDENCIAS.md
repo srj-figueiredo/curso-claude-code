@@ -65,6 +65,9 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
   sem você) e rodar `/sandbox` lá; e conferir se o sandbox realmente fecha o desvio do `ler-env.mjs` da ficha 1.
   *Como resolver juntos:* você roda cada passo na tela e me diz se bate com o texto; eu ajusto e troco o selo.
 
+- [ ] **3.9 (limite do plano)** O limite de 5 horas bateu em 13/11/2026 durante o M11. Sessões longas sem supervisão gastam
+  o plano rápido; retomar depois da renovação. O `proxima-pagina.ps1` roda um item por vez para respeitar isso.
+
 ## 4. Scripts e atalhos na sua máquina (🟡)
 
 - [ ] **4.1 `proxima-pagina.ps1` nunca rodou uma sessão de ponta a ponta.** Corrigi o problema dos acentos (13/11) e a

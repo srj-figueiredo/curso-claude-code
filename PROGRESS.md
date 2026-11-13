@@ -5,12 +5,53 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 
 ## Onde parou
 
-13/11/2026: Onda 1 fechada (M0 a M3 verificados, atalho local e script de um clique prontos), exceto a **Publicação**,
-bloqueada por permissão (aguarda o autor). Onda 2 em andamento: M4 a M8 e M10 feitos e verificados; auditoria geral feita
-(ver D014). **Próximo item: M11 (Planejar e verificar).** (O M9, Hooks, fica na Onda 4.)
-Tudo que depende do autor (publicação, e-mail dos commits, testes com GitHub, telas interativas, decisões) está em `PENDENCIAS.md`.
-Pendências que dependem da Publicação: ficha de PR do M4, deploy e domínio do M5, `upload-pages-artifact` v3 para v4 no
-`deploy.yml`, e trocar o e-mail pessoal dos commits por um endereço noreply antes de tornar o repositório público (D014).
+13/11/2026 (pausa pedida pelo autor, e o limite de 5 horas do plano também bateu): M0 a M8 e M10 escritos e verificados.
+A Onda 1 está fechada, exceto a **Publicação** (bloqueada por permissão). Ver `PENDENCIAS.md` para tudo que precisa do autor.
+
+**Em andamento: M11 (Planejar e verificar). Ainda NÃO existe `src/content/modulos/m11.mdx`.** Só o estado de laboratório
+`lab/estados/m11-inicio/` (`ferramentas/cobertura.mjs` e `ferramentas/relatorio.mjs`, este com um bug plantado: `NaN%` com a
+lista vazia), que está no commit de pausa. Para retomar, ler a seção "Retomar o M11" abaixo.
+
+## Retomar o M11 (Planejar e verificar)
+
+Pesquisa já feita (fontes em `.docs-cache/en/`): `best-practices.md` (prompt específico, "Brainstorm with Claude first",
+"Give Claude a check to run", "Review against your spec", Stop hook, "Steer the session", "What you can stop doing"),
+`goal.md`, `skills.md` § Run and verify your app (`/run`, `/verify`, `/run-skill-generator`) e `commands.md` (`/goal`, `/verify`,
+`/run`, `/debug`, `/simplify`, `/code-review`). Pontos já confirmados na doc:
+
+- `/debug [descrição]` liga o log de depuração **do Claude Code** e analisa esse log: serve para diagnosticar problemas da
+  sessão (skill que não dispara, MCP que não conecta), **não** para caçar bug no código do aluno. A ficha "caçar um bug"
+  do briefing deve usar pedido + teste que reproduz, e mostrar o `/debug` num caso de configuração (skill com YAML quebrado).
+- `/goal <condição>`: um avaliador (modelo pequeno) confere a condição depois de cada turno; condição de até 4.000 caracteres;
+  funciona em `claude -p` (roda o laço até o fim); `/goal clear` limpa; cláusula "ou pare depois de N turnos".
+- `/simplify` não procura bugs (4 agentes: reuso, simplificação, eficiência, nível de abstração); `/code-review` procura bugs
+  e aceita `low`..`max`, `--fix`, `--comment`; `/review` é alias.
+- `/verify` e `/run` constroem e rodam o app (CLI, servidor, TUI, navegador); `/run-skill-generator` grava a receita em
+  `.claude/skills/run-<nome>/`.
+- Dica "o que nunca delegar" e anti-padrões: "What you can stop doing" (best-practices.md) e BRIEFING §M11.
+
+Experimentos já executados em `claude -p` (laboratório em pasta temporária, apagada ao reiniciar; refazer se precisar):
+
+1. **Modo plano com SPEC.md** (`--permission-mode plan`, "leia @SPEC.md e proponha um plano... não edite nada"): devolveu um
+   plano com arquivos tocados e ordem; `git status` mostrou só o `SPEC.md` novo (nada editado). 8 turnos.
+2. **`/goal` em `-p`**: condição "existem `buscar`, `contar` e `limparFeitas` exportadas de `src/pendencias.js` e `npm test` e
+   `node ferramentas/cobertura.mjs` saem com 0... ou pare depois de 8 turnos" (com `--permission-mode acceptEdits` e
+   `--allowedTools "Bash(npm test)" "Bash(node ferramentas/cobertura.mjs)"`). Resultado: 13 turnos, 5 chamadas negadas (o Claude
+   tentou comandos compostos com `echo $?`, que a allowlist não cobre, e disse isso honestamente); conferência independente:
+   `npm test` pass 13, `cobertura.mjs` exit 0, +18 linhas em `src/pendencias.js` e testes novos.
+3. **Testes primeiro** (`--output-format stream-json --verbose` + parser de eventos): **interrompido pelo limite do plano** no
+   passo 8. Parou depois de escrever os testes e rodar `npm test` (que falhou, como esperado: `buscar` ainda não existia).
+   Refazer do zero: extrair `m11-inicio`, criar o `SPEC.md` da busca (`buscar <texto>`, "Nada encontrado.", regra em
+   `src/pendencias.js`), e pedir "testes primeiro: escreva os testes, rode e mostre que falham, só então implemente".
+4. **Ainda não executados:** `/verify`, `/code-review low`, `/simplify`, `/debug` num caso de skill quebrada, e a ficha do bug
+   do `relatorio.mjs`.
+
+Plano de fichas sugerido (4): (1) spec, plano e testes primeiro para o comando `buscar`; (2) objetivo longo com `/goal` e
+`cobertura.mjs`; (3) caçar o bug do `NaN%` (pedido com sintoma + teste que reproduz) e usar `/debug` num caso de configuração;
+(4) verificação por quem não escreveu o código (`/code-review`, `/verify`, `/simplify`).
+
+Depois do M11, a Fila segue: R3, Baralho, Revisão das Partes III e IV (Onda 2); depois a Onda 3. **Lembrete:** ao terminar cada
+módulo, fazer o double check (CONTINUAR.md §3b) e citar sempre "M11 (Planejar e verificar)" com o nome ao falar com o autor.
 
 ## Fila
 
@@ -31,7 +72,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 - [x] **Revisão da Parte I** (13/11: termos unificados, sem estouro em 390/1280, axe 18/18; o corte de 15% não foi aplicado: as 4 páginas ficam entre 3.035 e 3.280 palavras, abaixo do teto de 3.500) (M0–M3): estilo (corte ≥ 15%), consistência de termos, fotos 390/1280.
 
 ### Onda 2 · trilha rápida até os cases
-- [x] M4 · [x] M5 · [x] M6 · [x] M7 · [x] M8 · [x] M10 · [ ] M11
+- [x] M4 · [x] M5 · [x] M6 · [x] M7 · [x] M8 · [x] M10 · [ ] M11 (em andamento, ver "Retomar o M11")
 - [ ] **R3** (página escrita; GUIA §9, com `<Cartas cat="R3" />`)
 - [ ] **Baralho**: cartas R1–R8 em lotes (um lote de ~30 cartas por item); esquema com campos opcionais;
       estações R* do mapa apontando para o Baralho filtrado. `npm run comandos` e `npm run reconciliar -- --cache`.
