@@ -238,13 +238,11 @@ Nenhuma ficha foi executada de ponta a ponta: criar o repositório público e li
   verificacao="nao-testado"
 >
 
-1. Teste local antes de publicar. Na pasta do site:
+1. Teste local antes de publicar. Abra o arquivo no navegador, como no [M1](../m1/):
 
-   ```bash
-   python -m http.server 8000
-   ```
+   <SO mac="open index.html" win="start index.html" linux="xdg-open index.html" />
 
-   Abra `http://localhost:8000`. Pare com `Ctrl+C`.
+   Se tiver Python, também dá para servir a pasta como um site de verdade: `python -m http.server 8000`, e abrir `http://localhost:8000`. Pare com `Ctrl+C`.
 
 2. Peça o workflow ao Claude:
 
@@ -275,11 +273,9 @@ Nenhuma ficha foi executada de ponta a ponta: criar o repositório público e li
 
 Aba **Actions**: execução verde. O endereço mostra o título "Olá" e o parágrafo. Você confere do terminal:
 
-```bash
-curl -s https://SEU-USUARIO.github.io/meu-primeiro-site/ | grep -o "<h1>.*</h1>"
-```
+<SO unix='curl -s https://SEU-USUARIO.github.io/meu-primeiro-site/ | grep -o "<h1>.*</h1>"' win='((Invoke-WebRequest -UseBasicParsing https://SEU-USUARIO.github.io/meu-primeiro-site/).Content -split "`n") | Select-String "<h1>"' />
 
-Saída esperada: `<h1>Olá</h1>`. (Não executado: depende da sua conta. Executamos o passo 1, que retornou `HTTP 200, text/html`, e o passo 2, que gerou um YAML válido com as três permissões.)
+Saída esperada: uma linha com `<h1>Olá</h1>`. (Não executado: depende da sua conta. Executamos a variante do passo 1 com `python -m http.server`, que retornou `HTTP 200, text/html`, e o passo 2, que gerou um YAML válido com as três permissões.)
 
 </Prova>
 
@@ -317,8 +313,9 @@ Peça ao Claude: "confira na documentação oficial do GitHub as versões atuais
 
 1. Estrague a página. Troque o título para `Quebrado` e publique:
 
+   <SO unix="sed -i 's/<h1>Olá/<h1>Quebrado/' index.html" win="(Get-Content index.html -Encoding UTF8) -replace '<h1>Olá','<h1>Quebrado' | Set-Content index.html -Encoding UTF8" />
+
    ```bash
-   sed -i 's/<h1>Olá/<h1>Quebrado/' index.html
    git commit -am "Quebra o título de propósito"
    git push
    ```
@@ -397,8 +394,9 @@ Quanto tempo passou entre o push e o site mudar, nas duas direções? Esse é o 
 
    ```bash
    nslookup www.seudominio.com.br
-   curl -sI https://www.seudominio.com.br | head -1
    ```
+
+   <SO unix="curl -sI https://www.seudominio.com.br | head -1" win="curl.exe -sI https://www.seudominio.com.br | Select-Object -First 1" />
 
 <Prova>
 

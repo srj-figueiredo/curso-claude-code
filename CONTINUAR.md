@@ -52,6 +52,23 @@ oficial no dia, senão "consulte <link>").
 
 **Item de infraestrutura:** está descrito na própria Fila.
 
+## 3b. Double check obrigatório ao fim de cada módulo (regra do autor, 13/11/2026)
+
+Antes de dar um módulo por fechado, e sem esperar pedido, refaça a conferência do que escreveu:
+
+1. **Números da página contra as execuções:** cada número, saída e contagem citados batem com o que foi executado?
+2. **Fatos contra a doc em cache:** reabra o trecho de cada afirmação de risco; confira com Grep termos, flags, variáveis e versões.
+3. **Fichas no Windows:** o aluno usa o PowerShell 5.1. Nada de `&&`, `export`, `/tmp`, `sed`, `grep`, `head`, `curl` (alias de
+   `Invoke-WebRequest`) nem `echo >` sem `<SO>`; para criar arquivo de texto no Windows use `Set-Content -Encoding ascii`.
+   Teste os comandos novos num PowerShell 5.1 de verdade.
+4. **Reprodutibilidade:** os passos, lidos em ordem por quem nunca viu o laboratório, funcionam? Pasta limpa, cópias, identidade do git.
+5. **HTML final:** sem Markdown solto, ids únicos, hierarquia de títulos, links (varredura de `dist/`), `npm run check`, axe.
+6. Corrija, registre uma seção "Rechecagem" no `VERIFICATION/<id>.md` e só então siga para o próximo módulo da Fila, avisando
+   o autor qual é.
+
+**Ao falar com o autor**, nunca cite um módulo só pelo código: escreva "M6 (Memória e CLAUDE.md)". O título está em
+`src/data/curso.ts`.
+
 ## 4. Escopo aprovado (substitui o BRIEFING §7 onde diferir)
 
 - **Fazem parte:** M0–M22, R3, Baralho de Comandos, C0–C6, Projeto final, Apêndice A (glossário),

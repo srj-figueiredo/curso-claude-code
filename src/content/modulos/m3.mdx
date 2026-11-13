@@ -254,7 +254,9 @@ As quatro fichas usam o laboratório **Pendências**. Baixe o ponto de partida, 
 
 ```bash
 cd pendencias
-git init -b main && git add -A && git commit -m "Ponto de partida"
+git init -b main
+git add -A
+git commit -m "Ponto de partida"
 npm test
 ```
 
@@ -348,7 +350,8 @@ Refaça com `/plan` em vez da flag, numa sessão já aberta. Depois de aprovar, 
 1. Deixe o git limpo, para ter como provar depois:
 
    ```bash
-   git add -A && git commit -m "Adiciona prioridade"
+   git add -A
+   git commit -m "Adiciona prioridade"
    ```
 
 2. Na sessão do Claude Code, mude para **aceitar edições** com <kbd>Shift</kbd>+<kbd>Tab</kbd> e peça uma bobagem:
@@ -467,7 +470,8 @@ Na sessão retomada, rode `/branch em-ingles` e peça a tradução da Ficha 2 s�
 1. Crie dois ramos a partir do mesmo ponto:
 
    ```bash
-   git branch vago && git branch especifico
+   git branch vago
+   git branch especifico
    ```
 
 2. No ramo `vago`, rode o pedido curto, sem tela interativa:
