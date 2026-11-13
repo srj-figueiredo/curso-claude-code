@@ -26,7 +26,7 @@ Legenda: 🔴 bloqueia ou expõe algo · 🟡 importante, não bloqueia · 🟢 
 - [ ] **1.3 Primeiro CI de verdade no Linux.** O `.github/workflows/deploy.yml` nunca rodou. Pode quebrar em:
   `npm run check`, `npx playwright install --with-deps chromium`, o empacotamento dos ZIPs do laboratório
   (`scripts/empacotar-lab.mjs`) e os 22 testes de acessibilidade. *Ajustar o que falhar.*
-- [ ] **1.4 Atualizar `actions/upload-pages-artifact` de `@v3` para `@v4` no `deploy.yml`.** A documentação do GitHub
+- [x] **1.4 (feito 13/11, antes da publicação)** Atualizar `actions/upload-pages-artifact` de `@v3` para `@v4` no `deploy.yml`.** A documentação do GitHub
   de 13/11/2026 mostra v4 (e `actions/checkout` mais novo). Conferir as versões atuais na doc antes de trocar.
 - [ ] **1.5 Seu link para ver no celular.** Você pediu um link e não havia nada publicado. Duas saídas: resolver 1.1 (o
   site completo no ar) ou, enquanto isso, publicar **uma página avulsa privada** (HTML único) como artefato do
