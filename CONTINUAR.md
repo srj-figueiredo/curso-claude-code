@@ -99,6 +99,19 @@ publicar em qualquer outro lugar. Nunca publique segredo, nem de teste.
 - Grava a saída em `logs/AAAA-MM-DD-HHMM.log` (pasta no `.gitignore`).
 - Um atalho na Área de Trabalho, "Manual de Bordo · próxima página", roda o script com dois cliques.
 
+## 7b. Se esta sessão estiver na nuvem (claude.ai/code)
+
+Sinal: a pasta não é `C:\Users\Edwig\...` e o sistema é Linux.
+
+- `.docs-cache/` não vem no clone (está no `.gitignore` de propósito: não republicamos a documentação).
+  Recrie-o com `node scripts/baixar-docs.mjs` (o ambiente precisa liberar `code.claude.com`). Sem o cache,
+  não escreva conteúdo técnico.
+- Itens que dependem desta máquina Windows ficam para uma sessão local: atalhos da Área de Trabalho,
+  `proxima-pagina.ps1` e Provas que precisem de `claude -p` ou de PowerShell. Marque-os "pendente local"
+  no `PROGRESS.md` e siga para o próximo item.
+- A sessão na nuvem envia um branch, não o `main`. Ao fim de cada item, abra um PR para `main` (o autor
+  aprova pelo celular) e diga isso no resumo.
+
 ## 8. Ritual de fim de sessão (se o autor pedir para parar)
 
 Termine ou desfaça o item em curso (nunca deixe build quebrado no `main`), faça o checkpoint e responda com
