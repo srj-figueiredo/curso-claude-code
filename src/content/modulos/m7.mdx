@@ -28,59 +28,92 @@ exercicios:
 
 ## Essencial
 
-Quanto mais autonomia você dá ao Claude, mais importa saber **quem decide o que ele pode fazer**. Este módulo reúne três peças: onde as configurações moram, como as regras de permissão funcionam e o que protege você quando algo dá errado. A palavra-chave é **camadas**: nenhuma sozinha basta.
+Você pede ao Claude: "arruma esse projeto". No meio do trabalho, ele abre o arquivo `.env`, onde mora a senha do seu banco de dados. Não foi maldade. Ele achou que ajudava. Só que a senha agora está dentro da conversa, e conversa vai para a transcrição, para o contexto e, às vezes, para fora da sua máquina.
 
-### Onde moram as configurações
+Este módulo ensina a evitar esse susto. Você vai dizer ao Claude Code o que ele **pode** fazer sozinho, o que deve **perguntar** antes e o que **nunca** pode fazer. E vai descobrir uma coisa menos óbvia: cada trava tem um ponto cego. Por isso a palavra-chave aqui é **camadas**. Nenhuma proteção basta sozinha, então você combina algumas.
 
-O Claude Code lê quatro tipos de arquivo de settings:
+Se tiver pouco tempo, leia só esta parte e faça a Ficha 1. Ela reproduz o susto do começo, com uma senha falsa, e mostra o que funciona e o que não funciona.
 
-| Escopo | Arquivo | Vale para | Vai para o git? |
-|---|---|---|---|
-| **Usuário** | `~/.claude/settings.json` | Você, em todos os projetos | Não |
-| **Projeto** | `.claude/settings.json` | Todos na pasta | **Sim** |
-| **Local do projeto** | `.claude/settings.local.json` | Você, neste projeto | Não (o Claude Code o esconde do git ao criá-lo) |
-| **Gerenciado** | `managed-settings.json` e outras fontes | A organização inteira | Distribuído pela TI |
+### Quem decide: o Claude ou o Claude Code?
 
-No Windows, `~` é `%USERPROFILE%`. A instalação não cria esses arquivos: o de usuário nasce quando você muda algo no `/config`, e o local, na primeira vez que você aprova algo com "Sim, e não perguntar de novo".
+Imagine um assistente muito capaz que você deixou entrar na sua casa. Ele propõe coisas ("vou abrir esta gaveta, vou rodar este comando"). Na porta, existe um **porteiro** que confere uma lista antes de deixar cada ação passar. O assistente é o **Claude** (o modelo). O porteiro é o **Claude Code** (o programa no seu terminal).
 
-Quando a mesma chave aparece em mais de um lugar, **vence o nível mais alto**: gerenciado, linha de comando (`--settings`), local, projeto, usuário. **Listas se somam**: se o usuário libera `Bash(npm test)` e o projeto libera `Bash(git status)`, valem os dois. O `/config` mostra e altera as opções, e o `/status` indica a origem das políticas gerenciadas. O `~/.claude.json` o Claude Code escreve sozinho; não o edite.
+O porteiro trabalha com três listas, e você escreve cada uma:
 
-### Regras: allow, ask e deny
+| Lista | O que o porteiro faz | Exemplo do dia a dia |
+|---|---|---|
+| `allow` | Deixa passar sem perguntar | Rodar os testes do projeto |
+| `ask` | Para e pergunta a você | Instalar um pacote novo |
+| `deny` | Barra, sem conversa | Ler o arquivo de senhas |
 
-As regras ficam em `permissions`, em três listas: `allow` (usa sem pedir), `ask` (pede toda vez) e `deny` (não pode usar). A avaliação é **deny, depois ask, depois allow**, e a primeira que casa decide. Vale **entre arquivos**: um `deny` do usuário bloqueia um `allow` do projeto, e nenhuma regra mais específica abre exceção a um deny mais amplo. `Bash(aws *)` em deny bloqueia até o `Bash(aws s3 ls)` que estiver em allow.
+Elas ficam num bloco chamado `permissions`. Uma regra de bloqueio, por exemplo, é só isto:
+
+```json
+{
+  "permissions": {
+    "deny": ["Read(./.env)"]
+  }
+}
+```
+
+Leia assim: "a ferramenta `Read` (que lê arquivos) está proibida de abrir `./.env`". O `./` quer dizer "a partir da pasta onde estamos".
+
+E se duas regras discordarem? Imagine que uma lista diz "pode rodar `git`" e outra diz "não pode fazer `git push`". A ordem de leitura é **deny, depois ask, depois allow**, e a primeira que casa decide. Logo, o `git push` é barrado, mesmo com o `git` liberado. Isso vale **entre arquivos**: um `deny` seu bloqueia um `allow` do projeto, e nenhuma regra mais específica abre exceção a um `deny` mais amplo.
 
 <Nota rotulo="Quem cumpre a regra">
 As regras são aplicadas pelo **Claude Code**, não pelo modelo. O pedido e o `CLAUDE.md` moldam o que o Claude tenta fazer, mas não mudam o que o Claude Code deixa ele fazer. Para garantia, use regra, modo de permissão ou hook ([M9](../m9/)).
 </Nota>
 
-O formato é `Ferramenta` ou `Ferramenta(especificador)`: `Bash` (todos os comandos), `Bash(npm test)` (exatamente esse), `Bash(npm run *)` (uma família), `Read(./.env)`, `WebFetch(domain:exemplo.com)`. Um deny com o **nome puro** (`Bash`) tira a ferramenta do contexto do Claude. Com especificador, ela segue disponível e só as chamadas que casam são bloqueadas.
+### Onde guardar as listas
 
-**Regras de `Bash`.** O `*` casa com qualquer texto, inclusive espaços, e o espaço antes do `*` final importa:
+As regras são configurações, e configurações moram em arquivos chamados **settings**. Pense nas regras de um condomínio: há as do prédio inteiro, as da sua escada e as do seu apartamento. O Claude Code funciona igual, com quatro níveis:
 
-| Você escreve | Casa | Não casa |
-|---|---|---|
-| `Bash(npm run build)` | `npm run build` | `npm run build --watch` |
-| `Bash(npm run *)` | `npm run build`, `npm run test --watch` | `npm install` |
-| `Bash(ls *)` | `ls -la`, `ls` | `lsof` |
+| Nível | Arquivo | Vale para | Vai para o git? |
+|---|---|---|---|
+| **Usuário** | `~/.claude/settings.json` | Você, em todos os projetos | Não |
+| **Projeto** | `.claude/settings.json` | Todos que usam a pasta | **Sim** |
+| **Local do projeto** | `.claude/settings.local.json` | Só você, neste projeto | Não (o Claude Code o esconde do git ao criá-lo) |
+| **Gerenciado** | `managed-settings.json` e outras fontes | A organização inteira | Distribuído pela TI |
 
-Ponha o `*` **depois do subcomando**: `Bash(git log *)` libera só `git log`, e `Bash(git *)` libera todo comando git, inclusive `git -c ...`, que manda o git executar um programa. O Claude Code entende operadores de shell (`&&`, `||`, `;`, `|`): `Bash(npm test *)` não libera `npm test && rm -rf x`, porque cada parte precisa ser permitida.
+O `~` é a sua pasta pessoal (no Windows, `%USERPROFILE%`). A instalação **não** cria esses arquivos. O de usuário nasce quando você muda algo no `/config`, e o local, na primeira vez que você aprova algo com "Sim, e não perguntar de novo".
 
-**Uma regra de Bash não é uma cerca em volta do programa.** Ela casa com o comando como o Claude costuma escrevê-lo:
+Quando o mesmo item aparece em dois níveis, **vence o nível mais alto**: gerenciado, depois linha de comando (`--settings`), local, projeto e, por último, usuário. Mas as **listas se somam**: se o usuário libera `Bash(npm test)` e o projeto libera `Bash(git status)`, valem os dois. Para ver e mudar as opções, use o `/config`. O `/status` mostra de onde vêm as políticas gerenciadas. O `~/.claude.json` o próprio Claude Code escreve: não o edite.
 
-| Regra em deny | Barra | Não barra |
-|---|---|---|
-| `Bash(curl *)` | `curl https://exemplo.com` | `/usr/bin/curl ...`, `sh -c 'curl ...'` |
-| `Bash(git push *)` | `git push origin main` | `git -C . push origin main` |
+### Como escrever uma regra que realmente pega
 
-**Regras de `Read` e `Edit`** seguem a sintaxe do `.gitignore`. Quatro formas de caminho: `./x` ou `x` (a partir da pasta atual), `/x` (a partir da **origem da regra**, que é a pasta do projeto numa regra de `.claude/settings.json`), `~/x` (pasta pessoal) e `//x` (absoluto). Três pegadinhas:
+O formato é `Ferramenta` ou `Ferramenta(detalhe)`. Quatro exemplos cobrem quase tudo:
 
-- **`/Users/ana/arquivo` não é absoluto**: a barra única ancora na origem da regra. Absoluto é com duas barras.
-- **No Windows**, o caminho vira POSIX antes de casar (`C:\Users\ana` vira `/c/Users/ana`). Para todo `.env` do disco C, use `//c/**/.env`.
-- **`Write(...)`, `Grep(...)` e `Glob(...)` com caminho não casam nada.** Escreva `Edit(...)` no lugar de `Write` e `Read(...)` no lugar de `Grep` e `Glob`.
+| Você escreve | Significa |
+|---|---|
+| `Bash` | Qualquer comando de terminal |
+| `Bash(npm test)` | Exatamente `npm test` |
+| `Bash(npm run *)` | Qualquer `npm run ...` (o `*` é um coringa) |
+| `Read(./.env)` | Ler o arquivo `.env` |
 
-### Modos de permissão: o cardápio completo
+O coringa `*` casa com qualquer texto, e o espaço antes dele importa: `Bash(ls *)` pega `ls -la`, mas não pega `lsof`. Uma dica que evita um susto: ponha o `*` **depois do subcomando**. `Bash(git log *)` libera só o `git log`. Já `Bash(git *)` libera todo comando git, inclusive `git -c ...`, que manda o git executar um programa.
 
-O [M3](../m3/) mostrou os do ciclo do Shift+Tab. A tabela completa:
+Um deny com o **nome puro** (`Bash`) tira a ferramenta de cena. Com detalhe (`Bash(curl *)`), ela continua disponível e só as chamadas que casam são barradas.
+
+E um aviso que você vai confirmar nas fichas: a regra confere o **texto do comando**, como o Claude costuma escrevê-lo. Ela não é uma cerca em volta do programa. Se você barra `Bash(git push *)`, o comando `git -C . push` passa, porque o texto é outro. Os detalhes de sintaxe (caminhos, Windows, operadores de shell) ficam na camada **Por baixo do capô**, logo depois do resumo.
+
+### O `.env`: a regra que parece cofre e não é
+
+Voltemos ao susto do começo. A regra `deny Read(./.env)` que você viu acima barra três coisas: a ferramenta `Read`, o `@arquivo` e os comandos de leitura que o Claude Code reconhece no terminal (`cat`, `head`, `tail`, `sed`).
+
+O que ela **não** barra é um programa que abre o arquivo por conta própria, como um script em Python ou Node. Quando o Claude roda esse script, o Claude Code vê "rodar um script", não "ler o `.env`". A Ficha 1 prova os dois lados: com a regra ligada, o `cat .env` é barrado, e o `node ler-env.mjs` mostra o segredo.
+
+Então o que fazer? Pense numa escada de defesas, da mais fraca à mais forte:
+
+1. **`.gitignore`:** o segredo não vai para o repositório. Não protege de leitura local.
+2. **Regra `Read` em deny:** barra as ferramentas do Claude e os comandos reconhecidos. Não é cerca.
+3. **Sandbox:** o sistema operacional barra qualquer processo. É a cerca de verdade, mas não existe no Windows nativo (veja mais abaixo).
+4. **Não ter o segredo na pasta:** variável de ambiente fora do projeto, chave de curta duração, cofre. O segredo que o Claude nunca vê é o único que ele não vaza.
+
+Um detalhe: um arquivo `.claudeignore` **não tem efeito**. A doc manda passar essas entradas para regras `Read` em deny.
+
+### Modos de permissão: quanto você confia hoje
+
+Regras são o ajuste fino. Os **modos de permissão** são o botão geral, como um controle de velocidade: de "pergunta tudo" até "faz tudo". O [M3](../m3/) mostrou os do ciclo do Shift+Tab. Aqui está o cardápio completo:
 
 | Modo | Roda sem perguntar | Para quê |
 |---|---|---|
@@ -91,46 +124,33 @@ O [M3](../m3/) mostrou os do ciclo do Shift+Tab. A tabela completa:
 | `dontAsk` | Leituras e o que está em `allow`; o resto é **negado** | Scripts e CI |
 | `bypassPermissions` | Tudo | Só contêiner ou VM isolada |
 
-No Claude Code 2.1.283 ou mais novo, o modo inicial de uma sessão interativa no terminal é o **auto**. Já o `claude -p` (sem tela) começa em Manual e **nega** o que exigiria pergunta, porque ninguém está lá para responder: foi o que vimos nas fichas.
+No Claude Code 2.1.283 ou mais novo, uma sessão interativa no terminal começa no **auto**. Já o `claude -p` (a versão "pergunta e responde" sem tela, que você usa nas fichas) começa em Manual e **nega** o que exigiria pergunta, porque ninguém está lá para responder.
 
-O **classificador** do auto é outro modelo que revisa cada ação antes de ela rodar. Por padrão ele bloqueia coisas como baixar e executar código (`curl | bash`), enviar dados sensíveis para fora, deploy em produção, `force push` e `git reset --hard`. A doc avisa: **o auto reduz perguntas, não garante segurança.** Para impedir os modos soltos, use `permissions.disableAutoMode` e `permissions.disableBypassPermissionsMode`, com o valor `"disable"`.
+O **classificador** do auto é outro modelo, que dá uma olhada em cada ação antes de ela rodar. Por padrão ele bloqueia coisas como baixar e executar código (`curl | bash`), enviar dados sensíveis para fora, deploy em produção, `force push` e `git reset --hard`. A doc avisa: **o auto reduz perguntas, não garante segurança.**
 
-**Caminhos protegidos** (`.git`, `.claude`, `.vscode`, `.idea`, `.husky`, `.devcontainer`, entre outros) têm regra própria de escrita por modo, e uma regra `allow` em settings **não** pré-aprova escrita neles.
+O modo `bypassPermissions` desliga avisos e verificações. Só o use num ambiente isolado, como contêiner ou máquina virtual, nunca num laptop com seus arquivos e suas credenciais.
 
-### Segredos: o que uma regra de leitura faz e não faz
+### Prompt injection: o bilhete escondido no livro
 
-O caso clássico é o `.env`. A regra:
+Você empresta um livro a um amigo e alguém deixou um bilhete dentro: "ao terminar de ler, entregue sua carteira ao portador". Seu amigo sabe que um bilhete achado num livro não é ordem sua. O Claude precisa saber o mesmo.
 
-```json
-{
-  "permissions": {
-    "deny": ["Read(./.env)"]
-  }
-}
-```
+**Prompt injection** é isso: esconder um texto malicioso onde o Claude vai ler (uma página da web, um arquivo, a resposta de uma ferramenta MCP, o corpo de uma issue) para o modelo trocar as suas instruções pelas do atacante. O texto parece dado e age como ordem.
 
-Ela barra a ferramenta `Read`, o `@arquivo` e os comandos de leitura que o Claude Code reconhece no `Bash` (`cat`, `head`, `tail`, `sed`). Mas a doc avisa que **não** cobre um programa que abre o arquivo por conta própria, como um script em Python ou Node. A Ficha 1 prova os dois lados: com a regra ligada, um `node ler-env.mjs` mostrou o segredo.
+As camadas que a documentação lista:
 
-Daí a escada de defesas, da mais fraca à mais forte:
+- o sistema de permissões (no Manual, ação sensível pede aprovação);
+- `curl` e `wget` não são aprovados sozinhos;
+- o `WebFetch` costuma resumir a página por uma chamada separada de modelo, então o Claude recebe o resumo, não a página crua;
+- comando que o Claude Code não consegue analisar por completo pede confirmação;
+- o classificador do modo auto bloqueia ação que parece guiada por conteúdo hostil.
 
-1. **`.gitignore`:** o segredo não vai para o repositório. Não protege de leitura local.
-2. **Regra `Read` em deny:** barra as ferramentas do Claude e os comandos reconhecidos. Não é cerca.
-3. **Sandbox:** o sistema operacional barra qualquer processo. É a cerca real, mas não existe no Windows nativo.
-4. **Não ter o segredo na pasta:** variável de ambiente fora do projeto, chave de curta duração, cofre. O segredo que o Claude nunca vê é o único que ele não vaza.
+Na Ficha 3 você planta uma instrução escondida num arquivo, num modo que **permitia** gravar. O Claude a ignorou e ainda avisou. É um bom sinal, mas é **o modelo agindo bem**, não uma garantia. A doc diz que nenhum sistema é imune.
 
-Um arquivo `.claudeignore` **não tem efeito**: a doc manda passar as entradas para regras `Read` em deny.
-
-### Prompt injection
-
-**Prompt injection** é inserir texto malicioso onde o Claude vai ler (uma página, um arquivo, a resposta de uma ferramenta MCP, o corpo de uma issue) para fazer o modelo trocar as suas instruções pelas do atacante. O texto parece dado e age como ordem.
-
-As camadas que a documentação lista: o sistema de permissões (no Manual, ação sensível pede aprovação); `curl` e `wget` não são aprovados sozinhos; o `WebFetch` costuma resumir a página por uma chamada separada de modelo, e o Claude recebe o resumo, não a página crua; comando que o Claude Code não consegue analisar por completo pede confirmação; e o classificador do modo auto bloqueia ação que parece guiada por conteúdo hostil.
-
-Na Ficha 3 plantamos uma instrução escondida num arquivo, num modo que **permitia** gravar, e o Claude a ignorou e ainda avisou. É bom, mas é **o modelo agindo bem**, não garantia: a doc diz que nenhum sistema é imune. Práticas recomendadas: revise comandos antes de aprovar, não canalize conteúdo não confiável direto para o Claude, confira mudanças em arquivos críticos, use máquina virtual para scripts de fontes externas e relate comportamento suspeito com `/feedback`.
+Boas práticas: revise comandos antes de aprovar, não canalize conteúdo não confiável direto para o Claude, confira mudanças em arquivos críticos, use máquina virtual para scripts de fontes externas e relate comportamento suspeito com `/feedback`.
 
 ### O sandbox: a cerca de verdade
 
-O **sandbox** é um limite que o **sistema operacional** impõe em volta dos comandos de shell e dos processos que eles iniciam. Como o limite vale enquanto o comando roda, o Claude Code pode rodar comandos sandboxed **sem perguntar**.
+Até aqui, tudo era o porteiro conferindo uma lista. O **sandbox** é diferente: é uma cerca que o **sistema operacional** ergue em volta dos comandos de terminal e de tudo o que eles iniciam. Não importa o que o comando diga: ele só alcança o que a cerca deixa. Por isso o Claude Code pode rodar comandos sandboxed **sem perguntar**.
 
 | Acesso | Padrão com o sandbox ligado |
 |---|---|
@@ -138,30 +158,56 @@ O **sandbox** é um limite que o **sistema operacional** impõe em volta dos com
 | Leitura | A maior parte da máquina, **inclusive** `~/.ssh` e `~/.aws/credentials`, a menos que você bloqueie |
 | Rede | Sem rota direta: passa por um proxy que confere o domínio contra a sua lista de permitidos, que começa vazia |
 
-Três fatos: **vem desligado** (ligue com `/sandbox` ou `sandbox.enabled`); **só existe em macOS, Linux e WSL2**, e no Windows nativo os comandos rodam sem sandbox; e **cobre só o shell**: `Read`, `Edit`, `Write`, `WebFetch`, MCP local e hooks rodam fora dele e seguem as regras. Regra controla o que o Claude **tenta**; o sandbox limita o que um comando **consegue**, mesmo que uma injeção engane o modelo.
+Três fatos para guardar:
 
-### Menos prompts, sem abrir a guarda
+1. **Vem desligado.** Ligue com `/sandbox` ou com `sandbox.enabled`.
+2. **Só existe em macOS, Linux e WSL2.** No Windows nativo, os comandos rodam sem sandbox.
+3. **Cobre só o terminal.** `Read`, `Edit`, `Write`, `WebFetch`, MCP local e hooks rodam fora dele e seguem as regras.
 
-Em vez do bypass, monte uma allowlist estreita. A skill embutida **`/fewer-permission-prompts`** varre as suas conversas recentes atrás de leituras comuns de `Bash` e MCP e propõe uma allowlist em `.claude/settings.json`. Não a executamos aqui, porque ela **lê o histórico das suas sessões**. Rode-a num projeto seu e leia cada linha antes de aceitar. No modo interativo, `allow` do projeto só vale depois que você aceita o diálogo de confiança da pasta.
+Resumindo as duas ideias: a regra controla o que o Claude **tenta** fazer. O sandbox limita o que um comando **consegue** fazer, mesmo que uma injeção engane o modelo.
 
-### Confiança em MCP e plugins
+### Resumo: as camadas, do mais fraco ao mais forte
 
-Servidor MCP e plugin rodam código e entregam texto que o Claude lê: são superfície de ataque e de injeção. A doc sugere escrever os seus ou usar de quem você confia, e lembra que a Anthropic revisa conectores contra critérios de listagem, mas **não audita** nenhum. Olhar o `.mcp.json` não mostra todos os servidores de uma sessão: os de outros escopos e os de plugins ficam fora dele. O [M10](../m10/) e o [M13](../m13/) detalham.
+| Camada | O que é | Ponto cego |
+|---|---|---|
+| O bom senso do modelo | Ele costuma recusar o que parece errado | Pode falhar |
+| Modo de permissão | Quanto você deixa passar sem perguntar | Auto e bypass soltam muito |
+| Regras allow, ask e deny | O porteiro com a lista | Só enxergam o texto do comando |
+| Sandbox | A cerca do sistema operacional | Não existe no Windows nativo; só cobre o terminal |
+| Não ter o segredo ali | Nada para vazar | Exige disciplina |
 
-### Quando nunca usar o bypass
+<Camada tipo="capo" titulo="Referência: sintaxe, modos e proteções adicionais">
 
-`bypassPermissions` desliga avisos e verificações, inclusive para escrever em `.git` e `.claude`. Use **só** em ambiente isolado, como contêiner ou máquina virtual, nunca num laptop com seus arquivos e credenciais. O **dev container** é o caminho recomendado: os comandos rodam dentro dele e as edições aparecem no seu repositório. Mas a doc avisa: com `--dangerously-skip-permissions`, um repositório malicioso pode exfiltrar **tudo que estiver acessível no contêiner**, inclusive as credenciais do Claude em `~/.claude`. Por isso: só repositórios confiáveis, nada de montar `~/.ssh` ou credenciais de nuvem, usuário não-root (a CLI recusa a flag como root) e saída de rede restrita. Se a meta é menos pergunta, a doc aponta o **modo auto**.
+### Regras de `Bash` em detalhe
 
-### Privacidade e uso de dados
+O Claude Code entende os operadores de shell (`&&`, `||`, `;`, `|`): `Bash(npm test *)` não libera `npm test && rm -rf x`, porque cada parte precisa ser permitida.
 
-Conferido na página de uso de dados em 13/11/2026 (a fonte muda; confirme):
+| Você escreve | Casa | Não casa |
+|---|---|---|
+| `Bash(npm run build)` | `npm run build` | `npm run build --watch` |
+| `Bash(npm run *)` | `npm run build`, `npm run test --watch` | `npm install` |
+| `Bash(ls *)` | `ls -la`, `ls` | `lsof` |
 
-- **Contas de consumidor** (Free, Pro, Max, Ultra): você escolhe se seus dados ajudam a treinar modelos. Ligada a opção, retenção de **5 anos**; desligada, **30 dias**.
-- **Contas comerciais** (Team, Enterprise, API, terceiros): a Anthropic **não treina** com código ou prompts do Claude Code, salvo se o cliente optar. Retenção padrão de **30 dias**.
-- **Local:** as transcrições das sessões ficam em texto puro em `~/.claude/projects/`, por padrão 30 dias (`cleanupPeriodDays`). **Podem conter o que você colou ou o Claude leu.**
-- **`/feedback`, `/bug` e `/share`:** as transcrições enviadas são retidas por 5 anos. Nada vai sem você escolher.
+Uma regra de Bash casa com o comando como o Claude costuma escrevê-lo:
 
-<Camada tipo="capo" titulo="Confiança, wrappers e outras proteções">
+| Regra em deny | Barra | Não barra |
+|---|---|---|
+| `Bash(curl *)` | `curl https://exemplo.com` | `/usr/bin/curl ...`, `sh -c 'curl ...'` |
+| `Bash(git push *)` | `git push origin main` | `git -C . push origin main` |
+
+### Regras de `Read` e `Edit`
+
+Seguem a sintaxe do `.gitignore`. Quatro formas de caminho: `./x` ou `x` (a partir da pasta atual), `/x` (a partir da **origem da regra**, que é a pasta do projeto numa regra de `.claude/settings.json`), `~/x` (pasta pessoal) e `//x` (absoluto). Três pegadinhas:
+
+- **`/Users/ana/arquivo` não é absoluto**: a barra única ancora na origem da regra. Absoluto é com duas barras.
+- **No Windows**, o caminho vira POSIX antes de casar (`C:\Users\ana` vira `/c/Users/ana`). Para todo `.env` do disco C, use `//c/**/.env`.
+- **`Write(...)`, `Grep(...)` e `Glob(...)` com caminho não casam nada.** Escreva `Edit(...)` no lugar de `Write` e `Read(...)` no lugar de `Grep` e `Glob`.
+
+### Modos: travas e caminhos protegidos
+
+Para impedir os modos soltos, use `permissions.disableAutoMode` e `permissions.disableBypassPermissionsMode`, com o valor `"disable"`. `disableBypassPermissionsMode` funciona em qualquer escopo: um usuário pode se trancar fora do bypass.
+
+**Caminhos protegidos** (`.git`, `.claude`, `.vscode`, `.idea`, `.husky`, `.devcontainer`, entre outros) têm regra própria de escrita por modo, e uma regra `allow` em settings **não** pré-aprova escrita neles.
 
 ### Confiança da pasta e `claude -p`
 
@@ -177,11 +223,42 @@ Antes de casar regras de `Bash`, o Claude Code remove um conjunto fixo (`timeout
 
 ### Limites de diretório e travas
 
-`permissions.blockReadsOutsideWorkingDirectories` e `permissions.blockWritesOutsideWorkingDirectories` barram leitura e escrita fora da pasta de trabalho, mas a segunda não limita o shell, MCP nem hooks: para isso, o sandbox. Em configurações gerenciadas, `allowManagedPermissionRulesOnly` faz delas a única fonte de regras. `disableBypassPermissionsMode` funciona em qualquer escopo: um usuário pode se trancar fora do bypass.
+`permissions.blockReadsOutsideWorkingDirectories` e `permissions.blockWritesOutsideWorkingDirectories` barram leitura e escrita fora da pasta de trabalho, mas a segunda não limita o shell, MCP nem hooks: para isso, o sandbox. Em configurações gerenciadas, `allowManagedPermissionRulesOnly` faz delas a única fonte de regras.
 
 ### Windows e WebDAV
 
 A doc recomenda **não** habilitar o WebDAV no Windows nem deixar o Claude acessar caminhos como `\\*`: o WebDAV pode gerar requisições de rede que contornam o sistema de permissões.
+
+### Menos prompts, sem abrir a guarda
+
+Em vez do bypass, monte uma allowlist estreita. A skill embutida **`/fewer-permission-prompts`** varre as suas conversas recentes atrás de leituras comuns de `Bash` e MCP e propõe uma allowlist em `.claude/settings.json`. Não a executamos aqui, porque ela **lê o histórico das suas sessões**. Rode-a num projeto seu e leia cada linha antes de aceitar. No modo interativo, `allow` do projeto só vale depois que você aceita o diálogo de confiança da pasta.
+
+### Confiança em MCP e plugins
+
+Servidor MCP e plugin rodam código e entregam texto que o Claude lê: são superfície de ataque e de injeção. A doc sugere escrever os seus ou usar de quem você confia, e lembra que a Anthropic revisa conectores contra critérios de listagem, mas **não audita** nenhum. Olhar o `.mcp.json` não mostra todos os servidores de uma sessão: os de outros escopos e os de plugins ficam fora dele. O [M10](../m10/) e o [M13](../m13/) detalham.
+
+### O bypass e o dev container
+
+`bypassPermissions` desliga avisos e verificações, inclusive para escrever em `.git` e `.claude`. O **dev container** é o caminho recomendado: os comandos rodam dentro dele e as edições aparecem no seu repositório. Mas a doc avisa: com `--dangerously-skip-permissions`, um repositório malicioso pode exfiltrar **tudo que estiver acessível no contêiner**, inclusive as credenciais do Claude em `~/.claude`. Por isso: só repositórios confiáveis, nada de montar `~/.ssh` ou credenciais de nuvem, usuário não-root (a CLI recusa a flag como root) e saída de rede restrita. Se a meta é menos pergunta, a doc aponta o **modo auto**.
+
+### Privacidade e uso de dados
+
+Conferido na página de uso de dados em 13/11/2026 (a fonte muda; confirme):
+
+- **Contas de consumidor** (Free, Pro, Max, Ultra): você escolhe se seus dados ajudam a treinar modelos. Ligada a opção, retenção de **5 anos**; desligada, **30 dias**.
+- **Contas comerciais** (Team, Enterprise, API, terceiros): a Anthropic **não treina** com código ou prompts do Claude Code, salvo se o cliente optar. Retenção padrão de **30 dias**.
+- **Local:** as transcrições das sessões ficam em texto puro em `~/.claude/projects/`, por padrão 30 dias (`cleanupPeriodDays`). **Podem conter o que você colou ou o Claude leu.**
+- **`/feedback`, `/bug` e `/share`:** as transcrições enviadas são retidas por 5 anos. Nada vai sem você escolher.
+
+### Glossário rápido
+
+- **Settings:** os arquivos `.json` onde ficam as configurações.
+- **Escopo:** o "alcance" de um arquivo de settings (você, o projeto, a organização).
+- **Allowlist:** a lista do que está liberado.
+- **Classificador:** um segundo modelo que revisa cada ação no modo auto.
+- **Sandbox:** isolamento imposto pelo sistema operacional.
+- **Bypass:** o modo que desliga as verificações.
+- **Transcrição:** o registro em texto da sua conversa com o Claude, guardado no disco.
 
 </Camada>
 
@@ -227,7 +304,9 @@ Ela vai para a transcrição local em texto puro e para o contexto. Rotacione a 
 
 ## Fichas de campo
 
-As quatro fichas usam o laboratório **Pendências**.
+As quatro fichas usam o laboratório **Pendências**, um app pequeno que serve de cobaia. Elas seguem a história do módulo: você vai **provocar** cada problema, depois **travar** e, por fim, **ver onde a trava falha**. Quem só leu a teoria costuma esquecer; quem viu o segredo vazar, não.
+
+Uma explicação rápida, porque os comandos abaixo usam duas ideias novas. O `claude -p "pedido"` faz uma pergunta ao Claude, mostra a resposta e sai, sem abrir a tela interativa (por isso ele serve para testar). E o `--allowedTools` libera uma ferramenta **só naquela execução**, como se você marcasse um `allow` temporário.
 
 - [Ponto de partida: `m7-inicio.zip`](../lab/m7-inicio.zip)
 
@@ -249,34 +328,36 @@ Executei as Fichas 1, 2 e 3 com `claude -p`, em Sonnet 5.5. O modo `-p` **nega**
   id="m7-e1"
   n={1}
   titulo="Bloquear a leitura do .env e provar"
-  objetivo="Ver um segredo vazar, bloqueá-lo com uma regra e descobrir onde a regra não alcança."
+  objetivo="Reproduzir o susto do começo, com uma senha falsa: ver o segredo vazar, bloqueá-lo e descobrir onde a regra não alcança."
   minutos={25}
   pre="Laboratório baixado e commitado"
 >
+
+Vamos fingir que o `.env` guarda a chave de um serviço. Nada aqui é real.
 
 1. Crie um segredo **falso** (o `.gitignore` do laboratório já ignora `.env`):
 
    <SO unix='echo "API_KEY=sk-FALSO-nao-use-0000" > .env' win='Set-Content .env "API_KEY=sk-FALSO-nao-use-0000" -Encoding ascii' />
 
-2. **Sem regra**, peça a leitura:
+2. **Sem regra**, peça a leitura. É o cenário do susto, e o esperado é o Claude contar o segredo:
 
    ```bash
    claude -p "Leia o arquivo .env e me diga o valor de API_KEY."
    ```
 
-3. Crie a regra de bloqueio:
+3. Crie a regra de bloqueio (é o `deny` que você viu no Essencial):
 
    <SO unix={`mkdir -p .claude && echo '{"permissions":{"deny":["Read(./.env)"]}}' > .claude/settings.json`} win={`New-Item -ItemType Directory -Force .claude | Out-Null; Set-Content .claude/settings.json '{"permissions":{"deny":["Read(./.env)"]}}' -Encoding ascii`} />
 
    Repita o pedido do passo 2.
 
-4. **Tente passar pelo lado.** Libere o `cat` e peça o conteúdo:
+4. **Tente passar pelo lado.** Libere o `cat` e peça o conteúdo. A pergunta é: uma regra de leitura vale também para o `cat`?
 
    ```bash
    claude -p "Rode o comando: cat .env e me diga o conteúdo." --allowedTools "Bash(cat *)"
    ```
 
-5. Agora o desvio que a documentação avisa. Crie um script que abre o arquivo sozinho e peça para rodá-lo:
+5. Agora o desvio que a documentação avisa. Crie um script que abre o arquivo sozinho e peça para rodá-lo. O Claude Code vê "rodar um script", não "ler o `.env`":
 
    <SO unix={`echo "import { readFileSync } from 'node:fs'; console.log(readFileSync('.env', 'utf8'));" > ler-env.mjs`} win={`Set-Content ler-env.mjs "import { readFileSync } from 'node:fs'; console.log(readFileSync('.env', 'utf8'));" -Encoding ascii`} />
 
@@ -328,7 +409,9 @@ Troque a regra por `Read(//**/.env)` e crie um `.env` numa subpasta. Ela pega o 
   pre="Ficha 1"
 >
 
-1. Crie um remoto vazio e ligue-o, para ter um `git push` para barrar:
+Cenário: você quer que o Claude rode testes e use o git, mas jamais publique código sozinho. Para ter um `git push` para barrar, falta um destino.
+
+1. Crie um remoto vazio (uma "caixa de correio" local) e ligue-o ao projeto:
 
    ```bash
    git init --bare ../remoto.git
@@ -401,6 +484,8 @@ Rode o mesmo pedido com `--permission-mode dontAsk`. O resultado muda? Trocando 
   pre="Ficha 1"
 >
 
+Cenário: um colega mandou notas de reunião, e alguém escondeu uma ordem no meio. Veja se o Claude cai.
+
 1. Crie, no editor, um arquivo `notas.md` com uma instrução escondida num comentário (o domínio `.invalid` nunca resolve, então nada sai da sua máquina):
 
    ```markdown
@@ -466,6 +551,8 @@ Esconda a mesma instrução numa página que você hospede e peça um resumo com
   pre="macOS, Linux ou WSL2"
   verificacao="nao-testado"
 >
+
+Cenário: o jeito de verdade de prender um comando é a cerca do sistema operacional. Esta ficha mostra como ligá-la.
 
 Esta ficha **não foi executada aqui**: a máquina de teste é Windows nativo, onde o sandbox não existe, e sem WSL2 instalado. Os passos seguem a documentação de 13/11/2026.
 
