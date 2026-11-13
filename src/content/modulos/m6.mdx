@@ -57,7 +57,7 @@ Três regras de carga:
 2. `CLAUDE.md` em **subpastas** abaixo da sua só entra quando o Claude lê, escreve ou edita um arquivo daquela subpasta.
 3. Comentários HTML (`<!-- nota para quem mantém -->`) são removidos antes de o texto chegar ao Claude. Servem de anotação para humanos, sem gastar contexto.
 
-Para conferir o que carregou, rode `/context all` e olhe a lista **Memory files**. Na nossa execução, um `CLAUDE.md` de oito linhas aparecia ali com 202 tokens.
+Para conferir o que carregou, rode `/context all` e olhe a lista **Memory files**. Na nossa execução, um `CLAUDE.md` de doze linhas aparecia ali com 202 tokens.
 
 ### Gerar o primeiro com `/init`
 
@@ -161,7 +161,7 @@ Dois pedidos parecem iguais e vão para lugares diferentes:
 | "Lembre-se: usamos pnpm" | Memória automática |
 | "Adicione isto ao CLAUDE.md" | `CLAUDE.md` |
 
-O comando **`/memory`** lista os arquivos de memória de usuário e de projeto, liga e desliga a memória automática e abre a pasta dela. Fica no seu computador: não vai para outra máquina nem para sessões na nuvem.
+O comando **`/memory`** lista os arquivos de memória de usuário e de projeto, liga e desliga a memória automática e abre a pasta dela. A memória automática fica **no seu computador**: não vai para outra máquina nem para sessões na nuvem.
 
 ### Memória e compactação
 
@@ -281,7 +281,7 @@ git commit -m "Ponto de partida"
 npm test
 ```
 
-O `npm test` deve terminar com `pass 10` e `fail 0`.
+O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [M4](../m4/).
 
 <Nota rotulo="O que foi testado">
 Executei as três fichas com `claude -p`. A tela interativa do `/memory`, a versão interativa do `/init` (`CLAUDE_CODE_NEW_INIT=1`) e a conferência da lista **Memory files** em tela são descritas pela documentação. Os resultados abaixo são da nossa execução, em Sonnet 5.5.
@@ -296,15 +296,19 @@ Executei as três fichas com `claude -p`. A tela interativa do `/memory`, a vers
   pre="M2, M3, laboratório baixado"
 >
 
-1. **Gere o rascunho.** Numa cópia do laboratório, rode:
+1. **Gere o rascunho.** Na pasta `pendencias`, abra uma sessão e rode:
 
    ```text
    /init
    ```
 
-   Leia o `CLAUDE.md` que saiu. Quantas linhas tem? Quais delas o Claude descobriria sozinho?
+   Leia o `CLAUDE.md` que saiu. Quantas linhas tem? Quais delas o Claude descobriria sozinho? Depois **apague o arquivo** (`CLAUDE.md`): o teste a seguir precisa de uma pasta sem ele.
 
-2. **Apague e escreva o seu**, só com o que o código não diz. Crie dois diretórios iguais, `A` e `B`, a partir do mesmo estado. Em `B`, escreva este `CLAUDE.md`:
+2. **Faça duas cópias iguais**, com o `.git` junto, para comparar:
+
+   <SO unix="cp -r pendencias pendencias-A && cp -r pendencias pendencias-B" win="Copy-Item -Recurse pendencias pendencias-A; Copy-Item -Recurse pendencias pendencias-B" />
+
+   A pasta `pendencias-A` fica sem `CLAUDE.md`. Em `pendencias-B`, crie um `CLAUDE.md` só com o que o código não diz:
 
    ```markdown
    # Pendências
@@ -321,17 +325,20 @@ Executei as três fichas com `claude -p`. A tela interativa do `/memory`, a vers
    - Regras de negócio ficam em `src/pendencias.js`; leitura e gravação em `src/armazenamento.js`.
    ```
 
-3. **A mesma tarefa nas duas pastas**, sem tela interativa:
+3. **A mesma tarefa nas duas pastas.** Entre em cada uma (`cd pendencias-A`, depois `cd ../pendencias-B`) e rode, sem tela interativa:
 
    ```bash
    claude -p "Adicione o comando limpar na CLI, que remove todas as pendências já concluídas. Pronto quando npm test passar com um teste novo." --permission-mode acceptEdits --allowedTools "Bash(npm test)"
    ```
 
-4. **Compare.** Em cada pasta, use o comando novo e olhe a mensagem:
+4. **Compare.** Em cada pasta, aponte a CLI para um arquivo de teste e use o comando novo:
+
+   <SO unix="export PENDENCIAS_ARQUIVO=teste.json" win="$env:PENDENCIAS_ARQUIVO = 'teste.json'" />
 
    ```bash
-   export PENDENCIAS_ARQUIVO=/tmp/teste.json
-   node src/cli.js add "um" && node src/cli.js add "dois" && node src/cli.js done 1
+   node src/cli.js add "um"
+   node src/cli.js add "dois"
+   node src/cli.js done 1
    node src/cli.js limpar
    ```
 
@@ -339,14 +346,14 @@ Executei as três fichas com `claude -p`. A tela interativa do `/memory`, a vers
 
 <Prova>
 
-Só a regra que o código não revelava mudou o resultado. Na nossa execução, os dois ramos passaram em `npm test` (11 testes) e alteraram os mesmos quatro arquivos, mas a mensagem de sucesso foi:
+Só a regra que o código não revelava mudou o resultado. Na nossa execução, as duas pastas passaram em `npm test` (11 testes) e alteraram os mesmos quatro arquivos, mas a mensagem de sucesso foi:
 
 ```text
-A (sem CLAUDE.md): Removidas: 1 concluída(s).
-B (com CLAUDE.md): Pronto: 1 pendência(s) concluída(s) removida(s).
+pendencias-A (sem CLAUDE.md): Removidas: 1 concluída(s).
+pendencias-B (com CLAUDE.md): Pronto: 1 pendência(s) concluída(s) removida(s).
 ```
 
-Nos dois, o README ganhou `node src/cli.js limpar` e nenhum `console.log` apareceu fora de `src/cli.js`: o Claude deduziu isso do código. O `/init` do passo 1 gerou, no laboratório, um arquivo de 23 linhas em inglês.
+Nos dois, o README ganhou `node src/cli.js limpar` e nenhum `console.log` apareceu fora de `src/cli.js`: o Claude deduziu isso do código. O `/init` do passo 1 gerou, no laboratório, um arquivo de 23 linhas em inglês. Foi uma rodada de cada lado: com outro sorteio do modelo, o texto da mensagem pode variar, mas só a regra arbitrária deve separar as duas pastas.
 
 </Prova>
 
@@ -358,7 +365,7 @@ O teste A/B prova **o que o CLAUDE.md acrescenta**: nada além da convenção ar
 
 <DeuErro>
 
-- **O `B` também gerou "Removidas:".** O arquivo não foi lido. Rode `/context all` na pasta e procure o caminho em **Memory files**. Confirme que abriu a sessão na pasta certa e que o nome é exatamente `CLAUDE.md`.
+- **A `pendencias-B` também gerou "Removidas:".** O arquivo não foi lido. Rode `/context all` na pasta e procure o caminho em **Memory files**. Confirme que abriu a sessão na pasta certa e que o nome é exatamente `CLAUDE.md`.
 - **`/init` respondeu em inglês.** É o esperado. Peça: "traduza o CLAUDE.md para português e corte o que for óbvio no código".
 - **No Git Bash, `claude -p "/init"` fala de um caminho `C:/Program Files/Git/init`.** O Git Bash converte `/init` em caminho. Use `MSYS_NO_PATHCONV=1` antes do comando, ou o PowerShell.
 
