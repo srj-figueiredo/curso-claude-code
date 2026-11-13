@@ -1,0 +1,455 @@
+---
+id: m5
+titulo: Do computador para a internet
+parte: p3
+ordem: 5
+minutos: 75
+pre_requisitos: [m1, m4]
+objetivos:
+  - Dizer o que é um site estático e por que ele cabe em hospedagem gratuita.
+  - Publicar uma pasta no GitHub Pages por GitHub Actions.
+  - Ligar um domínio próprio, com os registros DNS certos e HTTPS ligado.
+  - Separar o que vai para o navegador (público) do que fica no servidor ou no build.
+  - Voltar a uma versão anterior do site quando um deploy dá errado.
+tldr:
+  - Site estático é uma pasta de arquivos prontos. Qualquer hospedagem a serve, e várias o fazem de graça.
+  - Tudo que chega ao navegador é público, inclusive "variáveis de ambiente" embutidas no código.
+  - Errou no deploy? Volte ao anterior e conserte com calma. Com git, isso é um revert.
+verificado_em_versao: 2.1.323
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: m5-e1, titulo: Publicar o site do M1, minutos: 25, custo: gratis }
+  - { id: m5-e2, titulo: Errar de propósito e voltar atrás, minutos: 15, custo: gratis }
+  - { id: m5-e3, titulo: Domínio próprio, minutos: 30, custo: opcional-pago }
+---
+
+## Essencial
+
+Até aqui, tudo que você fez mora no seu computador. Este módulo leva uma página para um endereço que qualquer pessoa abre. É o passo que transforma exercício em entrega.
+
+### O que é um site estático
+
+Um **site estático** é uma pasta com arquivos prontos: HTML, CSS, JavaScript, imagens. O servidor só os entrega, do jeito que estão. Não roda código seu, não consulta banco, não guarda cadastro.
+
+Isso cobre mais do que parece: portfólio, landing page, documentação, este curso. Quando você precisar de login, banco ou formulário que grava dados, entra o servidor, e o [M20](../m20/) trata disso. A boa notícia é que o estático é a hospedagem mais barata que existe, porque é o trabalho mais simples para quem hospeda.
+
+**Build** é a etapa que transforma o seu projeto nessa pasta final. O site do [M1](../m1/) não precisa: o `index.html` já é a pasta. Projetos com framework (como o deste curso) rodam um comando, `npm run build`, que gera uma pasta pronta (aqui, `dist/`). **Só essa pasta vai para a internet.**
+
+### Onde publicar de graça
+
+Quatro opções comuns, conferidas na documentação de cada uma em 13/11/2026:
+
+| Hospedagem | Grátis? | Prévias de PR | Voltar a versão anterior |
+|---|---|---|---|
+| **GitHub Pages** | Sim, para repositórios públicos. Repositório privado depende do seu plano | Não nativas | Revert do commit e novo deploy |
+| **Cloudflare Pages** | Sim, no plano Free (500 builds por mês; até 20.000 arquivos por site; 25 MiB por arquivo) | Sim, sem limite de prévias ativas | Rollback instantâneo para um deploy de produção anterior |
+| **Netlify** | Consulte o plano atual na página de preços | Sim (*Deploy Preview*, uma por PR) | **Publish Deploy** em qualquer deploy bem-sucedido |
+| **Vercel** | Consulte o plano atual na página de preços | Sim | Instant Rollback; no plano Hobby, só para o deploy imediatamente anterior |
+
+A página inicial do Cloudflare Pages traz um aviso que pergunta se você tem certeza de que quer usar o Pages e recomenda o Workers para projetos novos. Confira esse aviso antes de escolher.
+
+O curso usa o **GitHub Pages**: você já tem a conta, o repositório e o `gh` do [M4](../m4/). E o site deste manual foi montado para ser publicado assim.
+
+Duas ressalvas do GitHub Pages, ambas da documentação:
+
+- **É estático e não é para negócio.** A própria página de limites diz que o serviço não deve ser usado como hospedagem gratuita para rodar loja virtual ou software como serviço, nem para transações sensíveis.
+- **Tem tetos.** Site publicado de até 1 GB, tráfego mensal de cerca de 100 GB (limite brando), deploy que passa de 10 minutos é cancelado.
+
+<Nota rotulo="Para um cliente de verdade">
+Projeto comercial pede hospedagem de plano pago ou um provedor cujos termos aceitem uso comercial. Leia os termos antes de prometer o endereço. O [C4](../c4/) volta a isso.
+</Nota>
+
+### Publicar no GitHub Pages, passo a passo
+
+O GitHub Pages publica de dois jeitos, que você escolhe em **Settings, Pages, Build and deployment, Source**:
+
+| Modo | O que faz | Quando |
+|---|---|---|
+| **Deploy from a branch** | Publica uma pasta de um branch (a raiz ou `/docs`) a cada push | Site que já é HTML pronto |
+| **GitHub Actions** | Um workflow constrói e publica | Projeto com build. É o que o curso usa |
+
+O caminho com Actions tem quatro peças, e o Claude escreve a terceira para você:
+
+1. Um repositório no GitHub com o projeto (o `gh repo create` do [M4](../m4/)).
+2. **Settings, Pages, Source: GitHub Actions.**
+3. Um arquivo `.github/workflows/pages.yml`. Peça: "crie o workflow que publica esta pasta no GitHub Pages por GitHub Actions".
+4. Um `git push` no `main`.
+
+O workflow precisa de três permissões, e a documentação exige no mínimo `pages: write` e `id-token: write` no job de deploy:
+
+```yaml
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+```
+
+Ele usa três ações oficiais: `actions/configure-pages`, `actions/upload-pages-artifact` e `actions/deploy-pages`. O ambiente se chama `github-pages`.
+
+Quando o push termina, a aba **Actions** mostra a execução. Verde, o site está no ar em:
+
+```text
+https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/
+```
+
+**Atenção ao caminho.** Num repositório comum, o site vive **dentro** de `/NOME-DO-REPOSITORIO/`, não na raiz. Um link escrito como `/estilo.css` procura `usuario.github.io/estilo.css` e quebra. Sites com framework resolvem isso configurando o caminho-base. O deste curso faz isso no `astro.config.mjs` (`base: '/curso-claude-code'`).
+
+### Domínio e DNS
+
+O endereço `usuario.github.io` é um **subdomínio grátis**. Serve para portfólio e estudo. Para um cliente, você quer `meunegocio.com.br`.
+
+Um **domínio próprio** se registra, por ano, num registrador. O preço varia por extensão e por registrador: consulte o do registrador que escolher, sem confiar em número de blog. Depois, você aponta o domínio para o GitHub criando registros no **DNS**, a "lista telefônica" que traduz nomes em endereços.
+
+| Quer usar | Crie este registro | Valor |
+|---|---|---|
+| `www.meunegocio.com.br` (recomendado pela própria doc) | `CNAME` em `www` | `SEU-USUARIO.github.io` |
+| `meunegocio.com.br` (domínio raiz) | quatro `A` em `@` | `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` |
+| O mesmo, em IPv6 | quatro `AAAA` em `@` | `2606:50c0:8000::153` a `2606:50c0:8003::153` |
+
+Depois, em **Settings, Pages, Custom domain**, informe o domínio. Registros novos levam de minutos a horas para valer em toda a internet, e isso se chama **propagação**.
+
+Você confere o DNS de fora, sem painel nenhum:
+
+```bash
+nslookup pages.github.com
+```
+
+### HTTPS
+
+**HTTPS** é o cadeado: o tráfego vai cifrado e o navegador confia no site. No GitHub Pages ele vem pronto: todo site tem suporte, e nos domínios próprios o GitHub pede o certificado à Let's Encrypt depois que o DNS confere. Ligue a opção **Enforce HTTPS**, em Settings, Pages, para redirecionar todo acesso `http://` para `https://`.
+
+Um erro típico: página em HTTPS que carrega imagem ou script por `http://` (conteúdo misto). O navegador bloqueia ou avisa. Troque os endereços por `https://`.
+
+### O que vai para o navegador é público
+
+Num site estático, **todo arquivo publicado é legível por qualquer pessoa**: abra "Ver código-fonte" em qualquer página. Isso inclui qualquer valor que o build tenha embutido no JavaScript.
+
+Por isso:
+
+- **Chave de API no código do site não é segredo.** Quem abre o site a vê. Chaves que dão acesso a dinheiro ou a dados ficam em um servidor ou função (a documentação da Netlify manda usar função serverless ou edge para valores sensíveis). O [M20](../m20/) mostra como.
+- **Segredo só do build** (um token para baixar dados antes de gerar as páginas) mora nos **segredos do repositório**: Settings, Secrets and variables, Actions, New repository secret. Pela linha de comando, `gh secret set NOME`. No workflow, o valor entra com `${{ secrets.NOME }}`.
+- **Configuração não secreta** (um nome de site, um endereço de API pública) vai em **variáveis**, na aba Variables do mesmo lugar, e entra com `${{ vars.NOME }}`.
+
+Dois detalhes de segurança que a documentação do GitHub dá: os segredos **não** são passados a workflows disparados por fork (a exceção é o `GITHUB_TOKEN`), e não são passados a eventos do Dependabot.
+
+### Prévias e voltar atrás
+
+Uma **prévia** (*preview*) é uma cópia temporária do site para cada pull request, com endereço próprio, para você ver antes de publicar. Cloudflare Pages, Netlify e Vercel fazem isso sozinhos. No GitHub Pages não há prévia nativa: veja a mudança localmente (`npm run preview`) antes do merge.
+
+**Voltar atrás** (*rollback*) é a rede de segurança do deploy. Cada hospedagem tem o seu jeito:
+
+| Hospedagem | Como volta |
+|---|---|
+| GitHub Pages | `git revert` do commit ruim e push. O workflow publica a versão anterior (o [M4](../m4/) ensinou o `revert`) |
+| Cloudflare Pages | Rollback para um deploy de produção anterior. Prévias não servem de alvo |
+| Netlify | **Publish Deploy** num deploy anterior. Um novo push no repositório **sobrescreve** o rollback |
+| Vercel | Instant Rollback. Ele desliga a atribuição automática dos domínios de produção, então novos pushes não entram no ar até você desfazer o rollback |
+
+### Medir visitas sem rastrear gente
+
+Para saber se alguém visita seu site, você não precisa de cookies nem de banner de consentimento. Duas opções que descrevem a si mesmas como respeitosas com a privacidade:
+
+- **Cloudflare Web Analytics**: a documentação o descreve como análise "privacy-first", sem exigir mudança de DNS nem o proxy da Cloudflare. A página não diz se é gratuito nem se usa cookies: confira no painel antes de afirmar algo ao cliente.
+- **GoatCounter**: código aberto, gratuito para "uso público razoável", e identifica visitas **sem cookies** e sem identificadores únicos.
+
+Em ambos, o princípio é o mesmo: contar visitas, não pessoas.
+
+<Camada tipo="capo" titulo="Detalhes de Pages, Actions e DNS">
+
+### Site de usuário e site de projeto
+
+O repositório chamado `SEU-USUARIO.github.io` vira o site raiz da conta (`https://SEU-USUARIO.github.io/`), e a documentação limita a um site de usuário por conta. Qualquer outro repositório vira um **site de projeto**, sob `/NOME-DO-REPOSITORIO/`.
+
+### Limites de build do GitHub Pages
+
+O limite de "10 builds por hora" descrito na documentação **não vale** para quem publica por um workflow próprio do GitHub Actions. Excesso de requisições a um site Pages devolve o erro HTTP 429.
+
+### Versões das ações
+
+A documentação do GitHub, em 13/11/2026, mostra `actions/configure-pages@v5`, `actions/upload-pages-artifact@v4` e `actions/deploy-pages@v4`. O workflow que o Claude gerou na nossa execução usou `upload-pages-artifact@v3`, uma versão mais velha. Funciona até a versão antiga ser descontinuada. **Peça ao Claude para conferir as versões atuais na documentação**, ou compare com a página "Using custom workflows with GitHub Pages".
+
+### Apex, ALIAS e ANAME
+
+Alguns registradores não deixam criar `CNAME` no domínio raiz. Para isso existem `ALIAS` e `ANAME` apontando para `SEU-USUARIO.github.io`, quando o registrador os suporta. Se não suportar, use os quatro registros `A`.
+
+### Como o `concurrency` ajuda
+
+O workflow gerado usa `concurrency` com `cancel-in-progress: false`: dois pushes seguidos não se atropelam no deploy.
+
+### Cache e "não atualizou"
+
+Depois de um deploy, o navegador pode mostrar a versão antiga por causa do cache. `Ctrl+Shift+R` recarrega sem cache. Se o arquivo mudou e o endereço dele não, é o cache.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Publicar a pasta errada
+
+Tudo que está na pasta publicada fica público: `.env`, anotações, rascunhos. Publique uma pasta própria (como `dist/` ou `site/`), nunca a raiz do projeto inteira.
+
+### Caminho-base esquecido
+
+A página abre sem estilo e sem imagens porque os links começam com `/`. Num site de projeto, confira o caminho-base do framework.
+
+### Segredo no JavaScript do site
+
+Qualquer valor embutido no build é legível. Mova a chamada que usa o segredo para uma função no servidor.
+
+### Esperar o DNS "na hora"
+
+Registro novo leva tempo. Se `nslookup` ainda mostra o endereço antigo, espere, não apague nem refaça.
+
+### Cadeado quebrado por conteúdo misto
+
+Um único `http://` num site HTTPS derruba o cadeado. Procure por `http://` no código.
+
+### Usar o GitHub Pages para vender
+
+A doc não permite uso como hospedagem gratuita de negócio comercial. Para loja ou SaaS, use hospedagem apropriada.
+
+### Voltar atrás na Netlify e esquecer o push seguinte
+
+Com publicação automática ligada, o próximo push sobrescreve o rollback. Pause a publicação automática enquanto investiga.
+
+### Achar que o rollback conserta o código
+
+Ele só faz o site público voltar à versão anterior. O código quebrado continua no repositório. Reverta o commit também.
+
+</Camada>
+
+## Fichas de campo
+
+As fichas usam o site do [M1](../m1/): uma pasta com um único `index.html`. Se você não a tem, peça ao Claude: "crie index.html com título Olá e um parágrafo, em UTF-8".
+
+<Nota rotulo="O que foi testado">
+Nenhuma ficha foi executada de ponta a ponta: criar o repositório público e ligar o Pages exigem a conta do GitHub, e a publicação do curso ainda aguarda autorização. O que **foi** executado: servir a pasta localmente, gerar o workflow com o Claude e validar o YAML, e consultar o DNS e o HTTPS de um site público existente. Os passos de GitHub seguem a documentação oficial de 13/11/2026.
+</Nota>
+
+<Ficha
+  id="m5-e1"
+  n={1}
+  titulo="Publicar o site do M1"
+  objetivo="Colocar o index.html no ar em um endereço github.io."
+  minutos={25}
+  pre="M1, M4, gh autenticado"
+  verificacao="nao-testado"
+>
+
+1. Teste local antes de publicar. Na pasta do site:
+
+   ```bash
+   python -m http.server 8000
+   ```
+
+   Abra `http://localhost:8000`. Pare com `Ctrl+C`.
+
+2. Peça o workflow ao Claude:
+
+   ```text
+   Crie .github/workflows/pages.yml que publica esta pasta (index.html na raiz, sem build) no GitHub Pages usando GitHub Actions: dispara em push no main e manualmente, usa actions/configure-pages, actions/upload-pages-artifact e actions/deploy-pages, com as permissões mínimas e o ambiente github-pages. Só crie o arquivo.
+   ```
+
+3. Leia o arquivo. Confira as três permissões e se o `path` publica só o que deve. Se a pasta tem coisas que não devem ser públicas, mova o site para uma subpasta `site/` e ajuste o `path`.
+
+4. Crie o repositório e envie. O repositório precisa ser **público** (ou seu plano precisa permitir Pages em privado):
+
+   ```bash
+   git init -b main
+   git add -A
+   git commit -m "Publica o primeiro site"
+   gh repo create meu-primeiro-site --public --source . --push
+   ```
+
+5. No navegador: repositório, **Settings, Pages, Build and deployment, Source: GitHub Actions**. Depois rode o workflow de novo na aba **Actions** (botão *Run workflow*) ou dê outro push.
+
+6. Abra o endereço:
+
+   ```text
+   https://SEU-USUARIO.github.io/meu-primeiro-site/
+   ```
+
+<Prova>
+
+Aba **Actions**: execução verde. O endereço mostra o título "Olá" e o parágrafo. Você confere do terminal:
+
+```bash
+curl -s https://SEU-USUARIO.github.io/meu-primeiro-site/ | grep -o "<h1>.*</h1>"
+```
+
+Saída esperada: `<h1>Olá</h1>`. (Não executado: depende da sua conta. Executamos o passo 1, que retornou `HTTP 200, text/html`, e o passo 2, que gerou um YAML válido com as três permissões.)
+
+</Prova>
+
+<Gabarito>
+
+O workflow tem um único job de deploy com `actions/checkout`, `configure-pages`, `upload-pages-artifact` e `deploy-pages`, ambiente `github-pages` e as permissões `contents: read`, `pages: write`, `id-token: write`. Sem o passo 5 (Source: GitHub Actions), o workflow roda, mas o site não aparece.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O workflow falha em `configure-pages` com erro de que Pages não está habilitado.** Faltou o passo 5. Ajuste o Source e rode de novo.
+- **A página abre, mas sem estilo.** O CSS usa caminho começando com `/`. Num site de projeto, use caminhos relativos (`estilo.css`) ou configure o caminho-base.
+- **Erro 404 no endereço.** O workflow ainda não terminou, ou o repositório é privado num plano sem Pages. Veja a aba Actions e as configurações de Pages.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "confira na documentação oficial do GitHub as versões atuais das três ações do Pages e atualize o workflow". Ele achou diferença entre o que escreveu antes e a doc?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m5-e2"
+  n={2}
+  titulo="Errar de propósito e voltar atrás"
+  objetivo="Publicar uma mudança ruim e desfazê-la pelo git."
+  minutos={15}
+  pre="Ficha 1"
+  verificacao="nao-testado"
+>
+
+1. Estrague a página. Troque o título para `Quebrado` e publique:
+
+   ```bash
+   sed -i 's/<h1>Olá/<h1>Quebrado/' index.html
+   git commit -am "Quebra o título de propósito"
+   git push
+   ```
+
+2. Espere o workflow ficar verde e confira que o site mostra "Quebrado".
+
+3. Volte atrás com o `revert` do [M4](../m4/):
+
+   ```bash
+   git revert --no-edit HEAD
+   git push
+   ```
+
+4. Espere o novo deploy e recarregue com `Ctrl+Shift+R`.
+
+<Prova>
+
+Depois do passo 3, o `git log --oneline -3` mostra o commit `Revert "Quebra o título de propósito"` no topo. Depois do deploy, o site volta a mostrar "Olá". (Não executado aqui: depende do GitHub; o `revert` em si foi exercitado no M4.)
+
+</Prova>
+
+<Gabarito>
+
+No GitHub Pages, "voltar atrás" é uma operação do git, e a publicação é consequência. Nas hospedagens que guardam deploys (Cloudflare, Netlify, Vercel), há também o botão de rollback, mais rápido, e o `revert` continua necessário para o repositório não ficar com o código ruim.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O site continua mostrando "Quebrado".** O cache do navegador. `Ctrl+Shift+R`, ou uma janela anônima.
+- **O `sed -i` não funciona no seu sistema.** No macOS, use `sed -i ''`. Ou peça ao Claude para trocar o título.
+- **O `revert` abre um editor.** Faltou `--no-edit`.
+
+</DeuErro>
+
+<Desafio>
+
+Quanto tempo passou entre o push e o site mudar, nas duas direções? Esse é o seu tempo de reação a um erro em produção.
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m5-e3"
+  n={3}
+  titulo="Domínio próprio"
+  objetivo="Apontar um domínio registrado para o seu site, com HTTPS."
+  minutos={30}
+  pre="Ficha 1 e um domínio registrado"
+  custo="opcional-pago"
+  verificacao="nao-testado"
+>
+
+<Troca
+  oque="O endereço usuario.github.io por um domínio próprio"
+  gatilho="Quando o site for de um cliente ou de uma marca, e o endereço precisar ser seu"
+  custo="registro anual no registrador; o preço varia por extensão e por registrador, consulte o do escolhido"
+  data="13/11/2026"
+  como="Registre o domínio e siga os passos abaixo. O site continua grátis no GitHub Pages"
+/>
+
+1. **Antes de comprar nada**, treine a leitura de DNS num site existente:
+
+   ```bash
+   nslookup pages.github.com
+   ```
+
+2. No painel do registrador, crie o `CNAME` de `www` apontando para `SEU-USUARIO.github.io`. Para o domínio raiz, crie os quatro registros `A` da tabela do Essencial.
+
+3. No repositório: **Settings, Pages, Custom domain**, escreva `www.seudominio.com.br` e salve.
+
+4. Espere o GitHub conferir o DNS. Quando ele liberar, marque **Enforce HTTPS**.
+
+5. Confira de fora:
+
+   ```bash
+   nslookup www.seudominio.com.br
+   curl -sI https://www.seudominio.com.br | head -1
+   ```
+
+<Prova>
+
+O passo 1, que executamos, devolve os quatro endereços `185.199.108.153`, `185.199.109.153`, `185.199.110.153` e `185.199.111.153`, os mesmos da documentação. Com o domínio configurado, o `curl` do passo 5 imprime `HTTP/1.1 200 OK` (ou `HTTP/2 200`). Um acesso por `http://` responde com `301` para `https://`: na nossa verificação, `pages.github.com` fez exatamente isso. O domínio próprio não foi executado.
+
+</Prova>
+
+<Gabarito>
+
+O DNS só aponta o nome para o GitHub. Quem decide servir o seu site naquele nome é a configuração **Custom domain** no repositório. Os dois lados precisam estar certos. O certificado HTTPS é pedido depois que o DNS confere, então o "Enforce HTTPS" pode demorar a liberar.
+
+</Gabarito>
+
+<DeuErro>
+
+- **"Enforce HTTPS" fica desabilitado.** O certificado ainda não saiu. Segundo a documentação, remover o domínio e salvar de novo reinicia o pedido.
+- **O `nslookup` mostra outro endereço.** Propagação, ou o registro foi criado no lugar errado (`www` no lugar de `@`, ou o contrário).
+- **O navegador avisa de certificado inválido.** Você abriu o domínio antes do certificado sair. Espere e tente de novo.
+
+</DeuErro>
+
+<Desafio>
+
+Configure também o domínio raiz (sem `www`) e confirme que um acesso a ele chega ao mesmo site. A página de domínios do GitHub trata do redirecionamento entre os dois.
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei dizer o que é um site estático e quando preciso de servidor.
+- Publiquei uma pasta no GitHub Pages por GitHub Actions (ou entendi cada passo).
+- Sei os registros DNS de `www` e de domínio raiz, e como conferi-los com `nslookup`.
+- Sei que tudo no navegador é público e onde mora um segredo de build.
+- Sei voltar atrás num deploy ruim.
+
+</Saida>
+
+**Próxima estação:** o [M6, Memória e CLAUDE.md](../m6/): como ensinar o projeto ao Claude uma vez só.
+
+<Fontes>
+
+- [About GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages) e [limites](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits): o que hospeda, tetos e uso não permitido.
+- [Configuring a publishing source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) e [custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages): ramo ou Actions e as permissões do deploy.
+- [HTTPS no GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https) e [domínios personalizados](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages): certificado, `Enforce HTTPS` e registros DNS.
+- [Segredos no GitHub Actions](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions) e [variáveis](https://docs.github.com/en/actions/learn-github-actions/variables).
+- [Cloudflare Pages](https://developers.cloudflare.com/pages/) e [limites](https://developers.cloudflare.com/pages/platform/limits/); [rollbacks](https://developers.cloudflare.com/pages/configuration/rollbacks/).
+- [Netlify: deploys](https://docs.netlify.com/site-deploys/overview/) e [variáveis de ambiente](https://docs.netlify.com/build/configure-builds/environment-variables/).
+- [Vercel: Instant Rollback](https://vercel.com/docs/deployments/instant-rollback).
+- [Cloudflare Web Analytics](https://developers.cloudflare.com/web-analytics/) e [GoatCounter](https://www.goatcounter.com/).
+- Execuções locais registradas em `VERIFICATION/m5.md`.
+
+</Fontes>
