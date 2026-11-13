@@ -30,7 +30,7 @@ export function compor(camadas) {
   for (const camada of camadas) {
     const pasta = camada === 'base' ? join(RAIZ, 'base') : join(RAIZ, 'estados', camada);
     for (const arquivo of arquivosDe(pasta)) {
-      const nome = relative(pasta, arquivo).replaceAll('\', '/');
+      const nome = relative(pasta, arquivo).replaceAll('\\', '/');
       if (nome !== MANIFESTO) arvore.set(nome, readFileSync(arquivo));
     }
   }
