@@ -10,27 +10,31 @@ Legenda: 🔴 bloqueia ou expõe algo · 🟡 importante, não bloqueia · 🟢 
 
 ## 1. Publicação e privacidade (🔴 fazer primeiro, nesta ordem)
 
-- [ ] **1.1 Liberar a criação do repositório público.** O classificador de permissões negou
+- [x] **1.1 (feito 13/11/2026)** Liberar a criação do repositório público.** O classificador de permissões negou
   `gh repo create curso-claude-code --public --source . --push` (13/11). Nada foi criado nem enviado.
   *Como resolver:* no computador, rodar o comando você mesmo (no Claude Code, digitando `! gh repo create ...`), ou
   adicionar uma regra de permissão para ele no seu `settings.json` (eu não posso editar a configuração global).
   *Depois:* ligar o Pages (`gh api -X POST repos/{dono}/curso-claude-code/pages -f build_type=workflow`), esperar o
   workflow, abrir a URL e escrevê-la no topo do `PROGRESS.md` e no `README.md`. A URL esperada, pelo `astro.config.mjs`,
   é `https://srj-figueiredo.github.io/curso-claude-code/`.
-- [ ] **1.2 E-mail pessoal nos commits (🔴 antes de 1.1).** Os 19 commits (até 13/11) levam `srfigueiredo@gmail.com` como autor.
+- [x] **1.2 (decidido 13/11/2026: manter o gmail; ele já é público no perfil)** E-mail pessoal nos commits (🔴 antes de 1.1).** Os 19 commits (até 13/11) levam `srfigueiredo@gmail.com` como autor.
   Num repositório público, isso fica exposto. *Decidir:*
   (a) só trocar o e-mail dos commits **futuros** pelo endereço `ID+usuario@users.noreply.github.com`
   (GitHub, Settings, Emails, "Keep my email addresses private"), aceitando que os antigos mantêm o e-mail; ou
   (b) **reescrever o histórico** antes de publicar (`git filter-repo`/`rebase`), que é destrutivo e exige sua
   autorização explícita. *Recomendação:* (b) agora, enquanto o repositório ainda é só local e não há ninguém clonando.
-- [ ] **1.3 Primeiro CI de verdade no Linux.** O `.github/workflows/deploy.yml` nunca rodou. Pode quebrar em:
+- [x] **1.3 (feito 13/11/2026: passou de primeira, 1m41s + 11s)** Primeiro CI de verdade no Linux.** O `.github/workflows/deploy.yml` nunca rodou. Pode quebrar em:
   `npm run check`, `npx playwright install --with-deps chromium`, o empacotamento dos ZIPs do laboratório
   (`scripts/empacotar-lab.mjs`) e os 22 testes de acessibilidade. *Ajustar o que falhar.*
 - [x] **1.4 (feito 13/11, antes da publicação)** Atualizar `actions/upload-pages-artifact` de `@v3` para `@v4` no `deploy.yml`.** A documentação do GitHub
   de 13/11/2026 mostra v4 (e `actions/checkout` mais novo). Conferir as versões atuais na doc antes de trocar.
-- [ ] **1.5 Seu link para ver no celular.** Você pediu um link e não havia nada publicado. Duas saídas: resolver 1.1 (o
+- [x] **1.5 (feito: https://srj-figueiredo.github.io/curso-claude-code/)** Seu link para ver no celular.** Você pediu um link e não havia nada publicado. Duas saídas: resolver 1.1 (o
   site completo no ar) ou, enquanto isso, publicar **uma página avulsa privada** (HTML único) como artefato do
   claude.ai. A segunda opção não foi feita.
+
+- [ ] **1.6 (novo) Avisos do CI:** o GitHub avisa que `actions/checkout@v4`, `setup-node@v4` e `upload-artifact` rodam em Node 20
+  (descontinuado) e são forçados a Node 24, e que `ubuntu-latest` migra para o Ubuntu 26 em 19/10/2026. Não quebra nada;
+  atualizar para as majors novas (a doc de Pages mostra `checkout@v6`; o GitHub já tem v7) quando houver folga.
 
 ## 2. Testes que dependem da sua conta GitHub (🟡, só depois de 1.1)
 

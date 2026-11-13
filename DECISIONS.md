@@ -88,3 +88,10 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Privacidade (aberto):** todos os commits levam o e-mail pessoal do autor. Num repositório público isso fica exposto. Antes da Publicação: configurar `user.email` com o endereço noreply do GitHub e decidir se reescreve o histórico (só com autorização do autor).
 - **Versão de ação (aberto):** o `deploy.yml` usa `upload-pages-artifact@v3`; a documentação do GitHub de 13/11/2026 mostra `@v4`.
 
+## D015 · Publicação feita (13/11/2026)
+
+- **Repositório público** `srj-figueiredo/curso-claude-code`, criado pelo autor com `gh repo create ... --public --source . --push` (o classificador de permissões bloqueia esse comando quando é o Claude a rodá-lo, então o autor o digitou com `!`). **Site:** https://srj-figueiredo.github.io/curso-claude-code/, por GitHub Pages com Actions.
+- **E-mail dos commits:** decidido manter o gmail do autor, que já é o e-mail público do perfil do GitHub (D014 fica resolvido).
+- **CI:** o primeiro build no Linux passou sem ajustes (check, build, 30 testes axe, deploy). A ação `upload-pages-artifact` foi para v4 antes do push.
+- **Aberto:** os avisos de Node 20 e do `ubuntu-latest` (PENDENCIAS 1.6).
+

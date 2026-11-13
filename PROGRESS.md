@@ -1,5 +1,9 @@
 # PROGRESS
 
+**Site publicado:** https://srj-figueiredo.github.io/curso-claude-code/  
+**Repositório:** https://github.com/srj-figueiredo/curso-claude-code  
+Publicado em 13/11/2026; cada push no `main` roda o CI (check, build, axe) e publica sozinho.
+
 Estados: `pendente` · `em andamento` · `verificado`.
 Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 
@@ -58,7 +62,7 @@ módulo, fazer o double check (CONTINUAR.md §3b) e citar sempre "M11 (Planejar 
 Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 
 ### Onda 1 · publicar e fechar a Parte 0 e a Parte I
-- [ ] **Publicação.** (BLOQUEADA 13/11: o classificador de permissões negou `gh repo create --public`; o autor precisa liberar ou rodar o comando com `!`. Antes: trocar o e-mail dos commits por noreply, D014.) `gh repo create curso-claude-code --public --source . --push`; ligar o Pages por Actions
+- [x] **Publicação (feita 13/11/2026; o autor rodou o `gh repo create`).** (era: BLOQUEADA 13/11: o classificador de permissões negou `gh repo create --public`; o autor precisa liberar ou rodar o comando com `!`. Antes: trocar o e-mail dos commits por noreply, D014.) `gh repo create curso-claude-code --public --source . --push`; ligar o Pages por Actions
       (`gh api -X POST repos/{dono}/curso-claude-code/pages -f build_type=workflow`); conferir que o workflow
       `.github/workflows/deploy.yml` passa (ajustar `npm run check` e os testes se quebrarem no Linux);
       abrir a URL e confirmar que a home carrega. Escrever a URL no topo deste arquivo e no `README.md`.
