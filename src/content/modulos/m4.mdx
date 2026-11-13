@@ -1,0 +1,586 @@
+---
+id: m4
+titulo: Git e GitHub do zero
+parte: p3
+ordem: 4
+minutos: 90
+pre_requisitos: [m1, m3]
+objetivos:
+  - Criar um repositório, fazer commits e ler o que mudou antes de cada um.
+  - Pedir ao Claude que faça commit sem deixar entrar arquivo que não deveria.
+  - Trabalhar num branch, enviar ao remoto e juntar de volta.
+  - Resolver um conflito de merge com o Claude e conferir o resultado.
+  - Desfazer um erro, recuperar um commit pelo reflog e tratar um segredo vazado, rotacionando a chave primeiro.
+tldr:
+  - Git é a rede de segurança de verdade. O /rewind do Claude não desfaz o que um comando de terminal mudou.
+  - Peça o diff antes do commit e confira o que está entrando. O Claude acrescenta um trailer Co-Authored-By.
+  - Segredo vazado se resolve rotacionando a chave. Apagar o arquivo do histórico é o passo secundário.
+verificado_em_versao: 2.1.323
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: m4-e1, titulo: Repositório, commits e o diff antes, minutos: 20, custo: gratis }
+  - { id: m4-e2, titulo: Branch, remoto e merge, minutos: 20, custo: gratis }
+  - { id: m4-e3, titulo: Conflito proposital, resolvido com o Claude, minutos: 20, custo: gratis }
+  - { id: m4-e4, titulo: Reverter, recuperar e vazar um segredo de teste, minutos: 25, custo: gratis }
+---
+
+## Essencial
+
+Este módulo não faz de você especialista em git. Faz o suficiente para **trabalhar com o Claude sem medo**: ele edita muito e rápido, e o git é o que permite conferir, desfazer e voltar.
+
+### Por que git vem antes de tudo
+
+O Claude Code tem o `/rewind`, que você viu no [M3](../m3/). Ele desfaz edições de arquivos feitas pelas ferramentas de edição. A documentação avisa o limite: um arquivo que **só** comandos de terminal mudaram não é rastreado, e a própria doc manda usar controle de versão para reverter. Os checkpoints servem a recuperação rápida dentro da sessão. Histórico de verdade é do git.
+
+Regra de bolso: **comece qualquer tarefa do Claude com a pasta limpa no git**. Se `git status` não mostra nada, tudo que aparecer depois é obra da sessão, e você desfaz com um comando.
+
+### O modelo mental: três lugares
+
+Um arquivo passa por três lugares, e quase todo comando de git move coisas entre eles.
+
+| Lugar | O que é | Como chegar lá |
+|---|---|---|
+| **Pasta de trabalho** | Os arquivos como estão agora, editados | Você ou o Claude editam |
+| **Área de preparo** (*stage*) | O que vai entrar no próximo commit | `git add arquivo` |
+| **Histórico** | Os commits já gravados | `git commit` |
+
+E um conjunto pequeno de comandos cobre o dia a dia:
+
+| Quero | Comando |
+|---|---|
+| Criar o repositório na pasta | `git init -b main` |
+| Ver o que mudou, em lista | `git status --short` |
+| Ver o que mudou, linha a linha | `git diff` (pasta de trabalho) e `git diff --staged` (preparado) |
+| Preparar e gravar | `git add arquivo` e `git commit -m "mensagem"` |
+| Ver o histórico | `git log --oneline` |
+| Criar e trocar de branch | `git switch -c nome` e `git switch main` |
+| Juntar um branch ao atual | `git merge nome` |
+| Descartar edição não gravada de um arquivo | `git restore arquivo` |
+
+Um commit é um ponto de restauração com nome. Mensagem boa diz **o que mudou**, no imperativo ("Adiciona prioridade às pendências"). É a convenção que o curso usa.
+
+### O Claude operando git
+
+Ele sabe git e roda os comandos pela ferramenta `Bash`. Basta pedir: "faça um commit disso". Três cuidados fazem a diferença:
+
+1. **Mande ler o diff antes.** "Mostre o git diff e depois faça o commit." Você vê o que entra, ele também.
+2. **Diga o que não entra.** "Não inclua arquivos de segredo." Ele respeita, mas o `.gitignore` é a garantia real.
+3. **Confira o resultado.** `git log --oneline` e `git show` levam dois segundos.
+
+No modo manual, o Claude pede licença para cada `git commit`. Quando isso cansar, você pode liberar o subcomando de forma estreita, com a regra `Bash(git commit *)`. Nunca libere `git push` junto sem pensar: publicar é a ação que não se desfaz com a mesma facilidade. O [M7](../m7/) explica a sintaxe das regras.
+
+**O trailer.** O Claude Code acrescenta por padrão uma linha `Co-Authored-By` ao fim da mensagem dos commits que ele faz, e um texto simples nas descrições de PR. A configuração `attribution` muda ou esconde isso. Para os cursos e projetos de cliente, vale decidir conscientemente se o trailer fica.
+
+### Do seu computador para o GitHub
+
+O **GitHub** hospeda repositórios na internet. Seu repositório local e o do GitHub se ligam por um **remoto**, que por convenção se chama `origin`.
+
+| Ação | Comando |
+|---|---|
+| Ligar o remoto | `git remote add origin <endereço>` |
+| Enviar um branch | `git push -u origin nome` (o `-u` guarda a ligação) |
+| Trazer o que há de novo | `git pull` |
+| Copiar um repositório existente | `git clone <endereço>` |
+
+O **`gh`** é a ferramenta de linha de comando do GitHub. Ela cuida da autenticação (`gh auth login`, `gh auth status`) e de tudo que é do GitHub e não do git: repositórios (`gh repo create`), pull requests (`gh pr create`, `gh pr merge`) e issues. O Claude usa o `gh` quando está instalado e logado, e a documentação do Claude Code fala disso ao descrever como ele cria PRs.
+
+**Pull request (PR)** é o pedido de "junte meu branch ao principal", com espaço para revisão. Do começo ao fim:
+
+1. Crie um branch e trabalhe nele.
+2. Envie com `git push -u origin nome`.
+3. Peça: "crie um PR". O Claude resume as mudanças, abre o PR e imprime o endereço. Ou use você mesmo `gh pr create --fill`, que monta título e corpo a partir dos commits.
+4. **Leia o PR antes de enviar.** A documentação recomenda pedir ao Claude que destaque riscos e pontos de atenção.
+5. Junte com `gh pr merge --squash --delete-branch` (ou pelo botão do site).
+
+Para achar a sessão que criou um PR, `claude --from-pr 1234` abre o seletor de sessões filtrado por esse PR.
+
+### `.gitignore` e segredos
+
+O `.gitignore` lista o que o git **não rastreia**: pastas de dependências, arquivos gerados e, principalmente, arquivos com segredos (`.env`, chaves, tokens). O laboratório já ignora `.env` e `node_modules/`.
+
+Duas regras valem ouro:
+
+- **Ignore antes de criar o arquivo.** Um arquivo já commitado continua rastreado mesmo depois de entrar no `.gitignore`.
+- **Segredo nunca vai no pedido, no código nem no commit.** Ele mora em variável de ambiente ou em arquivo ignorado.
+
+Para o Claude, a configuração `respectGitignore` (ligada por padrão) tira do seletor de `@arquivo` o que o `.gitignore` esconde.
+
+### Conflitos: quando duas mudanças brigam
+
+Se dois branches mudaram **a mesma linha**, o `git merge` para e marca o arquivo assim:
+
+```text
+<<<<<<< HEAD
+a versão do branch em que você está
+=======
+a versão do outro branch
+>>>>>>> ajuda
+```
+
+Resolver é escolher o texto final, apagar os três marcadores e concluir com `git add` e `git commit`. O Claude faz isso bem, e a Ficha 3 treina. Seu trabalho continua sendo conferir: nenhum marcador sobrou e a versão final faz sentido para os dois lados.
+
+### Desfazer e recuperar
+
+Há três ferramentas, em ordem de "gentileza":
+
+| Situação | Ferramenta | Efeito |
+|---|---|---|
+| Edição ainda não commitada | `git restore arquivo` | Volta o arquivo ao último commit |
+| Commit ruim já feito e compartilhado | `git revert <commit>` | Cria um commit novo que desfaz o anterior. O histórico fica intacto |
+| Commit ruim só seu, ainda local | `git reset --hard <commit>` | Move o branch para trás **e descarta as mudanças**. Perigoso |
+
+E o **`git reflog`** é a rede embaixo da rede: ele lista por onde o `HEAD` andou, inclusive commits que um `reset` fez sumir do `git log`. Enquanto o git não limpa objetos antigos, dá para voltar com `git reset --hard HEAD@{1}`. A Ficha 4 faz isso de propósito.
+
+### Quando um segredo vaza
+
+Aconteceu: uma chave foi parar num commit. A ordem das ações importa.
+
+1. **Rotacione a chave.** Gere uma nova no serviço e revogue a antiga. Isso é o que realmente resolve, porque quem copiou a chave antiga fica com um valor morto.
+2. **Pare de rastrear o arquivo** (`git rm --cached`) e coloque-o no `.gitignore`.
+3. **Só então** pense em reescrever o histórico, se for necessário. Reescrever é trabalhoso e não recolhe cópias que já saíram.
+
+O erro comum é inverter: apagar o commit e continuar com a chave velha valendo. Um `git revert` do commit do segredo, por exemplo, **não** a remove do histórico: o valor continua em qualquer commit antigo. A Ficha 4 mostra isso com um segredo falso.
+
+<Camada tipo="capo" titulo="Detalhes que valem conhecer">
+
+### O que o git guarda de verdade
+
+Um commit é um retrato completo do projeto, mais ponteiros para o commit anterior. Um branch é só um nome apontando para um commit. Por isso criar branch custa nada, e por isso o `reflog` consegue achar o que o `log` esqueceu: o commit continua existindo, só ninguém aponta para ele.
+
+### `merge`, `rebase` e `squash`
+
+`git merge` junta preservando os dois históricos. `rebase` reaplica seus commits sobre o branch principal, deixando o histórico em linha reta, mas reescreve commits, então não use em branch que outras pessoas já baixaram. O `--squash` do `gh pr merge` funde todos os commits do PR em um só. Para começar, `merge` e `--squash` bastam.
+
+### Regras de permissão para git
+
+A regra `Bash(git commit *)` casa com `git commit -m "..."`. Segundo a documentação, o `*` deve vir **depois do subcomando**, e regras como `Bash(git * main)` casam também com opções que executam programas (`git -c ...`). Prefira o subcomando explícito. Detalhes no [M7](../m7/).
+
+### Instruções de git que o Claude já traz
+
+O Claude Code carrega instruções embutidas de commit e PR. A configuração `includeGitInstructions` remove essas instruções do contexto, se você quiser conduzir tudo por conta própria ou pelo `CLAUDE.md` do projeto.
+
+### Worktrees
+
+`git worktree` cria outra pasta de trabalho ligada ao mesmo repositório, em outro branch. O Claude Code usa isso para sessões paralelas, assunto do [M12](../m12/).
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Começar com a pasta suja
+
+Se já havia mudança sua não commitada, ela se mistura com a do Claude e você não sabe mais de quem é cada linha. Faça commit ou `git stash` antes de pedir.
+
+### Commit com `git add .` às cegas
+
+Pede o diff antes. Um arquivo de teste, um log ou um `.env` mal ignorado entram junto e só aparecem depois.
+
+### Achar que o `.gitignore` des-rastreia
+
+Ele só vale para arquivos ainda não rastreados. Se o arquivo já foi commitado, `git rm --cached arquivo` o tira do rastreio sem apagá-lo do disco.
+
+### `git reset --hard` sem pensar
+
+Ele descarta mudanças não commitadas, sem volta. O `reflog` salva commits, não edições que nunca foram gravadas. Antes de um reset, rode `git status`.
+
+### Resolver conflito aceitando o lado "que parece certo"
+
+O Claude pode juntar os dois lados bem ou mal. Rode `npm test` depois, e procure marcadores com `grep -rn "<<<<<<<" .`.
+
+### Tratar o histórico limpo como segredo protegido
+
+Apagar o arquivo no commit seguinte não apaga o valor do histórico. Rotacione a chave.
+
+### Dar `git push` livre ao Claude
+
+Enviar para o remoto é a ação mais difícil de desfazer. Mantenha o `push` em modo "pergunte", mesmo quando liberar o `commit`.
+
+### Quebra de linha no Windows
+
+O aviso `LF will be replaced by CRLF` é só o git avisando da diferença de fim de linha entre sistemas. Não impede nada. Para silenciá-lo no projeto, rode `git config core.autocrlf false`.
+
+</Camada>
+
+## Fichas de campo
+
+As quatro fichas usam o laboratório **Pendências**, no estado em que o [M3](../m3/) o deixou.
+
+- [Ponto de partida: `m4-inicio.zip`](../lab/m4-inicio.zip)
+
+```bash
+cd pendencias
+npm test
+```
+
+O `npm test` deve terminar com `pass 10` e `fail 0`. Ainda não existe repositório git: a Ficha 1 cria.
+
+<Nota rotulo="O que foi testado">
+Executei as Fichas 1, 3 e 4 por inteiro, e a 2 com um remoto local (pasta criada com `git init --bare`). A criação do PR depende de uma conta no GitHub e de um repositório de verdade; o comando foi conferido na ajuda do `gh` (`gh pr create --help`), mas não executado.
+</Nota>
+
+<Ficha
+  id="m4-e1"
+  n={1}
+  titulo="Repositório, commits e o diff antes"
+  objetivo="Criar o repositório e deixar o Claude fazer um commit depois de ler o diff."
+  minutos={20}
+  pre="M1, laboratório baixado"
+>
+
+1. Crie o repositório e o primeiro commit. Defina seu nome só para este projeto:
+
+   ```bash
+   git init -b main
+   git config user.name "Seu Nome"
+   git config user.email "voce@exemplo.com"
+   git add -A
+   git commit -m "Ponto de partida"
+   ```
+
+2. Faça uma mudança pequena e crie um arquivo de segredo falso, que o `.gitignore` já esconde:
+
+   ```bash
+   echo "// TODO: filtrar por texto" >> src/cli.js
+   echo "DEMO_TOKEN=sk-FALSO-nao-use-0000" > .env
+   git status --short
+   ```
+
+3. Peça o commit, com diff antes:
+
+   ```bash
+   claude -p "Mostre o git diff do que mudou, depois faça um commit só dos arquivos rastreados alterados, com mensagem curta no imperativo em português. Não inclua arquivos de segredo." --permission-mode acceptEdits --allowedTools "Bash(git *)"
+   ```
+
+4. Confira o commit e a mensagem completa:
+
+   ```bash
+   git log --format="%h %s%n%b" -2
+   ```
+
+<Prova>
+
+No passo 2, o `git status --short` lista **só** ` M src/cli.js`. O `.env` não aparece: está ignorado. No passo 4, o commit novo está no topo e o fim da mensagem traz o trailer. Na nossa execução:
+
+```text
+c1c4411 Adicionar TODO de filtro por texto na CLI
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+
+205e4ad Ponto de partida
+```
+
+O Claude também descreveu o diff (uma linha nova no fim de `src/cli.js`) e confirmou que não havia arquivo de segredo. A mensagem e o modelo no trailer variam com você.
+
+</Prova>
+
+<Gabarito>
+
+O que protegeu o `.env` foi o `.gitignore`, não a frase "não inclua segredos". A frase é um segundo cinto. Tente ao contrário: tire `.env` do `.gitignore`, repita e veja se o Claude o inclui mesmo assim. É por isso que a regra vale: ignore antes de criar o arquivo.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`Author identity unknown` ao commitar.** Faltou o passo 1 com `user.name` e `user.email`. O git precisa saber quem assina.
+- **O commit não aconteceu e o Claude explicou que a permissão foi negada.** Faltou `--permission-mode acceptEdits` ou o `--allowedTools "Bash(git *)"`. Sem tela, o que pediria permissão é negado. Em sessão interativa, aprove o pedido.
+- **Aviso de `LF will be replaced by CRLF`.** Só um aviso do Windows. Rode `git config core.autocrlf false` para silenciar.
+
+</DeuErro>
+
+<Desafio>
+
+Peça agora três commits separados para três mudanças diferentes, cada um com sua mensagem. Em que ponto o diff antes do commit evitou misturar duas coisas num só?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m4-e2"
+  n={2}
+  titulo="Branch, remoto e merge"
+  objetivo="Trabalhar num branch, enviá-lo a um remoto e juntá-lo ao principal."
+  minutos={20}
+  pre="Ficha 1"
+>
+
+Em vez de um remoto na internet, vamos usar uma pasta como remoto. Os comandos são os mesmos.
+
+1. Crie o remoto vazio ao lado do projeto e ligue-o:
+
+   ```bash
+   git init --bare ../remoto.git
+   git remote add origin ../remoto.git
+   git push -u origin main
+   ```
+
+2. Crie um branch, faça uma mudança e envie:
+
+   ```bash
+   git switch -c filtro
+   echo "// filtro" >> src/cli.js
+   git commit -am "Começa o filtro"
+   git push -u origin filtro
+   ```
+
+3. Volte ao principal e junte:
+
+   ```bash
+   git switch main
+   git merge filtro
+   git branch -d filtro
+   git branch -a
+   ```
+
+4. **Com GitHub de verdade** (passo não testado aqui): no lugar do passo 3, abra um PR do branch e junte-o:
+
+   ```bash
+   gh pr create --fill
+   gh pr view --web
+   gh pr merge --squash --delete-branch
+   ```
+
+<Prova>
+
+O `git push` do passo 1 termina com `main -> main` e `branch 'main' set up to track 'origin/main'`. O do passo 2 mostra `[new branch] filtro -> filtro`. No passo 3, o merge acontece sem conflito e o `git branch -a` termina assim:
+
+```text
+* main
+  remotes/origin/filtro
+  remotes/origin/main
+```
+
+O branch local `filtro` foi apagado. A cópia no remoto continua: `git push origin --delete filtro` a remove.
+
+</Prova>
+
+<Gabarito>
+
+O `-u` guarda qual branch remoto acompanha o local, por isso os `git push` e `git pull` seguintes dispensam argumentos. Um merge sem divergência é um "avanço rápido" (*fast-forward*): o git só move o ponteiro do `main`, sem criar commit de junção.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`repository ... does not appear to be a git repository`.** O caminho do `git remote add` está errado. `git remote -v` mostra o que foi cadastrado.
+- **`gh pr create` pede para escolher onde enviar o branch.** Você ainda não deu `git push` do branch. Envie primeiro, ou responda ao prompt.
+- **`gh: command not found` ou erro de autenticação.** Instale o `gh` e rode `gh auth login`. `gh auth status` confirma.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "crie um PR" depois de enviar o branch, e leia a descrição que ele gerou antes de confirmar. O que ele destacou que você não teria escrito? O que faltou?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m4-e3"
+  n={3}
+  titulo="Conflito proposital, resolvido com o Claude"
+  objetivo="Provocar um conflito de merge e deixar o Claude resolvê-lo, conferindo o resultado."
+  minutos={20}
+  pre="Ficha 1, com tudo commitado"
+>
+
+1. Em um branch, mude o título do `README.md`:
+
+   ```bash
+   git switch -c ajuda
+   ```
+
+   Edite a linha 1 do `README.md` para `# Pendências: lista de tarefas pela linha de comando` e grave:
+
+   ```bash
+   git commit -am "Descreve o app como lista de tarefas"
+   ```
+
+2. Volte ao `main`, mude **a mesma linha** de outro jeito e tente juntar:
+
+   ```bash
+   git switch main
+   ```
+
+   Edite a linha 1 para `# Pendências, o app de tarefas do curso`, e depois:
+
+   ```bash
+   git commit -am "Descreve o app como app do curso"
+   git merge ajuda
+   ```
+
+3. O git para com `CONFLICT (content): Merge conflict in README.md`. Peça ao Claude que resolva:
+
+   ```bash
+   claude -p "Há um conflito de merge em README.md. Resolva combinando as duas ideias num único título curto, remova os marcadores, e conclua o merge com git add e git commit. Antes de concluir, confirme que não sobrou nenhum marcador." --permission-mode acceptEdits --allowedTools "Bash(git *)"
+   ```
+
+4. Confira o resultado:
+
+   ```bash
+   git status --short
+   git log --oneline --graph
+   head -3 README.md
+   grep -c "<<<<<<<" README.md
+   ```
+
+<Prova>
+
+O `git status --short` sai vazio, o `grep -c` imprime `0` e o título combina as duas versões. O `git log --oneline --graph` mostra o losango do merge. Na nossa execução:
+
+```text
+*   f0c7fda Resolve conflito do README combinando os títulos
+|\
+| * 1cfaced Descreve o app como lista de tarefas
+* | 95d1a0f Descreve o app como app do curso
+|/
+* c1c4411 Adicionar TODO de filtro por texto na CLI
+```
+
+O título final foi `# Pendências: app de tarefas do curso, pela linha de comando`. O seu vai variar.
+
+</Prova>
+
+<Gabarito>
+
+Antes da resolução, o `git status --short` mostrava `UU README.md` ("modificado nos dois lados") e o arquivo continha os três marcadores. A tarefa do Claude foi escolher o texto final e concluir o merge. A sua, conferir: título coerente e zero marcadores.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O merge não deu conflito.** As duas mudanças não tocaram a mesma linha. Refaça, alterando exatamente a linha 1 nos dois branches.
+- **Sobraram marcadores no arquivo.** Rode `grep -rn "<<<<<<<" .` e peça ao Claude que corrija. Se quiser abandonar tudo, `git merge --abort` volta ao estado anterior ao merge.
+- **O Claude só resolveu o arquivo e não concluiu o merge.** Sem a frase sobre `git add` e `git commit`, ele para antes. Conclua você com os dois comandos.
+
+</DeuErro>
+
+<Desafio>
+
+Provoque um conflito em um arquivo de código (`src/cli.js`), resolva com o Claude e rode `npm test`. O teste pegou algum problema que o título do README não pegaria?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m4-e4"
+  n={4}
+  titulo="Reverter, recuperar e vazar um segredo de teste"
+  objetivo="Desfazer um erro de três jeitos e tratar um vazamento na ordem certa."
+  minutos={25}
+  pre="Ficha 3"
+>
+
+**Parte A. Reverter.**
+
+1. Desfaça o commit do TODO da Ficha 1, sem apagar história. Troque `c1c4411` pelo identificador do seu commit (`git log --oneline` mostra):
+
+   ```bash
+   git revert --no-edit c1c4411
+   git log --oneline -2
+   ```
+
+**Parte B. Segredo de teste.**
+
+2. Commite um arquivo com um segredo **falso**:
+
+   ```bash
+   echo "CHAVE=sk-FALSO-nao-use-0000" > segredos.txt
+   git add segredos.txt
+   git commit -m "Adiciona configuração local"
+   git log -S"sk-FALSO" --oneline
+   ```
+
+3. Remedie. **Primeiro**, a rotação: num caso real, você geraria uma chave nova no serviço e revogaria a antiga. Aqui, anote "chave antiga revogada". Depois, pare de rastrear o arquivo:
+
+   ```bash
+   git rm --cached segredos.txt
+   echo "segredos.txt" >> .gitignore
+   git add .gitignore
+   git commit -m "Para de rastrear segredos.txt"
+   ```
+
+4. Veja que o valor ainda está no histórico:
+
+   ```bash
+   git show HEAD~1:segredos.txt
+   ```
+
+**Parte C. Recuperar pelo reflog.**
+
+5. Descarte os dois commits do segredo de propósito e traga-os de volta:
+
+   ```bash
+   git reset --hard HEAD~2
+   git reflog -5
+   git reset --hard HEAD@{1}
+   git log --oneline -3
+   ```
+
+<Prova>
+
+**A.** O `revert` cria `Revert "Adicionar TODO de filtro por texto na CLI"` e a linha do TODO some do `src/cli.js`.
+
+**B.** O passo 2 mostra o commit que introduziu o valor (`906fec5 Adiciona configuração local`, na nossa execução). O passo 4 imprime `CHAVE=sk-FALSO-nao-use-0000`: **o segredo continua no histórico**, mesmo depois do commit que parou de rastrear. Por isso a chave precisa ser rotacionada.
+
+**C.** O `reflog` mostra o `reset` no topo e os dois commits descartados logo abaixo. Na nossa execução:
+
+```text
+f0c7fda HEAD@{0}: reset: moving to HEAD~2
+76e658a HEAD@{1}: commit: Para de rastrear segredos.txt
+906fec5 HEAD@{2}: commit: Adiciona configuração local
+```
+
+Depois do `git reset --hard HEAD@{1}`, o `git log` volta a mostrar os dois commits.
+
+</Prova>
+
+<Gabarito>
+
+Um `git revert` do commit que adicionou o segredo, na nossa execução, saiu vazio (`nothing to commit`), porque o arquivo já tinha sido removido do rastreio. E mesmo que desse certo, ele só apagaria o arquivo da versão atual. O valor continua em qualquer commit anterior. Para varrê-lo do histórico seria preciso reescrevê-lo (com `git filter-repo`, por exemplo), o que muda todos os identificadores de commit. Se a chave foi rotacionada, essa limpeza é opcional.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`git reset --hard HEAD@{1}` não encontra nada.** Você rodou outro comando de git entre o reset e o reflog, e a posição `HEAD@{1}` mudou. Olhe o `git reflog` e use o identificador do commit.
+- **No PowerShell, `HEAD@{1}` dá erro de sintaxe.** As chaves têm significado ali. Escreva `"HEAD@{1}"` entre aspas.
+- **`git revert` abre um editor.** Faltou `--no-edit`. Salve e feche o editor para concluir.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "Quero remover `segredos.txt` do histórico inteiro, e entender o que isso muda." Leia a proposta dele antes de aprovar qualquer comando. Ele avisou que os identificadores dos commits mudam? E que quem já clonou o repositório continua com a cópia antiga?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Criei um repositório e li o diff antes de cada commit.
+- Pedi um commit ao Claude e vi o trailer `Co-Authored-By` no resultado.
+- Enviei um branch ao remoto e juntei ao principal.
+- Resolvi um conflito de merge com o Claude e confirmei que não sobrou marcador.
+- Desfiz um commit com `revert` e recuperei outro pelo `reflog`.
+- Sei que, num vazamento de segredo, a rotação da chave vem primeiro.
+
+</Saida>
+
+**Próxima estação:** o [M5, Do computador para a internet](../m5/): publicar o que você construiu num site de verdade.
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): criar pull requests e achar a sessão de um PR com `--from-pr`.
+- [Checkpointing](https://code.claude.com/docs/en/checkpointing.md): o que o `/rewind` não desfaz e o papel do git.
+- [Settings reference](https://code.claude.com/docs/en/settings-reference.md): `attribution`, `includeGitInstructions` e `respectGitignore`.
+- [Configure permissions](https://code.claude.com/docs/en/permissions.md): regras `Bash(git commit *)` e o posicionamento do `*`.
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works.md): contexto que o Claude Code adiciona, incluindo a atribuição.
+- Documentação do git e do GitHub CLI (`git --help`, `gh pr create --help`): comandos conferidos na versão instalada.
+- Execuções locais registradas em `VERIFICATION/m4.md`.
+
+</Fontes>

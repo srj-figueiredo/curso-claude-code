@@ -6,7 +6,7 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 ## Onde parou
 
 13/11/2026: modo de trabalho trocado para o do `CONTINUAR.md` (plano Pro, uma página por vez, sem subagentes).
-M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). M0 nos gates feito. Onda 1 fechada, exceto a Publicação (bloqueada por permissão). Próximo item: Onda 2, começando pelo M4.
+M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). M0 nos gates feito. Onda 1 fechada, exceto a Publicação (bloqueada por permissão). M4 feito. Próximo item: M5 (Do computador para a internet). Para a Ficha de PR do M4, falta GitHub real (depende da Publicação).
 
 ## Fila
 
@@ -31,7 +31,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 - [x] **Revisão da Parte I** (13/11: termos unificados, sem estouro em 390/1280, axe 18/18; o corte de 15% não foi aplicado: as 4 páginas ficam entre 3.035 e 3.280 palavras, abaixo do teto de 3.500) (M0–M3): estilo (corte ≥ 15%), consistência de termos, fotos 390/1280.
 
 ### Onda 2 · trilha rápida até os cases
-- [ ] M4 · [ ] M5 · [ ] M6 · [ ] M7 · [ ] M8 · [ ] M10 · [ ] M11
+- [x] M4 · [ ] M5 · [ ] M6 · [ ] M7 · [ ] M8 · [ ] M10 · [ ] M11
 - [ ] **R3** (página escrita; GUIA §9, com `<Cartas cat="R3" />`)
 - [ ] **Baralho**: cartas R1–R8 em lotes (um lote de ~30 cartas por item); esquema com campos opcionais;
       estações R* do mapa apontando para o Baralho filtrado. `npm run comandos` e `npm run reconciliar -- --cache`.
@@ -66,6 +66,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 | Página | Fatos | Execução | Estilo | Visual/a11y | Grátis↔Pago | Estado |
 |---|---|---|---|---|---|---|
 | M3 | ok | ok (ficha 2 ilustrativa) | autor | axe ok; LH desempenho 80 | n/a | verificado, ressalva de desempenho |
+| M4 | ok (VERIFICATION/m4.md) | ok (git e `claude -p`; PR não testado) | autor, 3.084 palavras | axe ok | n/a | verificado |
 | M2 | ok (VERIFICATION/m2.md, 22 afirmações) | ok (`claude -p`; telas interativas ilustrativas) | autor, 3.129 palavras | axe ok; figuras 390/1280 ok | n/a | verificado |
 | M1 | ok (VERIFICATION/m1.md) | ok (instalação não testada: máquina já instalada) | autor | axe ok; foto pendente | n/a | escrito |
 | M0 | ok (VERIFICATION/m0.md) | n/a (sem comando do Claude Code) | autor | axe ok; foto pendente | pendente | escrito, falta verificação |
