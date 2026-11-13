@@ -1,0 +1,21 @@
+---
+// Substitui o <a> do Markdown: link para estação ou apêndice ainda não escrito vira texto "em obras",
+// em vez de um 404. Links externos e âncoras passam sem mudança.
+import { paginasEscritas, apendicesEscritos, idDoLink } from '../lib/paginas';
+const { href = '', ...resto } = Astro.props as { href?: string; [k: string]: unknown };
+const id = idDoLink(href);
+const pendente = id !== undefined && !(await paginasEscritas()).has(id) && !(await apendicesEscritos()).has(id);
+---
+
+{
+  pendente ? (
+    <span class="em-obras" title="Em obras: esta página ainda não foi escrita">
+      <slot />
+      <span class="sr"> (em obras)</span>
+    </span>
+  ) : (
+    <a href={href} {...resto}>
+      <slot />
+    </a>
+  )
+}

@@ -2195,3 +2195,10 @@ a.metro__estacao:focus-visible .metro__alvo {
   font-size: 0.6rem;
   white-space: normal;
 }
+
+/* Link para página ainda não escrita: texto, sem 404. */
+.em-obras {
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: help;
+}

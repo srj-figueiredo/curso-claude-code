@@ -6,11 +6,12 @@ import Replay from '../components/Replay.astro';
 import Icone from '../components/Icone.astro';
 import { TRILHAS, ESTACOES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
 import { pagina, u } from '../lib/url';
-import { paginasEscritas } from '../lib/paginas';
+import { paginasEscritas, apendicesEscritos } from '../lib/paginas';
 
 const escritas = await paginasEscritas();
 const minutos = [...escritas.values()].reduce((s, p) => s + p.data.minutos, 0);
 const exercicios = [...escritas.values()].reduce((s, p) => s + p.data.exercicios.length, 0);
+const apendicesProntos = await apendicesEscritos();
 ---
 
 <Base titulo="Manual de Bordo do Claude Code" buscavel={false}>
@@ -85,7 +86,7 @@ const exercicios = [...escritas.values()].reduce((s, p) => s + p.data.exercicios
         <dt>Vale até</dt>
         <dd>
           A próxima versão. Cada página leva o selo da versão em que foi conferida, e a lista de mudanças fica em{' '}
-          <a href={u('/f/')}>O que mudou</a>.
+          {apendicesProntos.has('f') ? <a href={u('/f/')}>O que mudou</a> : <span class="em-obras">O que mudou (em obras)</span>}.
         </dd>
       </div>
       <div>

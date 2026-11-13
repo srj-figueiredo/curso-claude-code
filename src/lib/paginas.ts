@@ -11,3 +11,18 @@ export async function paginasEscritas(): Promise<Map<string, Pagina>> {
   cache = new Map(grupos.flat().map((p) => [p.data.id, p as Pagina]));
   return cache;
 }
+
+let cacheApendices: Set<string> | undefined;
+
+/** Ids dos apêndices já escritos. */
+export async function apendicesEscritos(): Promise<Set<string>> {
+  if (cacheApendices) return cacheApendices;
+  const itens = await getCollection('apendices');
+  cacheApendices = new Set(itens.map((a) => a.data.id));
+  return cacheApendices;
+}
+
+/** Id da página para qual um link relativo de conteúdo aponta (`../m7/` ou `../m7/#x`), ou undefined. */
+export function idDoLink(href: string): string | undefined {
+  return /^\.\.\/([a-z0-9]+)\/(?:#.*)?$/.exec(href)?.[1];
+}

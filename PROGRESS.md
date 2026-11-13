@@ -5,29 +5,28 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 
 ## Onde parou
 
-13/11/2026: modo de trabalho trocado para o do `CONTINUAR.md` (plano Pro, uma página por vez, sem subagentes).
-M0 e M1 escritos e no commit, sem passar pelos gates. Atalho local e script de um clique feitos. Publicação bloqueada por permissão (aguarda o autor). M1 nos gates feito (e axe do M0 corrigido: `.fontes` saiu do content-visibility). M0 nos gates feito. Onda 1 fechada, exceto a Publicação (bloqueada por permissão). M4 e M5 feitos. Próximo item: M6. Pendências de GitHub real (PR do M4, deploy do M5) dependem da Publicação; na Publicação, atualizar `upload-pages-artifact` para v4 no deploy.yml.
+13/11/2026: Onda 1 fechada (M0 a M3 verificados, atalho local e script de um clique prontos), exceto a **Publicação**,
+bloqueada por permissão (aguarda o autor). Onda 2 em andamento: M4 e M5 feitos e verificados; auditoria geral feita
+(ver D014). **Próximo item: M6.**
+Pendências que dependem da Publicação: ficha de PR do M4, deploy e domínio do M5, `upload-pages-artifact` v3 para v4 no
+`deploy.yml`, e trocar o e-mail pessoal dos commits por um endereço noreply antes de tornar o repositório público (D014).
 
 ## Fila
 
 Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 
 ### Onda 1 · publicar e fechar a Parte 0 e a Parte I
-- [ ] **Publicação.** (BLOQUEADA 13/11: o classificador de permissões negou `gh repo create --public`; o autor precisa liberar ou rodar o comando com `!`.) `gh repo create curso-claude-code --public --source . --push`; ligar o Pages por Actions
+- [ ] **Publicação.** (BLOQUEADA 13/11: o classificador de permissões negou `gh repo create --public`; o autor precisa liberar ou rodar o comando com `!`. Antes: trocar o e-mail dos commits por noreply, D014.) `gh repo create curso-claude-code --public --source . --push`; ligar o Pages por Actions
       (`gh api -X POST repos/{dono}/curso-claude-code/pages -f build_type=workflow`); conferir que o workflow
       `.github/workflows/deploy.yml` passa (ajustar `npm run check` e os testes se quebrarem no Linux);
       abrir a URL e confirmar que a home carrega. Escrever a URL no topo deste arquivo e no `README.md`.
-- [x] **Atalho local.** `scripts/abrir-local.cmd` (build se `dist/` não existir, `npm run preview`, abre o
+- [x] **Atalho local.** `scripts/abrir-local.cmd` (sempre reconstrói, `npm run preview`, abre o
       navegador) + atalho "Manual de Bordo" na Área de Trabalho apontando para ele.
 - [x] **Script de um clique.** `scripts/proxima-pagina.ps1` + atalho "Manual de Bordo · próxima página"
       (CONTINUAR.md §7). `logs/` no `.gitignore`.
-- [x] **M1 nos gates.** (build e axe ok 13/11; foto 390/1280 fica para o fim da Parte I) Conferir build, axe, uma foto em 390 px; ajustar o que destoar do M3.
-- [x] **M0 nos gates.** (VERIFICATION/m0.md feito 13/11; foto fica para o fim da Parte I) Falta `VERIFICATION/m0.md` (o autor foi interrompido): conferir as afirmações do M0
-      contra a doc em cache e registrar; depois build, axe, foto.
-- [x] **M2.** (13/11: página, 2 animações, ficha 3 executada; foto das figuras 390/1280 conferida) Escrever do zero (só existe `lab/estados/m2-inicio/`; confira se serve ou apague). Tem as
-      animações 1 (loop agêntico) e 2 (contexto e compactação): ver BRIEFING §6.4. Cada uma vira componente em `src/components/figuras/` usado com
-      `<Figura passos={N} legendas={[…]}>`; elementos com `data-de="N"` aparecem a partir do passo N; o estado
-      final precisa funcionar como figura estática.
+- [x] **M1 nos gates.** Build, axe e 390/1280 px conferidos em 13/11.
+- [x] **M0 nos gates.** `VERIFICATION/m0.md` feito; build, axe e 390/1280 px conferidos em 13/11.
+- [x] **M2.** Página, animações 1 e 2 (`M2LacoAgentico`, `M2ContextoCompactacao`) e ficha 3 executada.
 - [x] **Revisão da Parte I** (13/11: termos unificados, sem estouro em 390/1280, axe 18/18; o corte de 15% não foi aplicado: as 4 páginas ficam entre 3.035 e 3.280 palavras, abaixo do teto de 3.500) (M0–M3): estilo (corte ≥ 15%), consistência de termos, fotos 390/1280.
 
 ### Onda 2 · trilha rápida até os cases
@@ -65,12 +64,12 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 
 | Página | Fatos | Execução | Estilo | Visual/a11y | Grátis↔Pago | Estado |
 |---|---|---|---|---|---|---|
-| M3 | ok | ok (ficha 2 ilustrativa) | autor | axe ok; LH desempenho 80 | n/a | verificado, ressalva de desempenho |
-| M5 | ok (VERIFICATION/m5.md, 16 afirmações) | parcial (local, workflow gerado, DNS público; deploy não testado) | autor, 2.900 palavras | axe ok | domínio: troca sem preço | verificado, fichas nao-testado |
-| M4 | ok (VERIFICATION/m4.md) | ok (git e `claude -p`; PR não testado) | autor, 3.084 palavras | axe ok | n/a | verificado |
+| M0 | ok (VERIFICATION/m0.md, 14 afirmações) | n/a (sem comando do Claude Code) | autor, 3.280 palavras | axe ok; 390/1280 ok | n/a | verificado |
+| M1 | ok (VERIFICATION/m1.md) | ok (instalação não testada: máquina já instalada) | autor, 3.068 palavras | axe ok; 390/1280 ok | n/a | verificado |
 | M2 | ok (VERIFICATION/m2.md, 22 afirmações) | ok (`claude -p`; telas interativas ilustrativas) | autor, 3.129 palavras | axe ok; figuras 390/1280 ok | n/a | verificado |
-| M1 | ok (VERIFICATION/m1.md) | ok (instalação não testada: máquina já instalada) | autor | axe ok; foto pendente | n/a | escrito |
-| M0 | ok (VERIFICATION/m0.md) | n/a (sem comando do Claude Code) | autor | axe ok; foto pendente | pendente | escrito, falta verificação |
+| M3 | ok | ok (ficha 2 ilustrativa) | autor, 3.035 palavras | axe ok; LH desempenho 80 | n/a | verificado, ressalva de desempenho |
+| M4 | ok (VERIFICATION/m4.md, 7 afirmações + git) | ok (git e `claude -p`; PR não testado) | autor, 3.084 palavras | axe ok | n/a | verificado |
+| M5 | ok (VERIFICATION/m5.md, 16 afirmações) | parcial (local, workflow gerado, DNS público; deploy não testado) | autor, 2.893 palavras | axe ok | domínio: troca sem preço | verificado, fichas nao-testado |
 
 ## Fase 0, o que foi feito
 

@@ -1,4 +1,10 @@
-# Roda uma sessão sem supervisão que segue o CONTINUAR.md (um item da Fila).
+﻿# Roda uma sessão sem supervisão que segue o CONTINUAR.md (um item da Fila).
+# Este arquivo precisa ficar em UTF-8 COM BOM: o Windows PowerShell 5.1 lê sem BOM como ANSI e estraga os acentos.
+$utf8 = New-Object System.Text.UTF8Encoding($false)
+[Console]::OutputEncoding = $utf8
+[Console]::InputEncoding = $utf8
+$OutputEncoding = $utf8
+
 $raiz = Split-Path -Parent $PSScriptRoot
 Set-Location $raiz
 New-Item -ItemType Directory -Force logs | Out-Null
@@ -12,8 +18,9 @@ $ferramentas = @(
   'Bash(claude -p *)'
 )
 
-Write-Host "Iniciando sessao. Saida em $log"
-claude -p "Leia o CONTINUAR.md e continue o trabalho. Faça um item da Fila e pare." `
+Write-Host "Iniciando sessão. Saída em $log"
+$pedido = "Leia o CONTINUAR.md e continue o trabalho. Faça um item da Fila e pare."
+$null | claude -p $pedido `
   --model sonnet --permission-mode acceptEdits `
   --allowedTools ($ferramentas -join ',') *>&1 | Tee-Object -FilePath $log
 

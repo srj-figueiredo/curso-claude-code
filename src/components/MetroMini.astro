@@ -2,7 +2,7 @@
 // Mapa do Metrô em versão vertical: navegação (gaveta), sumário e home no celular.
 import { PARTES, ESTACOES, APENDICES, TRILHAS, rotulo } from '../data/curso';
 import { pagina, u } from '../lib/url';
-import { paginasEscritas } from '../lib/paginas';
+import { paginasEscritas, apendicesEscritos } from '../lib/paginas';
 
 interface Props {
   atual?: string;
@@ -10,6 +10,7 @@ interface Props {
 }
 const { atual, comApendices = true } = Astro.props;
 const escritas = await paginasEscritas();
+const apendicesProntos = await apendicesEscritos();
 const trilhasDe = (id: string) =>
   Object.entries(TRILHAS)
     .filter(([, t]) => t.ids.includes(id))
@@ -69,9 +70,16 @@ const trilhasDe = (id: string) =>
         <ol class="mini__apendices">
           {APENDICES.map((a) => (
             <li>
-              <a href={pagina(a.id)}>
-                <span class="mini__id mono">{a.id.toUpperCase()}</span> {a.titulo}
-              </a>
+              {apendicesProntos.has(a.id) ? (
+                <a href={pagina(a.id)}>
+                  <span class="mini__id mono">{a.id.toUpperCase()}</span> {a.titulo}
+                </a>
+              ) : (
+                <span class="em-obras" title="Em obras: esta página ainda não foi escrita">
+                  <span class="mini__id mono">{a.id.toUpperCase()}</span> {a.titulo}
+                  <span class="sr"> (em obras)</span>
+                </span>
+              )}
             </li>
           ))}
         </ol>

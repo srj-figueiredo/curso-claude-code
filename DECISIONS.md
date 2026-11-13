@@ -79,3 +79,12 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 ## D013 · Publicação aprovada pelo autor (13/11/2026)
 
 - GitHub Pages em repositório público `curso-claude-code` na conta do autor, com push a cada item, e atalho local na Área de Trabalho. Script de um clique sem supervisão, com ferramentas restritas (`CONTINUAR.md` §7).
+
+## D014 · Auditoria de 13/11/2026: correções e riscos abertos
+
+- **Links para páginas ainda não escritas** davam 404 (prosa e rodapé: 142 links quebrados). Corrigido na raiz: o componente `LinkInterno` (sobrescreve `a` no MDX) troca o link por texto "em obras"; a gaveta e o rodapé só ligam apêndices que existem. Verificação: varredura de `dist/` com resolução de links relativos e âncoras (0 quebrados depois).
+- **`scripts/proxima-pagina.ps1`** estragava acentos ("Faça" virava "FaÃ§a") porque o Windows PowerShell 5.1 lê `.ps1` sem BOM como ANSI. Regra: arquivos `.ps1` do repositório ficam em UTF-8 **com BOM**. O script também passou a forçar UTF-8 no console e a fechar o stdin do `claude -p`.
+- **`scripts/abrir-local.cmd`** passou a reconstruir sempre (antes servia um `dist/` possivelmente velho) e a abrir o navegador só depois de o servidor subir.
+- **Privacidade (aberto):** todos os commits levam o e-mail pessoal do autor. Num repositório público isso fica exposto. Antes da Publicação: configurar `user.email` com o endereço noreply do GitHub e decidir se reescreve o histórico (só com autorização do autor).
+- **Versão de ação (aberto):** o `deploy.yml` usa `upload-pages-artifact@v3`; a documentação do GitHub de 13/11/2026 mostra `@v4`.
+

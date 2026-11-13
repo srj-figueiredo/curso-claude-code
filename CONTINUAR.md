@@ -101,7 +101,7 @@ publicar em qualquer outro lugar. Nunca publique segredo, nem de teste.
 
 ## 7b. Se esta sessão estiver na nuvem (claude.ai/code)
 
-Sinal: a pasta não é `C:\Users\Edwig\...` e o sistema é Linux.
+Sinal: a pasta não é `C:\Users\<usuário>\...` e o sistema é Linux.
 
 - `.docs-cache/` não vem no clone (está no `.gitignore` de propósito: não republicamos a documentação).
   Recrie-o com `node scripts/baixar-docs.mjs` (o ambiente precisa liberar `code.claude.com`). Sem o cache,
