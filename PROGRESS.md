@@ -25,7 +25,9 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 - [ ] **M0 nos gates.** Falta `VERIFICATION/m0.md` (o autor foi interrompido): conferir as afirmações do M0
       contra a doc em cache e registrar; depois build, axe, foto.
 - [ ] **M2.** Escrever do zero (só existe `lab/estados/m2-inicio/`; confira se serve ou apague). Tem as
-      animações 1 (loop agêntico) e 2 (contexto e compactação): ver BRIEFING §6.4 e o pedido em DECISIONS D011.
+      animações 1 (loop agêntico) e 2 (contexto e compactação): ver BRIEFING §6.4. Cada uma vira componente em `src/components/figuras/` usado com
+      `<Figura passos={N} legendas={[…]}>`; elementos com `data-de="N"` aparecem a partir do passo N; o estado
+      final precisa funcionar como figura estática.
 - [ ] **Revisão da Parte I** (M0–M3): estilo (corte ≥ 15%), consistência de termos, fotos 390/1280.
 
 ### Onda 2 · trilha rápida até os cases
