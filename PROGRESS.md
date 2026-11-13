@@ -6,8 +6,8 @@ Para retomar: "Leia BRIEFING.md e PROGRESS.md e continue de onde parou."
 ## Onde parou
 
 13/11/2026: Onda 1 fechada (M0 a M3 verificados, atalho local e script de um clique prontos), exceto a **Publicação**,
-bloqueada por permissão (aguarda o autor). Onda 2 em andamento: M4 a M8 feitos e verificados; auditoria geral feita
-(ver D014). **Próximo item: M10 (MCP).** (O M9, Hooks, fica na Onda 4.)
+bloqueada por permissão (aguarda o autor). Onda 2 em andamento: M4 a M8 e M10 feitos e verificados; auditoria geral feita
+(ver D014). **Próximo item: M11 (Planejar e verificar).** (O M9, Hooks, fica na Onda 4.)
 Tudo que depende do autor (publicação, e-mail dos commits, testes com GitHub, telas interativas, decisões) está em `PENDENCIAS.md`.
 Pendências que dependem da Publicação: ficha de PR do M4, deploy e domínio do M5, `upload-pages-artifact` v3 para v4 no
 `deploy.yml`, e trocar o e-mail pessoal dos commits por um endereço noreply antes de tornar o repositório público (D014).
@@ -31,7 +31,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 - [x] **Revisão da Parte I** (13/11: termos unificados, sem estouro em 390/1280, axe 18/18; o corte de 15% não foi aplicado: as 4 páginas ficam entre 3.035 e 3.280 palavras, abaixo do teto de 3.500) (M0–M3): estilo (corte ≥ 15%), consistência de termos, fotos 390/1280.
 
 ### Onda 2 · trilha rápida até os cases
-- [x] M4 · [x] M5 · [x] M6 · [x] M7 · [x] M8 · [ ] M10 · [ ] M11
+- [x] M4 · [x] M5 · [x] M6 · [x] M7 · [x] M8 · [x] M10 · [ ] M11
 - [ ] **R3** (página escrita; GUIA §9, com `<Cartas cat="R3" />`)
 - [ ] **Baralho**: cartas R1–R8 em lotes (um lote de ~30 cartas por item); esquema com campos opcionais;
       estações R* do mapa apontando para o Baralho filtrado. `npm run comandos` e `npm run reconciliar -- --cache`.
@@ -74,6 +74,7 @@ Faça na ordem. Marque `[x]` ao concluir (com commit e push).
 | M6 | ok (VERIFICATION/m6.md, 19 afirmações) | ok (`claude -p`: /init, A/B, memória, /doctor; telas interativas não testadas) | autor, 3.279 palavras | axe ok | n/a | verificado |
 | M7 | ok (VERIFICATION/m7.md, 28 afirmações) | ok (`claude -p`: .env, allowlist, precedência, injection; sandbox não testado) | autor, 3.336 palavras (Essencial + fichas) | axe ok | n/a | verificado, ficha 4 nao-testado |
 | M8 | ok (VERIFICATION/m8.md, 21 afirmações) | ok (`claude -p`: skill de commit, argumentos, `paths`, custo; telas interativas não testadas) | autor, 2.949 palavras (Essencial + fichas) | axe ok | n/a | verificado |
+| M10 | ok (VERIFICATION/m10.md, 16 afirmações) | ok (`claude -p`: servidor MCP próprio, ferramenta, prompt, recurso, deny, strict; n8n e Playwright nao-testado) | autor, 2.839 palavras (Essencial + fichas) | axe ok | n/a | verificado, ficha 4 nao-testado |
 
 ## Fase 0, o que foi feito
 

@@ -1,0 +1,507 @@
+---
+id: m10
+titulo: MCP
+parte: p4
+ordem: 10
+minutos: 90
+pre_requisitos: [m7, m8]
+objetivos:
+  - Explicar o que é MCP e escolher o transporte e o escopo certos para um servidor.
+  - Conectar um servidor com claude mcp add e usá-lo numa tarefa real.
+  - Usar ferramentas, recursos com @ e prompts como comandos.
+  - Criar um servidor MCP mínimo e testá-lo antes de ligá-lo ao Claude.
+  - Controlar a confiança em servidores, com aprovação, deny por ferramenta e --strict-mcp-config.
+tldr:
+  - MCP é o padrão aberto que liga o Claude a serviços de fora. Servidor entrega ferramentas, recursos e prompts.
+  - Cada servidor é código e texto de terceiros no seu fluxo. Conecte só o que você confia e libere ferramenta por ferramenta.
+  - Com a busca de ferramentas, as ferramentas só carregam quando o Claude precisa. O custo fixo é pequeno.
+verificado_em_versao: 2.1.323
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: m10-e1, titulo: Conectar um servidor e usá-lo numa tarefa, minutos: 25, custo: gratis }
+  - { id: m10-e2, titulo: Criar um mini-MCP próprio, minutos: 25, custo: gratis }
+  - { id: m10-e3, titulo: Controlar a confiança em servidores, minutos: 20, custo: gratis }
+  - { id: m10-e4, titulo: n8n e Playwright por MCP, minutos: 20, custo: gratis }
+---
+
+## Essencial
+
+Até aqui o Claude trabalhou com o que está na sua pasta. Mas boa parte do trabalho vive em outros lugares: o rastreador de tarefas, o banco, a agenda, o navegador. A regra da documentação é prática: **conecte um servidor quando você se pegar copiando dados de outra ferramenta para o chat.**
+
+### O que é MCP
+
+**MCP** (*Model Context Protocol*) é um padrão aberto para ligar assistentes de IA a ferramentas e dados. Um **servidor MCP** é um programa que expõe capacidades; o Claude Code é o **cliente** que as usa. Um servidor pode oferecer três coisas:
+
+| O quê | O que é | Como você usa |
+|---|---|---|
+| **Ferramentas** | Ações que o Claude chama (buscar, criar, rodar) | O Claude decide, com a sua permissão |
+| **Recursos** | Conteúdo para ler, como arquivos ou registros | `@servidor:protocolo://caminho` no pedido |
+| **Prompts** | Pedidos prontos que o servidor define | Como comandos: `/mcp__servidor__prompt` |
+
+Com um servidor de issues conectado, "implemente a feature da issue ENG-4521 e abra um PR" deixa de ser colar texto e vira uma instrução só.
+
+### Como ligar um servidor: transporte e comando
+
+O **transporte** é como o Claude Code fala com o servidor. Três importam:
+
+| Transporte | Para quê | Comando |
+|---|---|---|
+| **HTTP** (recomendado) | Serviço remoto, na nuvem | `claude mcp add --transport http <nome> <url>` |
+| **stdio** | Programa local, rodando na sua máquina | `claude mcp add <nome> -- <comando> [args]` |
+| **SSE** | Remoto legado, **descontinuado** | Prefira HTTP; o Claude Code tenta HTTP primeiro e cai para SSE |
+
+(Há ainda WebSocket, só por `.mcp.json` ou `claude mcp add-json`.) O `--` nos servidores stdio separa as opções do Claude Code do comando do servidor: tudo depois dele vai ao servidor sem mudança. Opções como `--env CHAVE=valor` e `--header "Authorization: Bearer ..."` levam credenciais, **mas o comando grava a configuração sem validar nada**: um token errado só aparece quando a conexão falha.
+
+Para gerenciar:
+
+| Comando | O que faz |
+|---|---|
+| `claude mcp list` | Lista os servidores com a saúde de cada um (`✔ Connected`, `! Needs authentication`, `✘ Failed to connect`) |
+| `claude mcp get <nome>` | Detalhes de um servidor |
+| `claude mcp remove <nome>` | Remove |
+| `/mcp` (na sessão) | Painel de estado e de login |
+
+### Escopos: onde a configuração mora
+
+| Escopo | Carrega em | Compartilhado | Guardado em |
+|---|---|---|---|
+| **Local** (padrão) | Só neste projeto | Não | `~/.claude.json` |
+| **Projeto** (`--scope project`) | Só neste projeto | **Sim**, pelo git | `.mcp.json` na raiz |
+| **Usuário** (`--scope user`) | Todos os seus projetos | Não | `~/.claude.json` |
+
+Cuidado com o nome: o "local" do MCP **não** é o `settings.local.json` do [M7](../m7/). Servidores locais ficam no seu `~/.claude.json`. Quando o mesmo nome aparece em mais de um escopo, vale **uma** definição inteira, sem mistura de campos: local, depois projeto, depois usuário, depois plugins e conectores do claude.ai.
+
+O `.mcp.json` do projeto é o jeito de dar ao time as mesmas ferramentas. Ele pode usar variáveis de ambiente, e é para **isso** que serve guardar segredos fora do arquivo.
+
+### Usar: ferramentas, recursos e prompts
+
+**Ferramentas.** Ficam disponíveis com nomes no formato `mcp__servidor__ferramenta`, e é com esse nome que você escreve regras de permissão. Por padrão, uma ferramenta MCP **pede permissão**, como qualquer ação com efeito.
+
+**Recursos.** Digite `@` e os recursos dos servidores aparecem junto dos arquivos. A referência tem a forma `@servidor:protocolo://caminho`. Eles são buscados e anexados ao pedido.
+
+**Prompts.** O servidor pode publicar pedidos prontos. Eles aparecem no menu `/` como `/servidor:prompt (MCP)`, e também dá para digitar `/mcp__servidor__prompt` seguido dos argumentos separados por espaço. O resultado entra direto na conversa.
+
+### Autenticação
+
+Servidores remotos costumam exigir login. O Claude Code usa **OAuth 2.0**: quando o servidor responde `401` ou `403`, ele o marca em `/mcp`, onde você completa o fluxo no navegador. Se você configurou um cabeçalho `Authorization` fixo (por exemplo, um token pessoal) e o servidor o recusa, a conexão **falha** em vez de cair para o OAuth. Em `claude -p` não existe o painel `/mcp`, então o login precisa acontecer antes: numa sessão interativa, ou com `claude mcp login <nome>`.
+
+### Custo de contexto: a busca de ferramentas
+
+Cada ferramenta de um servidor tem nome, descrição e esquema, e isso ocupa contexto. Para que muitos servidores não encham a janela, o Claude Code usa a **busca de ferramentas** (*tool search*): no começo da sessão só os **nomes** entram, e o esquema completo de uma ferramenta é carregado quando o Claude precisa dela. É o padrão. A variável `ENABLE_TOOL_SEARCH` ajusta: `false` carrega tudo de uma vez, e `auto:N` só adia quando as definições passam de N% da janela.
+
+Na nossa medição com três ferramentas, o `/context` mostrou **153 tokens** para as ferramentas MCP, uma por linha (32, 65 e 56). Servidor grande custa mais. Duas regras de bolso: escreva descrições **curtas**, com o que o Claude buscaria no começo; e desconfie de servidor que despeja dezenas de ferramentas.
+
+O que as ferramentas **devolvem** também custa. O Claude Code avisa quando uma saída passa de **10.000 tokens**, e o limite padrão é **25.000** (ajustável em `MAX_MCP_OUTPUT_TOKENS`). Acima disso, o resultado vai para um arquivo e o Claude só recebe o caminho.
+
+### Confiança e segurança
+
+Um servidor MCP é **código que roda e texto que o Claude lê**. A documentação avisa: servidores que buscam conteúdo externo expõem você a prompt injection ([M7](../m7/)), e a Anthropic revisa conectores contra critérios de listagem, mas **não audita** servidor nenhum. As proteções de que você dispõe:
+
+- **Aprovação do `.mcp.json`.** Numa sessão interativa, o Claude Code pede aprovação antes de usar servidores do `.mcp.json` do projeto. Até aprovar, o estado é `⏸ Pending approval`.
+- **Regras de permissão por ferramenta.** Libere só o que o fluxo precisa, com `mcp__servidor__ferramenta`. Um `deny` numa ferramenta MCP a **remove** do contexto do Claude (Ficha 3).
+- **`--strict-mcp-config`.** A sessão usa só os servidores que você passa com `--mcp-config`, ignorando os demais.
+- **Menor privilégio nos dados.** Servidor de banco com usuário **somente leitura**. Token com escopo estreito.
+
+O ponto cego: em **`claude -p`**, o Claude Code não consegue mostrar o prompt de aprovação e **carrega os servidores do `.mcp.json` sem perguntar**. Num repositório que você não escreveu, rode com `--setting-sources user`, ou `--strict-mcp-config`, ou ponha o servidor em `disabledMcpjsonServers`.
+
+### Servidores úteis
+
+A documentação traz receitas para dois dos mais usados:
+
+- **GitHub.** O servidor remoto autentica com um token pessoal granular, passado em cabeçalho: `claude mcp add --transport http github https://api.githubcopilot.com/mcp/ --header "Authorization: Bearer SEU_TOKEN"`. Dá para pedir "revise o PR 456" ou "liste os PRs abertos para mim".
+- **Banco de dados.** O DBHub (`@bytebase/dbhub`) liga o Claude a um banco por uma `--dsn`. **Use um usuário somente leitura** na string de conexão.
+
+Para o navegador, o **Playwright MCP** da Microsoft e, para automações, o **n8n**, veja a Ficha 4. O Drive e outros serviços chegam também como **conectores do claude.ai**, que o Claude Code carrega quando você entra com a mesma conta, e entram na mesma lista de servidores.
+
+<Camada tipo="capo" titulo="Protocolo, limites e administração">
+
+### Como um servidor stdio conversa
+
+O transporte stdio troca mensagens **JSON-RPC 2.0**, uma por linha, na entrada e na saída padrão. A especificação exige que cada mensagem seja delimitada por quebra de linha e **não contenha quebras no meio**. Por isso um servidor stdio **nunca** pode escrever outra coisa na saída padrão: logs vão para a saída de erro. O handshake é: o cliente manda `initialize`, o servidor responde com a versão do protocolo e as capacidades, o cliente avisa `notifications/initialized`, e só então vêm `tools/list` e `tools/call`.
+
+### Encerramento e variáveis
+
+Ao fim da sessão, o Claude Code manda `SIGINT`, depois `SIGTERM` e `SIGKILL` num servidor stdio no macOS e no Linux; no Windows, fecha a entrada padrão do servidor e, se ele não sair em 300 milissegundos, encerra a árvore de processos. O servidor recebe `CLAUDE_PROJECT_DIR` com a raiz do projeto. O tempo de partida do servidor é `MCP_TIMEOUT`, e o de execução de uma ferramenta é `MCP_TOOL_TIMEOUT` (ou o campo `timeout` da entrada).
+
+### Atualização, reconexão e canais
+
+Servidores remotos que perdem a conexão se reconectam sozinhos. Um servidor pode avisar que suas ferramentas mudaram, e um servidor pode atuar como **canal**, empurrando mensagens para a sessão (Telegram, webhooks).
+
+### `claude mcp add-json` e o Claude Desktop
+
+`claude mcp add-json` aceita a configuração em JSON, e há um comando para importar servidores do Claude Desktop. O campo `type` aceita `streamable-http` como apelido de `http`. Uma entrada com `url` mas sem `type` é erro de configuração: o Claude Code a lê como stdio e a ignora.
+
+### Administração
+
+Organizações controlam servidores por **configuração MCP gerenciada**: listas de permitidos e proibidos e `managedMcpServers`. Servidor bloqueado por política aparece como `✘ Blocked by enterprise managed policy` ou fica oculto.
+
+### Claude Code como servidor MCP
+
+O próprio Claude Code pode ser um servidor MCP para outros clientes. O [M17](../m17/) trata disso com o Agent SDK.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Conectar servidor que você não conhece
+
+É código na sua máquina e texto no contexto do Claude. Leia a origem, prefira provedores de confiança e escreva os seus quando o caso for simples.
+
+### Achar que `claude mcp add` testou a conexão
+
+Ele só grava a configuração. Token errado ou comando inexistente só aparecem no `/mcp` ou no `claude mcp list`.
+
+### Servidor stdio que imprime log na saída padrão
+
+Qualquer linha que não seja JSON-RPC quebra a conversa. Logs vão para a saída de erro.
+
+### Liberar `mcp__servidor` inteiro por pressa
+
+Uma ferramenta de escrita no meio das de leitura passa a rodar sem pedir. Libere por ferramenta.
+
+### Confiar no prompt de aprovação em `claude -p`
+
+Ele não existe lá: os servidores do `.mcp.json` carregam sem perguntar. Use `--strict-mcp-config` ou `--setting-sources user` em repositório alheio.
+
+### Segredo dentro do `.mcp.json`
+
+O arquivo vai para o git. Use variáveis de ambiente na configuração, ou o escopo local.
+
+### Banco de produção com usuário de escrita
+
+Dê ao Claude um usuário somente leitura, e de preferência uma réplica.
+
+### Servidor com dezenas de ferramentas e descrições longas
+
+Pesa no contexto e dilui a escolha. Escolha servidores enxutos, e desligue o que não usa.
+
+### Confundir o "local" do MCP com o `settings.local.json`
+
+O servidor local vive em `~/.claude.json`, não na pasta do projeto.
+
+</Camada>
+
+## Fichas de campo
+
+As quatro fichas usam o laboratório **Pendências**, que desta vez traz um servidor MCP pronto em `mcp/pendencias-mcp.mjs` (Node, sem dependências).
+
+- [Ponto de partida: `m10-inicio.zip`](../lab/m10-inicio.zip)
+
+```bash
+cd pendencias
+git init -b main
+git add -A
+git commit -m "Ponto de partida"
+npm test
+```
+
+O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [M4](../m4/). **As fichas só usam o escopo de projeto (`.mcp.json`) e não tocam no seu `~/.claude.json`.**
+
+<Nota rotulo="O que foi testado">
+Executei as Fichas 1, 2 e 3 com `claude -p`, em Sonnet 5.5. O `claude mcp list` testa **todos** os servidores que você tem, inclusive os de plugins e conectores da sua conta, então pode demorar e mostrar mais linhas do que as nossas. A tela do `/mcp` e o fluxo de login OAuth só existem na interface interativa, e a Ficha 4 (n8n e Playwright) segue a documentação sem execução.
+</Nota>
+
+<Ficha
+  id="m10-e1"
+  n={1}
+  titulo="Conectar um servidor e usá-lo numa tarefa"
+  objetivo="Ligar o servidor do laboratório e usar ferramenta, prompt e recurso."
+  minutos={25}
+  pre="Laboratório baixado e commitado"
+>
+
+1. Conecte o servidor, em escopo de projeto:
+
+   ```bash
+   claude mcp add --transport stdio --scope project pendencias -- node mcp/pendencias-mcp.mjs
+   ```
+
+   Olhe o arquivo criado: `.mcp.json`.
+
+2. Veja o estado do servidor:
+
+   ```bash
+   claude mcp get pendencias
+   ```
+
+3. **Use as ferramentas.** Em `claude -p` o Claude pede permissão e ninguém responde, então libere por ferramenta:
+
+   ```bash
+   claude -p "Use o servidor MCP pendencias: adicione a pendência 'comprar café' com prioridade alta, depois liste as pendências abertas e me diga o que apareceu." --allowedTools "mcp__pendencias__adicionar_pendencia" "mcp__pendencias__listar_pendencias"
+   ```
+
+4. **Sem liberar**, tente uma escrita:
+
+   ```bash
+   claude -p "Use o servidor MCP pendencias para adicionar a pendência 'pagar boleto'."
+   ```
+
+5. **Prompt MCP como comando:**
+
+   ```bash
+   claude -p "/mcp__pendencias__resumo_do_dia formal"
+   ```
+
+6. **Recurso com `@`:**
+
+   ```bash
+   claude -p "Quantas pendências estão abertas em @pendencias:pendencias://abertas ? Responda só com o número."
+   ```
+
+<Prova>
+
+O `.mcp.json` ganha a entrada `pendencias` com `"type": "stdio"`. O `claude mcp get` mostra o escopo `Project config (shared via .mcp.json)` e `⏸ Pending approval (run claude to approve)`. No passo 3, a pendência é gravada (confira no `pendencias.json`) e a listagem mostra `! [ ] 1. comprar café`. No passo 4, a chamada é **negada** e nada é criado. O passo 5 devolve um resumo em tom formal, e o 6, `1`. Na nossa execução:
+
+```text
+passo 3: ... `! [ ] 1. comprar café` ... (na 1ª tentativa o Claude usou o parâmetro "titulo" no lugar de "texto", a chamada falhou e ele corrigiu)
+passo 4: denials: mcp__pendencias__adicionar_pendencia
+passo 5: Resumo formal das pendências abertas: 1. Há uma (1) pendência em aberto no momento...
+passo 6: 1
+```
+
+</Prova>
+
+<Gabarito>
+
+O servidor oferece três tipos de coisa: **ferramentas** (passos 3 e 4), um **prompt** (passo 5) e um **recurso** (passo 6). A negação do passo 4 mostra o padrão: ferramenta MCP pede permissão, e em `claude -p` isso vira "negado". A falha do parâmetro na primeira chamada é instrutiva: o Claude lê o **esquema** da ferramenta, e um nome de parâmetro ou uma descrição ambígua causa erro. Por isso o esquema do servidor deve ser claro.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`claude mcp get` diz `Failed to connect`.** O `node` não acha o arquivo. Rode o comando **da raiz do laboratório** e confira o caminho `mcp/pendencias-mcp.mjs`.
+- **No Git Bash, o passo 5 fala de um caminho `C:/Program Files/Git/...`.** Use `MSYS_NO_PATHCONV=1` antes do comando, ou o PowerShell.
+- **O Claude não usou o servidor.** Cite o nome (`servidor MCP pendencias`) no pedido, e confira que a ferramenta está em `--allowedTools`.
+
+</DeuErro>
+
+<Desafio>
+
+Rode `claude -p "/context"` e olhe a tabela **MCP Tools**. Quantos tokens cada ferramenta ocupa? Depois rode com `ENABLE_TOOL_SEARCH=false` e compare a linha **System tools**: o que mudou?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m10-e2"
+  n={2}
+  titulo="Criar um mini-MCP próprio"
+  objetivo="Deixar o Claude escrever um servidor MCP, testar o handshake à mão e ligá-lo."
+  minutos={25}
+  pre="Ficha 1"
+>
+
+1. Peça o servidor:
+
+   ```bash
+   claude -p "Crie o arquivo mcp/horas.mjs: um servidor MCP mínimo, transporte stdio, em Node sem dependências (ESM). Ele lê JSON-RPC 2.0 uma mensagem por linha da entrada padrão e responde uma por linha na saída padrão (nada mais pode ir para a saída padrão). Deve tratar initialize (devolva a mesma protocolVersion que o cliente pediu, capabilities com tools, serverInfo name horas), tools/list e tools/call, ignorar notificações (mensagens sem id) e responder ping. Uma única ferramenta chamada agora, sem parâmetros, que devolve a data e hora atuais em ISO 8601. Só crie o arquivo." --permission-mode acceptEdits
+   ```
+
+2. **Teste o handshake à mão**, antes de ligar ao Claude. Crie `teste.jsonl` com estas quatro linhas e rode:
+
+   ```json
+   {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18"}}
+   {"jsonrpc":"2.0","method":"notifications/initialized"}
+   {"jsonrpc":"2.0","id":2,"method":"tools/list"}
+   {"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"agora","arguments":{}}}
+   ```
+
+   <SO unix='node mcp/horas.mjs < teste.jsonl' win='cmd /c "node mcp/horas.mjs < teste.jsonl"' />
+
+3. Ligue e use:
+
+   ```bash
+   claude mcp add --transport stdio --scope project horas -- node mcp/horas.mjs
+   claude -p "Use o servidor MCP horas para me dizer a data e hora atuais." --allowedTools "mcp__horas__agora"
+   ```
+
+<Prova>
+
+O passo 2 imprime **três** linhas JSON (a notificação não recebe resposta): a do `initialize` com `serverInfo.name` igual a `horas`, a lista com a ferramenta `agora` e, na terceira, a hora em ISO 8601. O passo 3 traz a hora que o servidor devolveu. Na nossa execução, o arquivo saiu com 61 linhas **sem** o Claude ter rodado nada, e passou no handshake de primeira:
+
+```text
+{"jsonrpc":"2.0","id":3,"result":{"content":[{"type":"text","text":"2026-11-13T16:55:01.747Z"}]}}
+passo 3: ... agora são 13 de novembro de 2026, 17:00:45 (UTC).
+```
+
+</Prova>
+
+<Gabarito>
+
+O Claude avisou que **não executou** o arquivo que escreveu: por isso o passo 2 existe. Testar o protocolo à mão, com mensagens que você controla, isola dois problemas diferentes: "meu servidor está certo?" e "o Claude Code consegue usá-lo?". As três regras que um servidor stdio precisa respeitar são: uma mensagem JSON por linha, nada além de JSON-RPC na saída padrão e nenhuma resposta a notificações (mensagens sem `id`).
+
+</Gabarito>
+
+<DeuErro>
+
+- **No PowerShell, `Get-Content teste.jsonl | node ...` devolve `JSON inválido` na primeira linha.** O pipe do PowerShell 5.1 antepõe um BOM (um caractere invisível) à primeira linha. Use o redirecionamento do `cmd`, como na ficha.
+- **O servidor imprime uma linha extra e o Claude Code o derruba.** Qualquer coisa fora do JSON-RPC na saída padrão (`console.log` de depuração) corrompe a conversa. Use `console.error`.
+- **O `claude mcp add` não gravou o servidor.** Se você ligou o comando a um `head` ou outro filtro que encerra antes da hora, o Claude Code pode ser interrompido antes de gravar. Rode-o sozinho e confira `.mcp.json`.
+- **O Claude não vê a ferramenta nova.** Servidor de projeto só carrega ao iniciar a sessão. Em sessão interativa, reinicie ou use o `/mcp`.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude para acrescentar a `horas.mjs` uma ferramenta `fuso` com um parâmetro `zona` (por exemplo, `America/Sao_Paulo`). Quais campos do esquema ele precisou declarar? Teste à mão antes de usar.
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m10-e3"
+  n={3}
+  titulo="Controlar a confiança em servidores"
+  objetivo="Bloquear uma ferramenta MCP e limitar a sessão a servidores escolhidos."
+  minutos={20}
+  pre="Fichas 1 e 2"
+>
+
+1. **`deny` por ferramenta.** Crie `.claude/settings.json` e peça de novo a escrita, agora liberada em `--allowedTools`:
+
+   <SO unix={`mkdir -p .claude && echo '{"permissions":{"deny":["mcp__pendencias__adicionar_pendencia"]}}' > .claude/settings.json`} win={`New-Item -ItemType Directory -Force .claude | Out-Null; Set-Content .claude/settings.json '{"permissions":{"deny":["mcp__pendencias__adicionar_pendencia"]}}' -Encoding ascii`} />
+
+   ```bash
+   claude -p "Use o servidor MCP pendencias para adicionar a pendência 'ligar para o banco'." --allowedTools "mcp__pendencias__adicionar_pendencia"
+   ```
+
+   Confira o `pendencias.json`. Depois apague a pasta `.claude`.
+
+2. **Quais servidores a sessão enxerga.** Compare:
+
+   ```bash
+   claude -p "Liste só os nomes dos servidores MCP que você tem disponíveis agora, separados por vírgula."
+   claude -p "Liste só os nomes dos servidores MCP que você tem disponíveis agora, separados por vírgula." --strict-mcp-config --mcp-config .mcp.json
+   ```
+
+<Prova>
+
+No passo 1, o Claude responde que o servidor **não tem** ferramenta de adicionar e a pendência **não** é gravada: o `deny` venceu o `allow` e **tirou a ferramenta do contexto**. No passo 2, a primeira lista inclui os servidores e conectores de **toda a sua conta** além dos do projeto; a segunda traz só os do `.mcp.json`. Na nossa execução:
+
+```text
+passo 1: "O servidor MCP pendencias só expõe a ferramenta listar_pendencias" (grep -c no arquivo: 0)
+passo 2 com --strict-mcp-config:  horas, pendencias
+passo 2 sem a flag:               (os dois, mais todos os conectores da conta, alguns "conectando")
+```
+
+</Prova>
+
+<Gabarito>
+
+Duas defesas diferentes. O `deny` age **por ferramenta**: o mesmo mecanismo do [M7](../m7/), em que negar uma ferramenta pelo nome a remove do que o Claude vê. O `--strict-mcp-config` age **por servidor**: a sessão só carrega o que você nomeou, o que fecha a brecha de `claude -p` carregar o `.mcp.json` de um repositório sem aprovação.
+
+</Gabarito>
+
+<DeuErro>
+
+- **A escrita aconteceu mesmo com o `deny`.** O `settings.json` pode ter erro de sintaxe e ser ignorado inteiro. Rode `claude doctor`.
+- **A lista mostra servidores demais.** É o esperado sem `--strict-mcp-config`: conectores da conta e servidores de plugins entram na lista.
+- **O `claude mcp list` demorou.** Ele testa cada servidor que você tem. Use `claude mcp get <nome>` para um só.
+
+</DeuErro>
+
+<Desafio>
+
+Troque o `deny` por um `ask` (`"ask": ["mcp__pendencias__adicionar_pendencia"]`) e repita, agora numa sessão interativa. Qual a diferença de comportamento em relação a `deny`?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="m10-e4"
+  n={4}
+  titulo="n8n e Playwright por MCP"
+  objetivo="Conhecer duas integrações populares: automação de workflows e teste visual no navegador."
+  minutos={20}
+  pre="Ficha 1"
+  verificacao="nao-testado"
+>
+
+Esta ficha **não foi executada aqui**: baixar e rodar o n8n e o Playwright MCP é instalação de programas de terceiros, que não fazemos nesta máquina sem você. Os passos seguem as documentações oficiais de 13/11/2026.
+
+**Parte A. n8n.** O n8n é uma ferramenta de automação por workflows. Ele tem **dois** recursos de MCP, e convém não os confundir:
+
+| Recurso | O que faz |
+|---|---|
+| **MCP embutido na instância** (Configurações, *Instance-level MCP*) | Um servidor por instância. O cliente (o Claude Code) acessa os workflows que **você habilitou um a um** |
+| **Nó MCP Server Trigger** | Expõe, como ferramentas, só o que está dentro **daquele** workflow |
+
+1. Rode o n8n localmente. A documentação pede **Node.js entre 20.19 e 24.x** e dá o comando: `npx n8n`, e depois abra `http://localhost:5678`.
+2. Em **Configurações, Instance-level MCP**, habilite o acesso (exige permissão de dono ou administrador) e habilite os workflows que o Claude pode ver.
+3. Conecte o Claude Code. A documentação do n8n dá duas formas:
+
+   ```bash
+   claude mcp add --transport http n8n https://SEU-DOMINIO-N8N/mcp-server/http
+   claude mcp add --transport http n8n-mcp https://SEU-DOMINIO-N8N/mcp-server/http --header "Authorization: Bearer SEU_TOKEN_MCP"
+   ```
+
+   A primeira usa OAuth (depois rode `/mcp` e selecione o n8n); a segunda usa uma chave de API gerada em **Configurações, Instance-level MCP, Connect a client**.
+4. Peça ao Claude para listar, rodar e, **a partir do n8n 2.13.0**, criar e editar workflows.
+
+**Parte B. Playwright MCP.** Dá ao Claude um navegador de verdade, para um teste visual.
+
+1. A documentação da Microsoft dá o comando:
+
+   ```bash
+   claude mcp add playwright npx @playwright/mcp@latest
+   ```
+
+   Pede Node.js 18 ou mais novo. A opção `--headless` roda sem janela (o padrão é com janela).
+2. Peça: "abra a página local do curso, tire uma captura e diga se algo parece quebrado".
+
+<Prova>
+
+O `claude mcp list` mostra `n8n` e `playwright` conectados, e o Claude consegue, respectivamente, listar workflows e abrir uma página. (Não executado: depende de instalar os dois e, no n8n, de uma instância acessível.)
+
+</Prova>
+
+<Gabarito>
+
+As duas integrações seguem o mesmo roteiro das fichas anteriores: um comando `claude mcp add`, um estado para conferir e permissões por ferramenta. O que muda é o **risco**. A documentação do próprio Playwright MCP adverte que ele **não é uma fronteira de segurança** (suas opções de origens permitidas não servem de barreira) e que uma ferramenta de execução de código dele equivale a execução remota de código. E o n8n pode, por MCP, **rodar e alterar automações**. Libere ferramenta por ferramenta e comece em leitura.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O n8n pede outra versão do Node.** A documentação exige 20.19 a 24.x. Confira com `node --version`.
+- **Um cliente na nuvem não alcança o n8n.** A instância precisa estar **acessível publicamente** para clientes na nuvem; uma instância em `localhost` serve ao Claude Code local.
+- **O Playwright abre uma janela e atrapalha.** Use `--headless`, e saiba que os navegadores podem precisar de instalação separada: confira a documentação do pacote.
+
+</DeuErro>
+
+<Desafio>
+
+Depois de conectar o n8n, peça ao Claude que liste os workflows **sem executar nenhum**. Quais ferramentas MCP ele usou? Em quais você escreveria um `deny`?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei o que é um servidor MCP e o que ele oferece: ferramentas, recursos e prompts.
+- Conectei um servidor com `claude mcp add`, no escopo certo, e usei uma ferramenta, um prompt e um recurso.
+- Escrevi (com o Claude) um servidor mínimo e testei o handshake à mão.
+- Sei por que cada servidor é um risco, e controlei a confiança com `deny` por ferramenta e `--strict-mcp-config`.
+- Sei o que esperar do n8n e do Playwright por MCP e onde está o risco de cada um.
+
+</Saida>
+
+**Próxima estação:** o [M11, Planejar e verificar](../m11/): do pedido ao plano, e como provar que o trabalho está pronto.
+
+<Fontes>
+
+- [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp.md): transportes, escopos, autenticação, recursos, prompts, busca de ferramentas e limites.
+- [Security](https://code.claude.com/docs/en/security.md): MCP e prompt injection.
+- [Configure permissions](https://code.claude.com/docs/en/permissions.md): regras para ferramentas MCP.
+- [Model Context Protocol](https://modelcontextprotocol.io/specification/latest): especificação e transportes (stdio e HTTP).
+- [n8n: acessar o servidor MCP da instância](https://docs.n8n.io/advanced-ai/mcp/accessing-n8n-mcp-server/) e [instalação por npm](https://docs.n8n.io/hosting/installation/npm/).
+- [Playwright MCP](https://github.com/microsoft/playwright-mcp): instalação e avisos de segurança.
+- Execuções locais registradas em `VERIFICATION/m10.md`.
+
+</Fontes>
