@@ -95,3 +95,11 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **CI:** o primeiro build no Linux passou sem ajustes (check, build, 30 testes axe, deploy). A ação `upload-pages-artifact` foi para v4 antes do push.
 - **Aberto:** os avisos de Node 20 e do `ubuntu-latest` (PENDENCIAS 1.6).
 
+## D016 · Nova identidade visual "Linhas de metrô" e o mascote Bloquinho (13/11/2026, escolha do autor)
+
+- **Direção:** Opção C da prévia `docs/identidade-opcoes.html`: fundo quase branco (`#fffdf7`), tinta escura (`#101820`), botões em pílula, cantos arredondados (18 a 22 px) e **uma cor de linha por Parte** (tokens `--linha-0` a `--linha-7`, cada uma com o `-t` da cor de texto que vai por cima). O modo Console fica mais vivo (laranja e menta de terminal). O grão de papel saiu, o corpo ficou em peso 450 e os títulos mais firmes. Contraste do texto principal: 17,6:1; vermelho-sinal 5,3:1; todos os pares cor-de-linha com texto >= 4,5:1; axe 30/30 nos dois modos.
+- **Implementação:** tokens em `tokens.css`; formas, cores por Parte e mapa em `identidade.css` (carregado depois de `componentes.css`); a Parte da página chega por `data-parte` no `<article>`.
+- **Mascote:** o **Bloquinho** (pixel-art original, desenho próprio; escolhido em `docs/mascotes-pixel.html`). Componente `Mascote.astro`, com expressões neutro, feliz, pensando, acenando e surpreso, e cores por variável (`--mq-*`), então serve aos dois modos. **Onde aparece (e só aí, para não poluir):** logo do cabeçalho, capa (acenando), "Prova de que funcionou" (feliz), "Deu erro?" (pensando), "Checklist de saída" (feliz), página 404 (surpreso) e favicon. Não aparece no corpo do texto nem nas figuras.
+- **Não é o mascote oficial do Claude Code** (personagem de terceiros; o curso se declara independente). Se o autor obtiver permissão da Anthropic, o desenho oficial pode substituir o Bloquinho trocando só o componente `Mascote.astro`.
+- **Mapa do metrô:** cada Parte ganhou a sua cor (antes eram 4 estilos que se repetiam).
+

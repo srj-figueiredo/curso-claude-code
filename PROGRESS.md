@@ -2,6 +2,7 @@
 
 **Site publicado:** https://srj-figueiredo.github.io/curso-claude-code/  
 **Repositório:** https://github.com/srj-figueiredo/curso-claude-code  
+Identidade visual nova (13/11/2026): ver D016.  
 Publicado em 13/11/2026; cada push no `main` roda o CI (check, build, axe) e publica sozinho.
 
 Estados: `pendente` · `em andamento` · `verificado`.

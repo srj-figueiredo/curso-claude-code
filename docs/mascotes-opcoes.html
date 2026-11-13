@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Bordo: seis mascotes para escolher</title>
+<style>
+@font-face { font-family: 'Fraunces'; src: url('../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2') format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Newsreader'; src: url('../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2') format('woff2'); font-weight: 200 800; }
+@font-face { font-family: 'JetBrains Mono'; src: url('../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2'); font-weight: 100 800; }
+:root { --fundo:#fffdf7; --fundo2:#f4eedd; --tinta:#101820; --tinta2:#334050; --r:#d8321e; --a:#ffc72c; --v:#0c7a4d; --z:#1d62d6; --p:#c2185b; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fundo); color: var(--tinta); font-family: 'Newsreader', Georgia, serif; padding: 28px; }
+.topo { max-width: 1100px; margin: 0 auto 24px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 14px; line-height: 1.6; }
+.topo h1 { font-family: 'Fraunces', Georgia, serif; font-size: 34px; margin: 0 0 8px; letter-spacing: -.02em; }
+.grade { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 22px; }
+.card { border: 2px solid var(--tinta); border-radius: 22px; background: var(--fundo2); box-shadow: 5px 5px 0 var(--tinta); padding: 18px 20px 20px; }
+.num { font-family: 'JetBrains Mono', Consolas, monospace; font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--r); }
+.card h2 { font-family: 'Fraunces', Georgia, serif; font-size: 28px; margin: 2px 0 4px; }
+.card p { margin: 0 0 10px; font-size: 17px; line-height: 1.45; }
+.palco { background: var(--fundo); border: 2px solid var(--tinta); border-radius: 18px; display: grid; place-items: center; padding: 14px 0 6px; margin: 10px 0; }
+.palco svg.grande { width: 190px; height: 205px; }
+.tamanhos { display: flex; align-items: flex-end; gap: 18px; justify-content: center; margin: 8px 0 12px; }
+.tamanhos svg { display: block; }
+.uso { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 6px; }
+.btn { font-family: 'JetBrains Mono', Consolas, monospace; font-weight: 700; font-size: 14px; padding: 9px 16px; border-radius: 999px; border: 2px solid var(--tinta); background: var(--z); color: #fff; box-shadow: 0 3px 0 var(--tinta); display: inline-flex; align-items: center; gap: 8px; }
+.btn.v { background: var(--v); } .btn.a { background: var(--a); color: var(--tinta); }
+.sel { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; color: var(--tinta2); }
+.ink { stroke: #101820; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+.fino { stroke: #101820; stroke-width: 3; stroke-linecap: round; fill: none; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs></defs>
+
+  <!-- 1. MAQUINISTA: robô redondo de boné de condutor -->
+  <symbol id="m1" viewBox="0 0 140 150">
+    <circle class="ink" cx="14" cy="70" r="9" fill="#1d62d6"/><circle class="ink" cx="126" cy="70" r="9" fill="#1d62d6"/>
+    <rect class="ink" x="42" y="124" width="22" height="18" rx="7" fill="#1d62d6"/><rect class="ink" x="76" y="124" width="22" height="18" rx="7" fill="#1d62d6"/>
+    <rect class="ink" x="46" y="98" width="48" height="34" rx="12" fill="#d8321e"/>
+    <path class="fino" d="M60 108 l7 5 -7 5" stroke="#fff" stroke-width="4"/><rect x="72" y="116" width="11" height="4" rx="2" fill="#fff"/>
+    <rect class="ink" x="18" y="34" width="104" height="72" rx="30" fill="#ffc72c"/>
+    <path class="ink" d="M26 46 C26 10 114 10 114 46 Z" fill="#1d62d6"/>
+    <rect class="ink" x="20" y="42" width="100" height="10" rx="5" fill="#16478f"/>
+    <circle class="ink" cx="70" cy="28" r="8" fill="#fffdf7"/><circle cx="70" cy="28" r="3" fill="#d8321e"/>
+    <circle class="ink" cx="52" cy="76" r="11" fill="#fffdf7"/><circle class="ink" cx="88" cy="76" r="11" fill="#fffdf7"/>
+    <circle cx="54" cy="77" r="5" fill="#101820"/><circle cx="90" cy="77" r="5" fill="#101820"/><circle cx="56" cy="75" r="1.8" fill="#fff"/><circle cx="92" cy="75" r="1.8" fill="#fff"/>
+    <path class="fino" d="M58 92 Q70 102 82 92"/>
+    <circle cx="36" cy="88" r="4.5" fill="#c2185b"/><circle cx="104" cy="88" r="4.5" fill="#c2185b"/>
+  </symbol>
+
+  <!-- 2. VAGONETE: vagão de metrô com cara -->
+  <symbol id="m2" viewBox="0 0 140 150">
+    <path class="ink" d="M52 40 L70 20 L88 40" fill="none"/><path class="ink" d="M58 20 H82" fill="none"/>
+    <rect class="ink" x="8" y="38" width="124" height="80" rx="26" fill="#d8321e"/>
+    <rect x="14" y="98" width="112" height="11" rx="5" fill="#ffc72c"/>
+    <rect class="ink" x="22" y="50" width="44" height="36" rx="13" fill="#fffdf7"/><rect class="ink" x="74" y="50" width="44" height="36" rx="13" fill="#fffdf7"/>
+    <circle cx="46" cy="69" r="9" fill="#101820"/><circle cx="98" cy="69" r="9" fill="#101820"/><circle cx="49" cy="66" r="3" fill="#fff"/><circle cx="101" cy="66" r="3" fill="#fff"/>
+    <path class="fino" d="M56 94 Q70 103 84 94" stroke="#fff" stroke-width="4"/>
+    <circle class="ink" cx="38" cy="122" r="13" fill="#101820"/><circle cx="38" cy="122" r="5" fill="#ffc72c"/>
+    <circle class="ink" cx="102" cy="122" r="13" fill="#101820"/><circle cx="102" cy="122" r="5" fill="#ffc72c"/>
+  </symbol>
+
+  <!-- 3. CURSOR: o cursor de bloco do terminal, com carinha -->
+  <symbol id="m3" viewBox="0 0 140 150">
+    <rect class="ink" x="16" y="72" width="20" height="11" rx="5.5" fill="#0c7a4d"/><rect class="ink" x="104" y="72" width="20" height="11" rx="5.5" fill="#0c7a4d"/>
+    <rect class="ink" x="44" y="118" width="17" height="20" rx="6" fill="#101820"/><rect class="ink" x="79" y="118" width="17" height="20" rx="6" fill="#101820"/>
+    <rect class="ink" x="34" y="12" width="72" height="108" rx="16" fill="#0c7a4d"/>
+    <rect class="ink" x="48" y="38" width="16" height="22" rx="4" fill="#fffdf7"/><rect class="ink" x="76" y="38" width="16" height="22" rx="4" fill="#fffdf7"/>
+    <rect x="53" y="46" width="8" height="12" rx="2" fill="#101820"/><rect x="81" y="46" width="8" height="12" rx="2" fill="#101820"/>
+    <path class="fino" d="M56 84 Q70 97 84 84" stroke="#fffdf7" stroke-width="5"/>
+    <rect class="ink" x="38" y="138" width="64" height="8" rx="4" fill="#ffc72c" style="stroke-width:3"/>
+  </symbol>
+
+  <!-- 4. BILHETE: o bilhete de metrô, com furos de olhos e canhoto aprovado -->
+  <symbol id="m4" viewBox="0 0 140 150">
+    <g transform="rotate(-5 70 78)">
+      <path class="fino" d="M48 118 v18 M92 118 v18"/>
+      <path class="ink" d="M14 30 H126 V62 A11 11 0 0 0 126 84 V116 H14 V84 A11 11 0 0 0 14 62 Z" fill="#ffc72c"/>
+      <path class="fino" d="M98 36 V110" stroke-dasharray="3 6"/>
+      <circle class="ink" cx="42" cy="64" r="10" fill="#fffdf7"/><circle class="ink" cx="72" cy="64" r="10" fill="#fffdf7"/>
+      <circle cx="44" cy="65" r="4.5" fill="#101820"/><circle cx="74" cy="65" r="4.5" fill="#101820"/>
+      <path class="fino" d="M44 88 Q57 99 70 88"/>
+      <path class="fino" d="M104 74 l7 8 14 -16" stroke="#0c7a4d" stroke-width="7"/>
+      <rect class="ink" x="38" y="130" width="20" height="12" rx="6" fill="#d8321e"/><rect class="ink" x="82" y="130" width="20" height="12" rx="6" fill="#d8321e"/>
+    </g>
+  </symbol>
+
+  <!-- 5. SINALEIRO: o semáforo de estação (vermelho, amarelo, verde) -->
+  <symbol id="m5" viewBox="0 0 140 150">
+    <rect class="ink" x="60" y="124" width="20" height="16" fill="#101820"/><rect class="ink" x="40" y="136" width="60" height="10" rx="5" fill="#101820"/>
+    <path class="ink" d="M26 70 H12 M114 70 H128" fill="none" stroke-width="7"/>
+    <rect class="ink" x="26" y="10" width="88" height="114" rx="26" fill="#101820"/>
+    <circle cx="52" cy="46" r="15" fill="#d8321e"/><circle cx="88" cy="46" r="15" fill="#ffc72c"/>
+    <circle cx="55" cy="47" r="6" fill="#fffdf7"/><circle cx="91" cy="47" r="6" fill="#fffdf7"/><circle cx="56" cy="48" r="3" fill="#101820"/><circle cx="92" cy="48" r="3" fill="#101820"/>
+    <rect x="40" y="76" width="60" height="32" rx="16" fill="#0c7a4d"/>
+    <path class="fino" d="M56 92 l9 9 20 -18" stroke="#fffdf7" stroke-width="5.5"/>
+  </symbol>
+
+  <!-- 6. ESTAÇÃO: o círculo de estação do mapa, com a linha passando -->
+  <symbol id="m6" viewBox="0 0 140 150">
+    <path class="ink" d="M4 70 H34" style="stroke:#d8321e;stroke-width:12"/><path class="ink" d="M106 70 H136" style="stroke:#0c7a4d;stroke-width:12"/>
+    <rect class="ink" x="46" y="118" width="18" height="22" rx="7" fill="#101820"/><rect class="ink" x="76" y="118" width="18" height="22" rx="7" fill="#101820"/>
+    <circle class="ink" cx="70" cy="70" r="52" fill="#fffdf7"/>
+    <circle cx="70" cy="70" r="44" fill="none" stroke="#1d62d6" stroke-width="14"/>
+    <circle class="ink" cx="70" cy="70" r="36" fill="#fffdf7" style="stroke-width:3"/>
+    <circle cx="57" cy="63" r="6" fill="#101820"/><circle cx="83" cy="63" r="6" fill="#101820"/><circle cx="59" cy="61" r="2" fill="#fff"/><circle cx="85" cy="61" r="2" fill="#fff"/>
+    <circle cx="47" cy="78" r="4.5" fill="#c2185b"/><circle cx="93" cy="78" r="4.5" fill="#c2185b"/>
+    <path class="fino" d="M58 80 Q70 92 82 80" stroke-width="4"/>
+  </symbol>
+</svg>
+
+<div class="topo">
+  <h1>Seis mascotes para o Manual de Bordo</h1>
+  <p>Todos são <b>originais</b>, desenhados na paleta da Opção C, em SVG (nítidos em qualquer tamanho, sem imagem externa). Em cada cartão você vê o personagem grande, em três tamanhos (avatar pequeno, ícone de botão e ilustração) e num uso real. Diga o número do que mais gostou, ou combine: por exemplo, um mascote principal e outro só como ícone.</p>
+</div>
+
+<div class="grade">
+
+  <section class="card"><p class="num">Mascote 1</p><h2>Maquinista</h2>
+    <p>Robô redondo e simpático, com boné de condutor de metrô. O mais "amigo" e o mais próximo da ideia de robozinho.</p>
+    <div class="palco"><svg class="grande" viewBox="0 0 140 150"><use href="#m1"/></svg></div>
+    <div class="tamanhos"><svg width="96" height="103" viewBox="0 0 140 150"><use href="#m1"/></svg><svg width="48" height="52" viewBox="0 0 140 150"><use href="#m1"/></svg><svg width="28" height="30" viewBox="0 0 140 150"><use href="#m1"/></svg></div>
+    <div class="uso"><span class="btn"><svg width="24" height="26" viewBox="0 0 140 150"><use href="#m1"/></svg>Concluí o M6</span><span class="sel">avatar · botão</span></div></section>
+
+  <section class="card"><p class="num">Mascote 2</p><h2>Vagonete</h2>
+    <p>Um vagão de metrô com cara: as janelas são os olhos. Conversa direto com o mapa do curso, e é o mais fácil de animar andando.</p>
+    <div class="palco"><svg class="grande" viewBox="0 0 140 150"><use href="#m2"/></svg></div>
+    <div class="tamanhos"><svg width="96" height="103" viewBox="0 0 140 150"><use href="#m2"/></svg><svg width="48" height="52" viewBox="0 0 140 150"><use href="#m2"/></svg><svg width="28" height="30" viewBox="0 0 140 150"><use href="#m2"/></svg></div>
+    <div class="uso"><span class="btn a"><svg width="26" height="28" viewBox="0 0 140 150"><use href="#m2"/></svg>Próxima estação</span><span class="sel">navegação · mapa</span></div></section>
+
+  <section class="card"><p class="num">Mascote 3</p><h2>Cursor</h2>
+    <p>O cursor de bloco do terminal, com braços e pernas. A cara é de quem mora no terminal, o que combina com um curso de linha de comando.</p>
+    <div class="palco"><svg class="grande" viewBox="0 0 140 150"><use href="#m3"/></svg></div>
+    <div class="tamanhos"><svg width="96" height="103" viewBox="0 0 140 150"><use href="#m3"/></svg><svg width="48" height="52" viewBox="0 0 140 150"><use href="#m3"/></svg><svg width="28" height="30" viewBox="0 0 140 150"><use href="#m3"/></svg></div>
+    <div class="uso"><span class="btn v"><svg width="24" height="26" viewBox="0 0 140 150"><use href="#m3"/></svg>Rodar o comando</span><span class="sel">fichas · código</span></div></section>
+
+  <section class="card"><p class="num">Mascote 4</p><h2>Bilhete</h2>
+    <p>O bilhete de metrô, com furos de olhos e o canhoto com um visto verde. É o mais ligado a "concluí a ficha" e ao progresso.</p>
+    <div class="palco"><svg class="grande" viewBox="0 0 140 150"><use href="#m4"/></svg></div>
+    <div class="tamanhos"><svg width="96" height="103" viewBox="0 0 140 150"><use href="#m4"/></svg><svg width="48" height="52" viewBox="0 0 140 150"><use href="#m4"/></svg><svg width="28" height="30" viewBox="0 0 140 150"><use href="#m4"/></svg></div>
+    <div class="uso"><span class="btn v"><svg width="26" height="28" viewBox="0 0 140 150"><use href="#m4"/></svg>Ficha concluída</span><span class="sel">progresso · conquistas</span></div></section>
+
+  <section class="card"><p class="num">Mascote 5</p><h2>Sinaleiro</h2>
+    <p>O semáforo de estação: dois olhos (vermelho e amarelo) e a boca verde com visto. Simboliza "passou ou falhou", a ideia das Provas.</p>
+    <div class="palco"><svg class="grande" viewBox="0 0 140 150"><use href="#m5"/></svg></div>
+    <div class="tamanhos"><svg width="96" height="103" viewBox="0 0 140 150"><use href="#m5"/></svg><svg width="48" height="52" viewBox="0 0 140 150"><use href="#m5"/></svg><svg width="28" height="30" viewBox="0 0 140 150"><use href="#m5"/></svg></div>
+    <div class="uso"><span class="btn"><svg width="24" height="26" viewBox="0 0 140 150"><use href="#m5"/></svg>Ver a Prova</span><span class="sel">Provas · avisos</span></div></section>
+
+  <section class="card"><p class="num">Mascote 6</p><h2>Estação</h2>
+    <p>O círculo de estação do mapa, com cara e a linha do metrô atravessando. É o mais simples e o que melhor funciona minúsculo.</p>
+    <div class="palco"><svg class="grande" viewBox="0 0 140 150"><use href="#m6"/></svg></div>
+    <div class="tamanhos"><svg width="96" height="103" viewBox="0 0 140 150"><use href="#m6"/></svg><svg width="48" height="52" viewBox="0 0 140 150"><use href="#m6"/></svg><svg width="28" height="30" viewBox="0 0 140 150"><use href="#m6"/></svg></div>
+    <div class="uso"><span class="btn a"><svg width="24" height="26" viewBox="0 0 140 150"><use href="#m6"/></svg>Voltar ao mapa</span><span class="sel">favicon · mapa · ícone</span></div></section>
+
+</div>
+</body>
+</html>

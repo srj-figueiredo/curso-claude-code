@@ -1,11 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import { u } from '../lib/url';
+import Mascote from '../components/Mascote.astro';
 ---
 
 <Base titulo="Estação não encontrada" buscavel={false}>
   <div class="folha">
     <p class="numero" aria-hidden="true">404</p>
+    <Mascote humor="surpreso" tamanho={96} titulo="O Bloquinho, surpreso" classe="folha__mascote" />
     <h1>Esta estação não existe</h1>
     <p>Ou ainda está em obras. O trem volta para o <a href={u('/sumario/')}>sumário</a>.</p>
   </div>
@@ -21,7 +23,8 @@ import { u } from '../lib/url';
   .numero {
     margin: 0;
     font-family: var(--f-display);
-    font-size: var(--t-placa);
+    font-size: clamp(6rem, 24vw, 12rem);
+    white-space: nowrap;
     font-weight: 900;
     line-height: 0.85;
     color: transparent;

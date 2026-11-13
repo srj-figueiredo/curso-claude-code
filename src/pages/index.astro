@@ -4,6 +4,7 @@ import MetroMapa from '../components/MetroMapa.astro';
 import MetroMini from '../components/MetroMini.astro';
 import Replay from '../components/Replay.astro';
 import Icone from '../components/Icone.astro';
+import Mascote from '../components/Mascote.astro';
 import { TRILHAS, ESTACOES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
 import { pagina, u } from '../lib/url';
 import { paginasEscritas, apendicesEscritos } from '../lib/paginas';
@@ -19,7 +20,7 @@ const apendicesProntos = await apendicesEscritos();
     <div class="capa__texto">
       <p class="capa__edicao rotulo">Curso independente · edição v{VERSAO_CLI} · {DATA_VERIFICACAO}</p>
       <h1 class="capa__titulo">
-        <span class="capa__barra" aria-hidden="true">/</span>
+        <span class="capa__mascote" aria-hidden="true"><Mascote humor="acenando" tamanho={160} /></span>
         <span class="capa__l1">Manual</span>
         <span class="capa__l2">de Bordo</span>
         <span class="capa__l3">do Claude Code</span>
@@ -132,18 +133,18 @@ const apendicesProntos = await apendicesEscritos();
     letter-spacing: -0.045em;
   }
 
-  .capa__barra {
+  .capa__mascote {
     position: absolute;
     right: 0;
-    top: -0.16em;
-    font-size: 2.3em;
-    font-style: italic;
-    line-height: 0.8;
-    color: transparent;
-    -webkit-text-stroke: 2px var(--sinal);
-    opacity: 0.9;
+    top: -0.1em;
+    width: clamp(5.5rem, 13vw, 10rem);
     pointer-events: none;
     user-select: none;
+  }
+
+  .capa__mascote :global(svg) {
+    width: 100%;
+    height: auto;
   }
 
   .capa__l1,

@@ -1,4 +1,8 @@
+---
+import Mascote from './Mascote.astro';
+---
+
 <details class="dobra dobra--erro">
-  <summary><span class="rotulo">Deu erro?</span> <span class="dobra__dica">as causas mais prováveis</span></summary>
+  <summary><Mascote humor="pensando" tamanho={28} /> <span class="rotulo">Deu erro?</span> <span class="dobra__dica">as causas mais prováveis</span></summary>
   <div class="dobra__corpo"><slot /></div>
 </details>

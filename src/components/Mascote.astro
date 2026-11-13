@@ -1,0 +1,70 @@
+---
+// O Bloquinho, mascote do curso: uma criatura-bloco em pixel-art que vive no terminal.
+// Desenho próprio, em grade de 20x20. As cores vêm de variáveis (--mq-*), então funciona nos dois modos.
+// Decorativo por padrão (aria-hidden). Passe `titulo` para ele virar uma imagem com nome.
+interface Props {
+  humor?: 'neutro' | 'feliz' | 'pensando' | 'acenando' | 'surpreso';
+  tamanho?: number;
+  titulo?: string;
+  classe?: string;
+}
+const { humor = 'neutro', tamanho = 48, titulo, classe = '' } = Astro.props;
+
+type R = [number, number, number, number];
+const r = ([x, y, w, h]: R, c: string) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" class="${c}"/>`;
+const forma = (lista: R[], c: string) =>
+  lista.map(([x, y, w, h]) => r([x - 1, y - 1, w + 2, h + 2], 'mq-c')).join('') + lista.map((q) => r(q, c)).join('');
+const pontos = (lista: R[], c: string) => lista.map((q) => r(q, c)).join('');
+
+// Braço direito levantado quando acena; senão, os dois braços na altura do corpo.
+const bracos = humor === 'acenando' ? forma([[2, 9, 3, 3], [15, 4, 3, 4]], 'mq-b') : forma([[2, 9, 3, 3], [15, 9, 3, 3]], 'mq-b');
+
+let rosto = '';
+if (humor === 'feliz') {
+  // olhos em arco (^ ^) e sorriso aberto
+  rosto =
+    pontos([[6, 9, 1, 1], [7, 8, 2, 1], [9, 9, 1, 1], [11, 9, 1, 1], [12, 8, 2, 1], [14, 9, 1, 1]], 'mq-p') +
+    pontos([[7, 12, 6, 1], [8, 13, 4, 1]], 'mq-p') + pontos([[9, 13, 2, 1]], 'mq-r') +
+    pontos([[5, 11, 1, 1], [14, 11, 1, 1]], 'mq-r');
+} else if (humor === 'pensando') {
+  // olhos para cima, boca reta e um "?" de pixels
+  rosto =
+    pontos([[6, 7, 3, 4], [11, 7, 3, 4]], 'mq-o') + pontos([[8, 7, 1, 2], [13, 7, 1, 2]], 'mq-p') +
+    pontos([[9, 12, 3, 1]], 'mq-p') +
+    pontos([[15, 0, 3, 1], [17, 1, 1, 1], [16, 2, 1, 1], [16, 4, 1, 1]], 'mq-c');
+} else if (humor === 'surpreso') {
+  // olhos grandes, pupilas pequenas e boca em "o"
+  rosto =
+    pontos([[6, 6, 3, 5], [11, 6, 3, 5]], 'mq-o') + pontos([[7, 8, 1, 1], [12, 8, 1, 1]], 'mq-p') +
+    pontos([[9, 12, 2, 2]], 'mq-p');
+} else {
+  // neutro e acenando: olhos grandes e sorriso pequeno
+  rosto =
+    pontos([[6, 7, 3, 4], [11, 7, 3, 4]], 'mq-o') + pontos([[7, 8, 1, 2], [12, 8, 1, 2]], 'mq-p') +
+    pontos([[7, 12, 1, 1], [8, 13, 4, 1], [12, 12, 1, 1]], 'mq-p') + pontos([[5, 11, 1, 1], [14, 11, 1, 1]], 'mq-r');
+}
+
+const desenho =
+  forma([[5, 14, 3, 3], [12, 14, 3, 3]], 'mq-c') + bracos + forma([[4, 4, 12, 11]], 'mq-b') + rosto;
+const a11y = titulo ? { role: 'img', 'aria-label': titulo } : { 'aria-hidden': 'true' };
+---
+
+<svg
+  class={`mascote mascote--${humor} ${classe}`.trim()}
+  viewBox="-1 -1 22 22"
+  width={tamanho}
+  height={tamanho}
+  shape-rendering="crispEdges"
+  focusable="false"
+  {...a11y}
+  set:html={desenho}
+/>
+
+<style is:global>
+  .mq-c { fill: var(--mq-contorno); }
+  .mq-b { fill: var(--mq-corpo); }
+  .mq-o { fill: var(--mq-olho); }
+  .mq-p { fill: var(--mq-pupila); }
+  .mq-r { fill: var(--mq-rosa); }
+  .mascote { display: inline-block; flex: none; vertical-align: middle; }
+</style>

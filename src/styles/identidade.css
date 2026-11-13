@@ -1,0 +1,261 @@
+/* Identidade "Linhas de metrô" (13/11/2026).
+   Sobrescreve formas e cores do componentes.css: cantos arredondados, botões em pílula,
+   uma cor de linha por Parte e o Bloquinho (mascote) em poucos pontos. */
+
+/* ---------- Cor da linha, por Parte ---------- */
+[data-parte='p0'] { --linha: var(--linha-0); --linha-t: var(--linha-0-t); }
+[data-parte='p1'] { --linha: var(--linha-1); --linha-t: var(--linha-1-t); }
+[data-parte='p2'] { --linha: var(--linha-2); --linha-t: var(--linha-2-t); }
+[data-parte='p3'] { --linha: var(--linha-3); --linha-t: var(--linha-3-t); }
+[data-parte='p4'] { --linha: var(--linha-4); --linha-t: var(--linha-4-t); }
+[data-parte='p5'] { --linha: var(--linha-5); --linha-t: var(--linha-5-t); }
+[data-parte='p6'] { --linha: var(--linha-6); --linha-t: var(--linha-6-t); }
+[data-parte='p7'] { --linha: var(--linha-7); --linha-t: var(--linha-7-t); }
+
+/* No modo Console a linha preta da Parte 0 some no fundo escuro: usa o creme. */
+:root[data-tema='console'] [data-parte='p0'] { --linha: #fff4e0; --linha-t: #14100c; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema]) [data-parte='p0'] { --linha: #fff4e0; --linha-t: #14100c; }
+}
+
+/* ---------- Texto e fundo: mais limpo e mais firme ---------- */
+body::before {
+  display: none; /* tira o grão de papel que escurecia o texto */
+}
+
+body {
+  font-weight: 450;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700;
+}
+
+.placa h1 {
+  font-weight: 800;
+}
+
+strong {
+  font-weight: 700;
+}
+
+/* ---------- Botões em pílula ---------- */
+.botao {
+  border-radius: var(--pilula);
+  border: 2px solid var(--tinta);
+  background: var(--linha);
+  color: var(--linha-t);
+  box-shadow: 0 4px 0 var(--tinta);
+  font-weight: 700;
+}
+
+.botao:hover {
+  color: var(--linha-t);
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--tinta);
+}
+
+.botao--vazado {
+  color: var(--tinta);
+  background: transparent;
+  box-shadow: 0 4px 0 var(--tinta);
+}
+
+.botao--vazado:hover {
+  color: var(--papel);
+  background: var(--tinta);
+  box-shadow: 0 1px 0 var(--tinta);
+}
+
+.acao,
+.ficha__marca,
+.trilha {
+  border-radius: var(--pilula);
+}
+
+.trilha {
+  border-radius: var(--raio);
+}
+
+kbd {
+  border-radius: 8px;
+}
+
+:focus-visible {
+  border-radius: 6px;
+}
+
+/* ---------- Cantos arredondados nos blocos ---------- */
+.ficha {
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 6px 6px 0 var(--linha);
+}
+
+.ficha--feita {
+  box-shadow: 6px 6px 0 var(--ok);
+}
+
+.camada {
+  border-radius: var(--raio);
+  overflow: hidden;
+}
+
+.prova {
+  border-radius: var(--raio-p);
+}
+
+.desafio {
+  border-radius: 6px var(--raio-p) var(--raio-p) 6px;
+}
+
+.troca,
+.figura__arte,
+.proximo a,
+.terminal,
+.replay .terminal {
+  border-radius: var(--raio);
+}
+
+.terminal {
+  overflow: hidden;
+}
+
+pre {
+  border-radius: var(--raio-p);
+}
+
+/* ---------- Selos como etiquetas ---------- */
+.selo {
+  border-radius: var(--pilula);
+  outline: 0;
+  transform: none;
+  padding: 0.3em 0.85em;
+  background: var(--papel);
+}
+
+.selo--verificado {
+  background: var(--ok-fundo);
+}
+
+.selo--beta,
+.selo--plano,
+.selo--oculto {
+  transform: none;
+  background: var(--sinal-fundo);
+}
+
+/* ---------- Cabeçalho de página e ficha com a cor da Parte ---------- */
+.placa__numero {
+  text-shadow: 0.045em 0.045em 0 var(--linha);
+}
+
+.placa__parte {
+  display: inline-block;
+  padding: 0.3em 0.9em;
+  border-radius: var(--pilula);
+  background: var(--linha);
+  color: var(--linha-t);
+}
+
+.ficha__numero {
+  border-radius: var(--pilula);
+}
+
+/* No modo Console, componentes.css força texto escuro; aqui o texto segue o par da linha. */
+:root:root:root .ficha__numero {
+  background: var(--linha);
+  color: var(--linha-t);
+}
+
+.ficha {
+  border-left: 12px solid var(--linha);
+}
+
+.proximo a[rel='next'] {
+  box-shadow: 0 5px 0 var(--linha);
+}
+
+/* ---------- O Bloquinho, em pontos escolhidos ---------- */
+.cabeca__barra {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0;
+}
+
+.prova__rotulo,
+.dobra--erro summary {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+}
+
+.dobra--erro summary {
+  flex-wrap: wrap;
+}
+
+.saida h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+}
+
+.folha__mascote {
+  display: block;
+  margin: var(--e-4) 0;
+}
+
+/* ---------- Mapa do metrô: uma cor por Parte ---------- */
+.metro__trecho .metro__fundo {
+  stroke: var(--tinta);
+  stroke-width: 11;
+}
+
+.metro__trecho .metro__fio {
+  stroke-width: 7;
+}
+
+.metro__trecho--0 .metro__fio { stroke: var(--linha-0); }
+.metro__trecho--1 .metro__fio { stroke: var(--linha-1); }
+.metro__trecho--2 .metro__fio { stroke: var(--linha-2); }
+.metro__trecho--3 .metro__fio { stroke: var(--linha-3); }
+.metro__trecho--4 .metro__fio { stroke: var(--linha-4); }
+.metro__trecho--5 .metro__fio { stroke: var(--linha-5); }
+.metro__trecho--6 .metro__fio { stroke: var(--linha-6); }
+.metro__trecho--7 .metro__fio { stroke: var(--linha-7); }
+
+/* A linha 0 é preta: sem contorno distinto, então fica com o fio mais fino por cima. */
+.metro__trecho--0 .metro__fundo { stroke: var(--papel); stroke-width: 11; }
+
+.mini__linha--0 .mini__estacoes::before { background: var(--linha-0); }
+.mini__linha--1 .mini__estacoes::before { background: var(--linha-1); }
+.mini__linha--2 .mini__estacoes::before { background: var(--linha-2); }
+.mini__linha--3 .mini__estacoes::before { background: var(--linha-3); }
+.mini__linha--4 .mini__estacoes::before { background: var(--linha-4); }
+.mini__linha--5 .mini__estacoes::before { background: var(--linha-5); }
+.mini__linha--6 .mini__estacoes::before { background: var(--linha-6); }
+.mini__linha--7 .mini__estacoes::before { background: var(--linha-7); }
+
+/* O desenho com linha dupla da versão antiga deixa de existir: todas as linhas são cheias. */
+.mini__linha--2 .mini__estacoes::before,
+.mini__linha--3 .mini__estacoes::before {
+  width: 5px;
+  left: 0.42rem;
+  background-image: none;
+}
+
+/* ---------- Impressão: sem mascote nem cor de fundo ---------- */
+@media print {
+  .mascote,
+  .capa__mascote {
+    display: none;
+  }
+}
+
+/* ---------- Detalhes ---------- */
+/* O botão de copiar acompanha os cantos do bloco de código. */
+.copiar {
+  border-radius: 0 var(--raio-p) 0 var(--raio-p);
+}

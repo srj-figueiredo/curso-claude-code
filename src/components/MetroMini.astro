@@ -21,7 +21,7 @@ const trilhasDe = (id: string) =>
 <nav class="mini" aria-label="Estações do curso">
   {
     PARTES.map((parte, i) => (
-      <section class={`mini__linha mini__linha--${i % 4}`}>
+      <section class={`mini__linha mini__linha--${i}`}>
         <h2 class="mini__parte">
           <span class="rotulo">{parte.rotulo}</span> {parte.titulo}
         </h2>

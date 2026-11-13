@@ -9,9 +9,11 @@ import fonteTexto from '@fontsource-variable/newsreader/files/newsreader-latin-o
 import fonteMono from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import '../styles/base.css';
 import '../styles/componentes.css';
+import '../styles/identidade.css';
 import Icone from '../components/Icone.astro';
 import { apendicesEscritos } from '../lib/paginas';
 import MetroMini from '../components/MetroMini.astro';
+import Mascote from '../components/Mascote.astro';
 import { u } from '../lib/url';
 import { ESTACOES, VERSAO_CLI, DATA_VERIFICACAO } from '../data/curso';
 
@@ -49,8 +51,8 @@ const apendicesProntos = await apendicesEscritos();
     <meta property="og:description" content={descricao} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
-    <meta name="theme-color" content="#f4efe4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15120f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fffdf7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14100c" media="(prefers-color-scheme: dark)" />
     <script is:inline>
       // Antes da primeira pintura: aplica tema e sistema salvos (sem piscar).
       try {
@@ -66,7 +68,7 @@ const apendicesProntos = await apendicesEscritos();
 
     <header class="cabeca nao-imprimir">
       <a class="cabeca__marca" href={u('/')} aria-label={`${nomeSite}: início`}>
-        <span class="cabeca__barra" aria-hidden="true">/</span>
+        <span class="cabeca__barra" aria-hidden="true"><Mascote tamanho={32} /></span>
         <span class="cabeca__nome">Manual de Bordo</span>
       </a>
       {corrente && <p class="cabeca__corrente rotulo">{corrente}</p>}

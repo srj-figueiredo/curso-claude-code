@@ -1,5 +1,6 @@
-/* Tokens do "Manual de Bordo". Impressão em duas cores: tinta + vermelho-sinal.
-   Amarelo marca-texto com parcimônia; verde só em selos de verificação. */
+/* Tokens do "Manual de Bordo", identidade "Linhas de metrô" (13/11/2026).
+   Fundo quase branco, tinta escura e uma cor de linha por Parte. Mascote: o Bloquinho.
+   Contraste medido: texto 17,6:1; vermelho-sinal 5,3:1 sobre o papel; pares cor-de-linha + cor-do-texto >= 4,5:1. */
 
 :root {
   /* Tipografia */
@@ -32,18 +33,51 @@
   --traco: 1.5px;
 
   /* Modo Papel */
-  --papel: #f4efe4;
-  --papel-2: #ebe4d3;
-  --papel-3: #dfd6c1;
-  --tinta: #16202b;
-  --tinta-2: #47525e;
-  --tinta-3: #59626e;
-  --sinal: #b92c1a;
-  --sinal-fundo: #f3ddd4;
-  --marca: #f2d44a;
-  --ok: #1f6b46;
-  --ok-fundo: #dbe8dc;
-  --foco: #16202b;
+  --papel: #fffdf7;
+  --papel-2: #f4eedd;
+  --papel-3: #e6dcc1;
+  --tinta: #101820;
+  --tinta-2: #334050;
+  --tinta-3: #4c5968;
+  --sinal: #c42d19;
+  --sinal-fundo: #fde3dc;
+  --marca: #ffc72c;
+  --ok: #0c7a4d;
+  --ok-fundo: #dff3e6;
+  --foco: #1d62d6;
+
+  /* Linhas do metrô: uma cor por Parte, e a cor do texto que vai por cima dela. */
+  --linha-0: #101820;
+  --linha-0-t: #ffffff;
+  --linha-1: #d8321e;
+  --linha-1-t: #ffffff;
+  --linha-2: #ffc72c;
+  --linha-2-t: #101820;
+  --linha-3: #0c7a4d;
+  --linha-3-t: #ffffff;
+  --linha-4: #1d62d6;
+  --linha-4-t: #ffffff;
+  --linha-5: #c2185b;
+  --linha-5-t: #ffffff;
+  --linha-6: #f08a24;
+  --linha-6-t: #101820;
+  --linha-7: #0b7d74;
+  --linha-7-t: #ffffff;
+  /* Linha da página atual (o layout troca por data-parte). */
+  --linha: var(--linha-1);
+  --linha-t: var(--linha-1-t);
+
+  /* Formas */
+  --raio: 18px;
+  --raio-p: 12px;
+  --pilula: 999px;
+
+  /* Bloquinho */
+  --mq-corpo: #1d62d6;
+  --mq-contorno: #101820;
+  --mq-olho: #fffdf7;
+  --mq-pupila: #101820;
+  --mq-rosa: #c2185b;
 
   /* O terminal é sempre escuro, nos dois modos */
   --term-fundo: #17130f;
@@ -72,36 +106,46 @@
 
 /* Modo Console: por escolha explícita, ou pelo sistema quando não há escolha. */
 :root[data-tema='console'] {
-  --papel: #15120f;
-  --papel-2: #1f1b16;
+  --papel: #14100c;
+  --papel-2: #1f1a14;
   --papel-3: #2e2820;
-  --tinta: #e9e0cf;
-  --tinta-2: #bdb3a2;
-  --tinta-3: #988e7f;
-  --sinal: #f0705c;
+  --tinta: #fff4e0;
+  --tinta-2: #d9cdb8;
+  --tinta-3: #b3a58e;
+  --sinal: #ff8a6e;
   --sinal-fundo: #3a1e18;
-  --marca: #e0a13a;
-  --ok: #8fc79a;
-  --ok-fundo: #1c2f22;
-  --foco: #e0a13a;
+  --marca: #ffd166;
+  --ok: #6fe3a4;
+  --ok-fundo: #14281d;
+  --foco: #ffd166;
+  --mq-corpo: #5a9bff;
+  --mq-contorno: #fff4e0;
+  --mq-olho: #fff4e0;
+  --mq-pupila: #14100c;
+  --mq-rosa: #ff8aa8;
   --astro-code-token-string-expression: #a9cfa4;
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema]) {
-    --papel: #15120f;
-    --papel-2: #1f1b16;
+    --papel: #14100c;
+    --papel-2: #1f1a14;
     --papel-3: #2e2820;
-    --tinta: #e9e0cf;
-    --tinta-2: #bdb3a2;
-    --tinta-3: #988e7f;
-    --sinal: #f0705c;
+    --tinta: #fff4e0;
+    --tinta-2: #d9cdb8;
+    --tinta-3: #b3a58e;
+    --sinal: #ff8a6e;
     --sinal-fundo: #3a1e18;
-    --marca: #e0a13a;
-    --ok: #8fc79a;
-    --ok-fundo: #1c2f22;
-    --foco: #e0a13a;
+    --marca: #ffd166;
+    --ok: #6fe3a4;
+    --ok-fundo: #14281d;
+    --foco: #ffd166;
+    --mq-corpo: #5a9bff;
+    --mq-contorno: #fff4e0;
+    --mq-olho: #fff4e0;
+    --mq-pupila: #14100c;
+    --mq-rosa: #ff8aa8;
     --astro-code-token-string-expression: #a9cfa4;
     color-scheme: dark;
   }

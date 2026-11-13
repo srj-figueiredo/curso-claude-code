@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Bordo: três direções de identidade visual</title>
+<style>
+@font-face { font-family: 'Fraunces'; src: url('../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2') format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Newsreader'; src: url('../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2') format('woff2'); font-weight: 200 800; }
+@font-face { font-family: 'JetBrains Mono'; src: url('../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2'); font-weight: 100 800; }
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Newsreader', Georgia, serif; background: #d9d4c7; color: #111; padding: 24px; }
+.guia { max-width: 1080px; margin: 0 auto 28px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 14px; line-height: 1.6; }
+.guia h1 { font-family: 'Fraunces', Georgia, serif; font-size: 30px; margin: 0 0 8px; }
+.opcao { max-width: 1080px; margin: 0 auto 36px; border-radius: 24px; overflow: hidden; box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.rotulo-opcao { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 24px; background: #111; color: #fff; }
+
+/* ---------- tokens por opção ---------- */
+.A { --fundo:#fbf6ea; --fundo2:#f1e8d2; --tinta:#0e1621; --tinta2:#2f3a46; --tinta3:#4a5560; --cor1:#d6341b; --cor1t:#ffffff; --cor2:#ffc933; --cor2t:#0e1621; --cor3:#0b7d74; --cor4:#1b5fd1; --borda:#0e1621; --codefundo:#0e1621; --codetexto:#fff4e0; --raio:20px; }
+.B { --fundo:#14100c; --fundo2:#1f1a14; --tinta:#fff4e0; --tinta2:#d9cdb8; --tinta3:#b3a58e; --cor1:#ff9248; --cor1t:#14100c; --cor2:#ffd166; --cor2t:#14100c; --cor3:#6fe3a4; --cor4:#7cc4ff; --borda:#4a3f33; --codefundo:#0a0806; --codetexto:#fff4e0; --raio:16px; }
+.C { --fundo:#fffdf7; --fundo2:#f4eedd; --tinta:#101820; --tinta2:#334050; --tinta3:#4c5968; --cor1:#d8321e; --cor1t:#ffffff; --cor2:#ffc72c; --cor2t:#101820; --cor3:#0c7a4d; --cor4:#1d62d6; --cor5:#c2185b; --borda:#101820; --codefundo:#101820; --codetexto:#fff8e7; --raio:22px; }
+
+.pagina { background: var(--fundo); color: var(--tinta); padding: 0 0 40px; }
+.topo { display: flex; align-items: center; gap: 14px; padding: 14px 28px; border-bottom: 2px solid var(--borda); background: var(--fundo); }
+.topo .marca { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 22px; }
+.topo .nav { margin-left: auto; display: flex; gap: 10px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--tinta2); }
+.corpo { padding: 28px 28px 0; display: grid; grid-template-columns: 1fr 220px; gap: 28px; align-items: start; }
+.sobre { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--cor1); font-weight: 700; margin: 0 0 8px; }
+h2.titulo { font-family: 'Fraunces', Georgia, serif; font-weight: 800; font-size: clamp(34px, 5vw, 54px); line-height: 1.02; margin: 0 0 14px; letter-spacing: -.02em; }
+p.texto { font-size: 20px; line-height: 1.58; font-weight: 450; margin: 0 0 12px; max-width: 60ch; }
+p.sec { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 14px; color: var(--tinta2); margin: 0 0 18px; }
+.botoes { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0 8px; }
+.btn { font-family: 'JetBrains Mono', Consolas, monospace; font-weight: 700; font-size: 15px; padding: 13px 24px; border-radius: 999px; border: 2px solid var(--borda); background: var(--cor1); color: var(--cor1t); box-shadow: 0 4px 0 var(--borda); cursor: pointer; }
+.btn.vazado { background: transparent; color: var(--tinta); }
+.btn.amarelo { background: var(--cor2); color: var(--cor2t); }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--borda); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.chip { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; border: 2px solid var(--borda); }
+.mascote { text-align: center; }
+.mascote svg { width: 200px; height: auto; }
+.mascote p { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; color: var(--tinta3); margin: 6px 0 0; }
+
+.fichas { padding: 22px 28px 0; display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; }
+.ficha { border: 2px solid var(--borda); border-radius: var(--raio); padding: 18px 20px; background: var(--fundo2); box-shadow: 5px 5px 0 var(--borda); }
+.ficha .cab { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--cor1); margin: 0 0 6px; }
+.ficha h3 { font-family: 'Fraunces', Georgia, serif; font-size: 24px; margin: 0 0 8px; }
+.ficha p { margin: 0 0 10px; font-size: 18px; line-height: 1.5; }
+.ficha .ok { display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; font-weight: 700; color: var(--cor3); }
+.codigo { background: var(--codefundo); color: var(--codetexto); border-radius: var(--raio); padding: 16px 18px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 14px; line-height: 1.7; border: 2px solid var(--borda); }
+.codigo .p { color: var(--cor1); font-weight: 700; } .codigo .v { color: #6fe3a4; } .codigo .d { opacity: .7; }
+.metro { padding: 22px 28px 0; }
+.trilho { display: flex; align-items: center; margin: 6px 0; }
+.trilho .linha { height: 8px; flex: 1; border-radius: 8px; }
+.trilho .est { width: 22px; height: 22px; border-radius: 50%; background: var(--fundo); border: 5px solid; flex: none; }
+.rotulos { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; color: var(--tinta2); margin-top: 4px; }
+.nota { margin: 0 28px; padding: 12px 18px; border-radius: var(--raio); font-size: 17px; border: 2px dashed var(--borda); }
+.A .nota { background: #fff1b8; } .B .nota { background: #2a2217; } .C .nota { background: #ffe9a8; }
+.rodape-opcao { padding: 18px 28px 0; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; color: var(--tinta2); line-height: 1.7; }
+.rodape-opcao b { color: var(--tinta); }
+@media (max-width: 800px) { .corpo, .fichas { grid-template-columns: 1fr; } .mascote { order: -1; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Mascote original "Trilho": cabeça arredondada, viseira, antena com sinal de estação. Pixel-art em SVG. -->
+  <symbol id="trilho" viewBox="-4 -8 128 140">
+    <!-- antena -->
+    <rect x="56" y="6" width="8" height="18" fill="var(--tinta)"/>
+    <circle cx="60" cy="8" r="9" fill="var(--cor2)" stroke="var(--tinta)" stroke-width="4"/>
+    <!-- cabeça -->
+    <rect x="12" y="24" width="96" height="68" rx="18" fill="var(--cor1)" stroke="var(--tinta)" stroke-width="5"/>
+    <!-- viseira -->
+    <rect x="24" y="40" width="72" height="30" rx="12" fill="var(--codefundo)" stroke="var(--tinta)" stroke-width="4"/>
+    <!-- olhos -->
+    <rect x="38" y="48" width="12" height="14" rx="3" fill="var(--cor3)"/>
+    <rect x="70" y="48" width="12" height="14" rx="3" fill="var(--cor3)"/>
+    <!-- boca (prompt >_ ) -->
+    <path d="M42 80 l8 5 -8 5" fill="none" stroke="var(--cor1t)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="58" y="86" width="16" height="5" rx="2" fill="var(--cor1t)"/>
+    <!-- orelhas -->
+    <rect x="2" y="46" width="10" height="24" rx="4" fill="var(--cor2)" stroke="var(--tinta)" stroke-width="4"/>
+    <rect x="108" y="46" width="10" height="24" rx="4" fill="var(--cor2)" stroke="var(--tinta)" stroke-width="4"/>
+    <!-- pés -->
+    <rect x="30" y="100" width="22" height="22" rx="6" fill="var(--cor4)" stroke="var(--tinta)" stroke-width="4"/>
+    <rect x="68" y="100" width="22" height="22" rx="6" fill="var(--cor4)" stroke="var(--tinta)" stroke-width="4"/>
+  </symbol>
+</svg>
+
+<div class="guia">
+  <h1>Manual de Bordo: três direções</h1>
+  <p>Abra esta página no navegador. As três mostram a <b>mesma tela</b> (topo, título, texto, botões, ficha, código, mapa do metrô e o mascote "Trilho") com paletas e formas diferentes. Todas passam no WCAG AA, e os números de contraste estão no fim de cada uma.</p>
+  <p>O mascote "Trilho" é <b>original</b>: não reproduz o personagem oficial do Claude Code. Veja a observação sobre isso na resposta no chat.</p>
+</div>
+
+<!-- ======================= OPÇÃO A ======================= -->
+<section class="opcao A">
+  <div class="rotulo-opcao">Opção A · Papel vivo (evolução da identidade atual)</div>
+  <div class="pagina">
+    <div class="topo"><span class="marca">Manual de Bordo</span><span class="nav"><span>Sumário</span><span>Busca</span><span>Tema</span></span></div>
+    <div class="corpo">
+      <div>
+        <p class="sobre">Parte IV · Estender</p>
+        <h2 class="titulo">Memória e CLAUDE.md</h2>
+        <p class="texto">Toda sessão do Claude Code começa do zero. O que dá continuidade ao trabalho é a <b>memória</b>: arquivos que ele lê sozinho antes de você digitar a primeira palavra.</p>
+        <p class="sec">80 min · antes: M2, M3 · verificado v2.1.323</p>
+        <div class="botoes"><button class="btn">Concluí o M6</button><button class="btn vazado">Imprimir</button><button class="btn amarelo">Ver a ficha</button></div>
+        <div class="chips"><span class="chip" style="background:var(--cor2);color:var(--cor2t)">Grátis</span><span class="chip" style="background:var(--cor3);color:#fff">Verificado</span><span class="chip" style="background:var(--cor4);color:#fff">Beta</span><span class="chip" style="background:var(--cor1);color:#fff">Plano: Max</span></div>
+      </div>
+      <div class="mascote"><svg viewBox="-4 -8 128 140"><use href="#trilho"/></svg><p>Trilho, o maquinista</p></div>
+    </div>
+    <div class="fichas">
+      <div class="ficha"><p class="cab">Ficha de campo 1</p><h3>Escrever o CLAUDE.md</h3><p>Gere o rascunho com <b>/init</b> e corte o que o Claude descobre sozinho.</p><span class="ok">✔ Prova: pass 11</span></div>
+      <div class="codigo"><span class="d"># na pasta do projeto</span><br><span class="p">$</span> claude -p "/init"<br><span class="v">CLAUDE.md criado (23 linhas)</span></div>
+    </div>
+    <div class="metro">
+      <div class="trilho"><div class="est" style="border-color:var(--cor1)"></div><div class="linha" style="background:var(--cor1)"></div><div class="est" style="border-color:var(--cor2)"></div><div class="linha" style="background:var(--cor2)"></div><div class="est" style="border-color:var(--cor3)"></div><div class="linha" style="background:var(--cor3)"></div><div class="est" style="border-color:var(--cor4)"></div></div>
+      <div class="rotulos"><span>M0</span><span>M3</span><span>M6</span><span>M10</span></div>
+    </div>
+    <div class="nota">Dica: "lembre-se" grava na memória automática, que é só sua. O que o time precisa vai no CLAUDE.md.</div>
+    <div class="rodape-opcao"><b>Contraste (medido):</b> texto 16,9 · secundário 10,7 · fraco 7,1 · branco sobre vermelho 4,8 · tinta sobre amarelo 11,8 (mínimo AA: 4,5). <b>Muda:</b> papel mais claro e limpo, tinta mais escura, corpo mais encorpado, cores de apoio vivas (vermelho, amarelo, verde-água, azul), botões e cartões arredondados, sombra "de papel" mantida.</div>
+  </div>
+</section>
+
+<!-- ======================= OPÇÃO B ======================= -->
+<section class="opcao B">
+  <div class="rotulo-opcao">Opção B · Terminal quente (escuro primeiro)</div>
+  <div class="pagina">
+    <div class="topo"><span class="marca">Manual de Bordo</span><span class="nav"><span>Sumário</span><span>Busca</span><span>Tema</span></span></div>
+    <div class="corpo">
+      <div>
+        <p class="sobre">Parte IV · Estender</p>
+        <h2 class="titulo">Memória e CLAUDE.md</h2>
+        <p class="texto">Toda sessão do Claude Code começa do zero. O que dá continuidade ao trabalho é a <b>memória</b>: arquivos que ele lê sozinho antes de você digitar a primeira palavra.</p>
+        <p class="sec">80 min · antes: M2, M3 · verificado v2.1.323</p>
+        <div class="botoes"><button class="btn">Concluí o M6</button><button class="btn vazado">Imprimir</button><button class="btn amarelo">Ver a ficha</button></div>
+        <div class="chips"><span class="chip" style="background:var(--cor2);color:var(--cor2t)">Grátis</span><span class="chip" style="background:var(--cor3);color:var(--cor2t)">Verificado</span><span class="chip" style="background:var(--cor4);color:#14100c">Beta</span><span class="chip" style="background:var(--cor1);color:#14100c">Plano: Max</span></div>
+      </div>
+      <div class="mascote"><svg viewBox="-4 -8 128 140"><use href="#trilho"/></svg><p>Trilho, o maquinista</p></div>
+    </div>
+    <div class="fichas">
+      <div class="ficha"><p class="cab">Ficha de campo 1</p><h3>Escrever o CLAUDE.md</h3><p>Gere o rascunho com <b>/init</b> e corte o que o Claude descobre sozinho.</p><span class="ok">✔ Prova: pass 11</span></div>
+      <div class="codigo"><span class="d"># na pasta do projeto</span><br><span class="p">$</span> claude -p "/init"<br><span class="v">CLAUDE.md criado (23 linhas)</span></div>
+    </div>
+    <div class="metro">
+      <div class="trilho"><div class="est" style="border-color:var(--cor1)"></div><div class="linha" style="background:var(--cor1)"></div><div class="est" style="border-color:var(--cor2)"></div><div class="linha" style="background:var(--cor2)"></div><div class="est" style="border-color:var(--cor3)"></div><div class="linha" style="background:var(--cor3)"></div><div class="est" style="border-color:var(--cor4)"></div></div>
+      <div class="rotulos"><span>M0</span><span>M3</span><span>M6</span><span>M10</span></div>
+    </div>
+    <div class="nota">Dica: "lembre-se" grava na memória automática, que é só sua. O que o time precisa vai no CLAUDE.md.</div>
+    <div class="rodape-opcao"><b>Contraste (medido):</b> texto 17,4 · secundário 12,1 · fraco 7,8 · laranja sobre fundo 8,5 · menta 11,9 · botão laranja com texto escuro 8,5. <b>Muda:</b> o modo escuro vira o principal (o "Console" de hoje, mais quente e brilhante), laranja e menta de terminal, tudo arredondado, sem sombra de papel.</div>
+  </div>
+</section>
+
+<!-- ======================= OPÇÃO C ======================= -->
+<section class="opcao C">
+  <div class="rotulo-opcao">Opção C · Linhas de metrô (uma cor por Parte)</div>
+  <div class="pagina">
+    <div class="topo"><span class="marca">Manual de Bordo</span><span class="nav"><span>Sumário</span><span>Busca</span><span>Tema</span></span></div>
+    <div class="corpo">
+      <div>
+        <p class="sobre">Parte IV · Linha azul · Estender</p>
+        <h2 class="titulo">Memória e CLAUDE.md</h2>
+        <p class="texto">Toda sessão do Claude Code começa do zero. O que dá continuidade ao trabalho é a <b>memória</b>: arquivos que ele lê sozinho antes de você digitar a primeira palavra.</p>
+        <p class="sec">80 min · antes: M2, M3 · verificado v2.1.323</p>
+        <div class="botoes"><button class="btn" style="background:var(--cor4);color:#fff">Concluí o M6</button><button class="btn vazado">Imprimir</button><button class="btn amarelo">Ver a ficha</button></div>
+        <div class="chips"><span class="chip" style="background:var(--cor1);color:#fff">Parte I</span><span class="chip" style="background:var(--cor2);color:var(--cor2t)">Parte II</span><span class="chip" style="background:var(--cor3);color:#fff">Parte III</span><span class="chip" style="background:var(--cor4);color:#fff">Parte IV</span><span class="chip" style="background:var(--cor5);color:#fff">Parte V</span></div>
+      </div>
+      <div class="mascote"><svg viewBox="-4 -8 128 140"><use href="#trilho"/></svg><p>Trilho, o maquinista</p></div>
+    </div>
+    <div class="fichas">
+      <div class="ficha" style="border-left-width:12px;border-left-color:var(--cor4)"><p class="cab" style="color:var(--cor4)">Ficha de campo 1</p><h3>Escrever o CLAUDE.md</h3><p>Gere o rascunho com <b>/init</b> e corte o que o Claude descobre sozinho.</p><span class="ok">✔ Prova: pass 11</span></div>
+      <div class="codigo"><span class="d"># na pasta do projeto</span><br><span class="p">$</span> claude -p "/init"<br><span class="v">CLAUDE.md criado (23 linhas)</span></div>
+    </div>
+    <div class="metro">
+      <div class="trilho"><div class="est" style="border-color:var(--cor1)"></div><div class="linha" style="background:var(--cor1)"></div><div class="est" style="border-color:var(--cor2)"></div><div class="linha" style="background:var(--cor2)"></div><div class="est" style="border-color:var(--cor3)"></div><div class="linha" style="background:var(--cor3)"></div><div class="est" style="border-color:var(--cor4)"></div><div class="linha" style="background:var(--cor4)"></div><div class="est" style="border-color:var(--cor5)"></div></div>
+      <div class="rotulos"><span>M0</span><span>M3</span><span>M6</span><span>M10</span><span>M20</span></div>
+    </div>
+    <div class="nota">Dica: "lembre-se" grava na memória automática, que é só sua. O que o time precisa vai no CLAUDE.md.</div>
+    <div class="rodape-opcao"><b>Contraste (medido):</b> texto 17,6 · secundário 10,4 · branco sobre vermelho 4,8 · sobre azul 5,6 · sobre verde 5,4 · sobre rosa 5,9 · tinta sobre amarelo 11,5. <b>Muda:</b> fundo quase branco, cada Parte do curso ganha a sua "linha" de cor (botões, faixa da ficha, chips, trilho), a mais colorida das três.</div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -74,7 +74,7 @@ const passos = PARTES.length;
       <g class="metro__trilhos" fill="none">
         {
           trechos.map((t) => (
-            <g class={`metro__trecho metro__trecho--${t.parte % 4}`} data-de={t.parte + 1}>
+            <g class={`metro__trecho metro__trecho--${t.parte}`} data-de={t.parte + 1}>
               <path class="metro__fundo" d={t.d} />
               <path class="metro__fio" d={t.d} pathLength="1" />
             </g>

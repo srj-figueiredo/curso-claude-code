@@ -24,7 +24,7 @@ const nomesTrilhas = dados.trilhas.map((t) => TRILHAS[t].titulo).join(' · ');
   corrente={`${parte.rotulo} · ${rotulo(dados.id)} · v${dados.verificado_em_versao}`}
   estacaoId={dados.id}
 >
-  <article class="pagina" data-exercicios={dados.exercicios.map((e) => e.id).join(',')}>
+  <article class="pagina" data-parte={dados.parte} data-exercicios={dados.exercicios.map((e) => e.id).join(',')}>
     <header class="placa">
       <div class="placa__reticula reticula" aria-hidden="true"></div>
       <p class="placa__numero" aria-hidden="true">{numeral}</p>
