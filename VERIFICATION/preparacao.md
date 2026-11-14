@@ -30,3 +30,8 @@ Páginas: `t0a` (preparar o computador), `t0b` (plano, limite e custo), `t0c` (o
 | Instalação (copiar `.claude`) | Comandos do PowerShell testados na T2C; cópia do tutor executada na pasta de teste | Passou |
 
 **Limites:** uma execução por entrega e um só modelo; o tutor pode marcar diferente em outra execução. Um comando composto do Bash foi negado pelas permissões do tutor (esperado).
+
+## Double check (14/11/2026)
+
+- Comandos do PowerShell 5.1 das fichas (criar a pasta `clientes`, extrair `t0c-tutor`, `t1c-gabarito`, `t2-dominio-inicio` e `v3-inicio`, copiar `.claude`, `Rename-Item`, `Compare-Object`) executados numa pasta temporária: passaram. O `t1c-gabarito` tem 399 linhas e o sábado aparece como 8h às 14h, como a ficha descreve.
+- Corrigido: afirmação sem prova em `t0b` (limite "bateu uma vez"), referência errada à instalação, "você mesmo/sozinho" (linguagem neutra), tutor precisa ser copiado para a pasta que será revisada (`v2-2`, `v3-2`), referência a uma estação inexistente em `v3`.
