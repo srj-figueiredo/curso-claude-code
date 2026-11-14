@@ -1,0 +1,309 @@
+---
+id: t0c
+titulo: "O tutor: revise a sua entrega com o Claude"
+parte: p12
+ordem: 3
+minutos: 55
+pre_requisitos: [t0b]
+objetivos:
+  - Explicar o que é uma skill e por que o tutor é uma.
+  - Instalar o tutor num projeto copiando uma pasta.
+  - Pedir uma revisão com /revisar-entrega e ler a tabela de resultado.
+  - Usar as pistas do tutor para corrigir a entrega, sem pedir a solução pronta.
+tldr:
+  - O tutor é uma skill, uma pasta com instruções que o Claude lê quando você chama /revisar-entrega.
+  - Ele compara a sua entrega com uma rubrica de 12 itens e aponta o que falta, com pistas e sem solução pronta.
+  - Ele só lê. Não altera arquivo, não abre segredo e diz o que não conseguiu verificar.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [venda, rapida, completa]
+exercicios:
+  - { id: t0c-e1, titulo: Instalar o tutor e pedir a primeira revisão, minutos: 25, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Skill', simples: 'Uma pasta com um arquivo SKILL.md que ensina o Claude a fazer uma tarefa do seu jeito. Você a chama com uma barra, como /revisar-entrega.' },
+    { termo: 'Rubrica', simples: 'A lista de critérios que define o que é uma boa entrega. O tutor compara o seu trabalho com ela.' },
+    { termo: 'Argumento', simples: 'A palavra que você escreve depois do comando. Em /revisar-entrega t1, o argumento é t1 e escolhe a rubrica.' },
+    { termo: 'Permissão de ferramentas', simples: 'A lista do que a skill pode fazer. O tutor só pode ler arquivos e rodar duas ou três conferências. Não pode editar.' },
+    { termo: 'Evidência', simples: 'O arquivo e o trecho que provam que um item foi cumprido. Sem evidência, o tutor diz que não conseguiu verificar.' },
+  ]}
+  depois={[
+    { termo: 'Criar a sua própria skill', quando: 'o curso mostra como na estação de memória e automação, depois que o tutor já estiver familiar.' },
+    { termo: 'Subagentes', quando: 'uma skill pode rodar num ajudante separado. O tutor roda na própria conversa.' },
+  ]}
+/>
+
+Quem faz um curso sozinho tem um problema: **ninguém diz se o trabalho está bom**. Você acha que terminou, mas esqueceu a separação de arquivos, o relatório, o aceite do cliente. Esta estação instala um **tutor**: uma skill que lê a sua entrega, compara com uma lista de critérios e diz, item por item, o que está pronto e o que falta.
+
+O tutor **não escreve a solução**. Ele dá pista. A ideia é que você aprenda a conferir o próprio trabalho, que é exatamente o que um profissional faz antes de mandar algo ao cliente.
+
+### O que é uma skill
+
+Uma **skill** é uma pasta com um arquivo `SKILL.md`. No topo dele há um cabeçalho (o frontmatter) com o nome, a descrição e as permissões. Embaixo, as instruções em texto comum. Quando você digita `/revisar-entrega`, o Claude carrega essas instruções e trabalha de acordo.
+
+```text
+.claude/
+└── skills/
+    └── revisar-entrega/
+        ├── SKILL.md          instruções do tutor
+        └── rubricas/
+            ├── t1.md         site
+            ├── t2.md         sistema
+            ├── t3.md         atendente
+            └── v.md          venda (preço, proposta, contrato, portfólio)
+```
+
+Três linhas do cabeçalho importam:
+
+| Campo | Para quê | No tutor |
+|---|---|---|
+| `name` | O nome do comando | `revisar-entrega` |
+| `description` | Quando o Claude pode usá-la sozinho | "Revisa a entrega de um projeto do curso..." |
+| `allowed-tools` | O que ela pode fazer sem perguntar | Ler, buscar, `node conferir.mjs`, `git log`, `git status` |
+
+Repare no que **não** está na lista: editar e escrever arquivos. O tutor foi desenhado para **não conseguir** mexer no seu trabalho.
+
+### Como o tutor decide
+
+Ele segue um roteiro fixo, escrito no `SKILL.md`:
+
+1. Lê a rubrica que você escolheu pelo argumento (`t1`, `t2`, `t3` ou `v`).
+2. Olha os arquivos da pasta, só o que a rubrica pede.
+3. Roda `node conferir.mjs` se existir, e `git log` para ver o histórico.
+4. Para cada um dos 12 itens, marca **Atende**, **Atende em parte** ou **Falta**, sempre com a evidência.
+5. Fecha com a nota por itens, o que está muito bom, três próximos passos (com pista) e **o que ele não conseguiu verificar**.
+
+Duas regras duras: nunca abrir `.env`, senhas ou a pasta `dados/`, e nunca alterar arquivo.
+
+### O que ele achou nos nossos testes
+
+Rodamos o tutor em duas entregas reais.
+
+| Entrega | Rubrica | Passos | Tempo | Resultado |
+|---|---|---|---|---|
+| Site da Doce Esquina (`t1c-gabarito`) | `t1` | 8 | 43 s | **6 de 12** |
+| Pasta de proposta da Studio Lia | `v` | 7 | 24 s | **8 de 12** |
+
+No site, o tutor apontou o que faltava (histórico do git, separação da pasta `docs/`, relatório, manual, aceite) e achou **um problema real que passou despercebido**: o CSS usava cores fora das que o `CLAUDE.md` do projeto permitia (`#FFFDF8`, `#E9D7BE` e outras três), contra a regra "não use outras cores". Ele não corrigiu. Disse onde olhar.
+
+Na pasta de proposta, faltavam o portfólio e a abordagem, e dois itens ficaram "em parte" (data dos custos e forma de pagamento).
+
+<Nota rotulo="O que isto prova">
+Foi uma execução de cada, com o Claude Haiku 5.5. O tutor **não é um juiz perfeito**: outro modelo, ou outra execução, pode marcar um item de forma diferente. Use-o como um colega atento que dá uma segunda olhada, e não como nota oficial.
+</Nota>
+
+### Como vender isso
+
+- **Revisar antes de entregar é parte do serviço.** Passe a rubrica na sua entrega antes de mandar ao cliente. Quem faz isso entrega com menos retrabalho.
+- **Mostre ao cliente como você confere.** "Todo projeto passa por uma lista de 12 critérios antes da entrega" é uma frase honesta e que dá confiança.
+- **Adapte a rubrica ao seu serviço.** Quando tiver o seu próprio tipo de projeto, escreva a sua rubrica. É a mesma ideia.
+
+<Camada tipo="capo" titulo="Por baixo do capô: como a skill chega ao Claude">
+
+### Onde as skills moram
+
+O Claude procura skills em `.claude/skills/` dentro do projeto (valem só para ele) e na pasta pessoal `~/.claude/skills/` (valem para todos os seus projetos). Aqui usamos a do projeto: assim o tutor vai junto com a pasta e você não mexe na configuração global.
+
+### Variáveis dentro do SKILL.md
+
+O texto do `SKILL.md` aceita alguns espaços reservados que o Claude troca antes de ler:
+
+| Escrito | Vira |
+|---|---|
+| `$ARGUMENTS` | O que você digitou depois do comando (`t1`) |
+| `${CLAUDE_SKILL_DIR}` | O caminho da pasta da skill |
+| `${CLAUDE_PROJECT_DIR}` | O caminho da raiz do projeto |
+
+É assim que o tutor acha a rubrica certa: `${CLAUDE_SKILL_DIR}/rubricas/` mais o argumento.
+
+### Por que `allowed-tools` é uma lista curta
+
+Cada ferramenta liberada é um poder. Quem escreve a skill libera **só o necessário**: `Bash(git log *)` permite `git log` com qualquer complemento, mas não `git push`. É o mesmo princípio de permissões da estação de segurança, aplicado a uma skill.
+
+### Quando o Claude chama a skill sozinho
+
+A `description` serve de cartaz: se você pedir "revise a minha entrega", o Claude pode reconhecer e carregar a skill. Chamar com a barra é mais previsível. Prefira a barra.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Tratar a nota como verdade
+
+O tutor erra. Ele pode marcar "Falta" para algo que existe com outro nome. Confira a evidência antes de refazer.
+
+### Pedir a solução pronta
+
+Se você pedir "então faça por mim", o tutor foi instruído a não escrever a entrega. Para refazer, abra uma conversa normal, usando a pista como briefing.
+
+### Copiar a pasta no lugar errado
+
+A pasta `.claude` precisa ficar na **raiz do projeto**, ao lado do `index.html` ou do `package.json`. Dentro de outra pasta, o Claude não a enxerga.
+
+### Esquecer o argumento
+
+`/revisar-entrega` sem `t1`, `t2`, `t3` ou `v` faz o tutor perguntar qual das quatro. Ele não adivinha.
+
+### Rodar o tutor com segredo na pasta
+
+O tutor recusa abrir `.env` e `dados/`, mas o melhor é não deixar chave nenhuma na pasta que você revisa. Conferência não é motivo para expor segredo.
+
+</Camada>
+
+## Fichas de campo
+
+<Ficha
+  id="t0c-e1"
+  n={1}
+  titulo="Instalar o tutor e pedir a primeira revisão"
+  objetivo="Copiar o tutor para um projeto, pedir a revisão do site de exemplo e ler o resultado."
+  minutos={25}
+  pre="Claude Code instalado, com login feito, e o site da Doce Esquina (t1c-gabarito.zip)"
+  versao="2.1.325"
+>
+
+- [O tutor: `t0c-tutor.zip`](../lab/t0c-tutor.zip)
+- [Site da Doce Esquina: `t1c-gabarito.zip`](../lab/t1c-gabarito.zip)
+
+1. Extraia os dois ZIPs na pasta `clientes` e entre na pasta do site:
+
+   <SO unix="mkdir -p ~/Documents/clientes && unzip -o ~/Downloads/t0c-tutor.zip -d ~/Documents/clientes && unzip -o ~/Downloads/t1c-gabarito.zip -d ~/Documents/clientes && cd ~/Documents/clientes/doce-esquina" win={`Expand-Archive "$HOME\\Downloads\\t0c-tutor.zip" -DestinationPath "$HOME\\Documents\\clientes" -Force; Expand-Archive "$HOME\\Downloads\\t1c-gabarito.zip" -DestinationPath "$HOME\\Documents\\clientes" -Force; cd "$HOME\\Documents\\clientes\\doce-esquina"`} />
+
+2. Copie a pasta `.claude` do tutor para dentro do projeto do site:
+
+   <SO unix="cp -r ../tutor/.claude ." win={`Copy-Item -Recurse -Force "..\\tutor\\.claude" ".\\.claude"`} />
+
+3. Confira que o tutor está no lugar certo:
+
+   <SO unix="ls .claude/skills/revisar-entrega" win={`Get-ChildItem ".claude\\skills\\revisar-entrega"`} />
+
+   Devem aparecer `SKILL.md` e a pasta `rubricas`.
+
+4. Abra o Claude nessa pasta (`claude`) e peça a revisão do site:
+
+   ```text
+   /revisar-entrega t1
+   ```
+
+5. Leia a tabela. Escolha **um** item marcado "Falta" ou "Em parte" e escreva, com as suas palavras, o que você faria para resolvê-lo.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "/revisar-entrega t1"`, dentro da pasta do site. No Git Bash do Windows, use `MSYS_NO_PATHCONV=1 claude -p "/revisar-entrega t1"` para a barra não virar caminho.
+</Nota>
+
+<Prova>
+
+Aparece uma tabela com **12 linhas** (Item, Situação, Evidência), a nota por itens e três próximos passos com pistas. Na nossa execução (Haiku 5.5, 8 passos, 43 segundos) o resultado foi **6 de 12**, e o tutor:
+
+- apontou que faltavam histórico do git, separação da pasta `docs/`, relatório, manual e aceite;
+- achou cores no CSS fora das permitidas pelo `CLAUDE.md`;
+- terminou com a seção "o que eu não consegui verificar";
+- **não alterou nenhum arquivo** (confira com `git status` ou comparando as datas).
+
+</Prova>
+
+<Gabarito>
+
+O seu número pode diferir de 6. O que importa:
+
+- cada linha tem **evidência** (arquivo e trecho) ou o aviso "não consegui verificar";
+- os próximos passos são **pistas** ("olhe a seção de horários do `index.html`"), e não o código pronto;
+- nenhum arquivo mudou.
+
+Se o tutor entregar código pronto, ou se mexer num arquivo, a skill foi alterada: extraia o ZIP de novo.
+
+</Gabarito>
+
+<DeuErro>
+
+- **"Unknown skill" ou o comando não aparece.** A pasta `.claude` não está na raiz do projeto. Rode o `ls` ou o `Get-ChildItem` do passo 3.
+- **O Claude pede permissão para rodar um comando.** Normal para comandos fora da lista do tutor. Negue se não entender o que faz.
+- **O tutor pergunta qual rubrica.** Faltou o argumento. Use `/revisar-entrega t1`.
+- **No Git Bash, a barra vira um caminho.** Use `MSYS_NO_PATHCONV=1` antes do comando.
+- **Muitas linhas "não consegui verificar".** O projeto não tem os arquivos que a rubrica espera. É informação, e não erro.
+
+</DeuErro>
+
+<Desafio>
+
+Corrija **um** dos itens que o tutor apontou, usando só a pista dele como pedido ao Claude (numa conversa normal). Rode o tutor de novo. O número subiu? O que ele disse sobre o item que você corrigiu?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que dominou e guarde a revisão">
+
+### Teste de domínio: o seu projeto, revisado
+
+Pegue **um projeto seu** (o site da Doce Esquina serve) e passe pelo tutor duas vezes: antes e depois de corrigir.
+
+**Sua missão, sem passo a passo:**
+
+1. Rode a revisão e **guarde o resultado** (a tabela e a nota).
+2. Escolha **os dois itens mais importantes** e corrija. Diga por que escolheu esses.
+3. Rode de novo e compare as duas notas.
+4. Aponte **um item em que você discorda** do tutor, com a evidência que prova que ele errou (ou que você estava errado).
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar o que é uma skill e onde ela fica no projeto;
+- dizer por que o tutor só tem permissão de leitura;
+- pedir uma revisão com o argumento certo;
+- diferenciar "pista" de "solução pronta" e usar a pista;
+- explicar por que a nota do tutor **não** é a palavra final.
+
+### Entregue o registro das revisões
+
+Crie um arquivo `revisoes.md` na pasta do projeto:
+
+```markdown
+# Revisões da entrega
+
+## Revisão 1 (data)
+Nota: __ de 12
+Itens que faltavam: ...
+
+## O que corrigi
+1. Item __: o que fiz e por quê.
+2. Item __: o que fiz e por quê.
+
+## Revisão 2 (data)
+Nota: __ de 12
+
+## Onde discordei do tutor
+Item __: o tutor disse "...", mas a evidência é "...".
+```
+
+Duas regras:
+
+1. **Guarde as duas notas com a data.** É a prova de que o trabalho melhorou.
+2. **Não apague o item em que você discordou.** Dúvida registrada vale mais que concordância automática.
+
+Daqui em diante, as últimas estações de cada temporada e as de venda terminam com "passe pelo tutor". Agora você sabe fazer.
+
+</Entrega>
+
+<Saida>
+
+- Sei o que é uma skill e onde ela mora no projeto.
+- Instalei o tutor copiando uma pasta e conferi que ele está no lugar certo.
+- Pedi `/revisar-entrega` e li a tabela com evidência.
+- Usei uma pista para corrigir um item e rodei a revisão de novo.
+- Guardei o registro com as duas notas e uma discordância justificada.
+
+</Saida>
+
+**Próxima estação:** [Seu primeiro cliente: o site no navegador](../t1a/). Com o computador pronto, o limite entendido e o tutor instalado, começa o trabalho de verdade: um briefing, um pedido e uma primeira página no ar.
+
+<Fontes>
+
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills.md): estrutura do `SKILL.md`, `allowed-tools`, `$ARGUMENTS`, `${CLAUDE_SKILL_DIR}`.
+- Execuções locais registradas em `VERIFICATION/preparacao.md`. Duas execuções do tutor (site e proposta), com Claude Haiku 5.5.
+
+</Fontes>

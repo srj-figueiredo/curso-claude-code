@@ -26,7 +26,8 @@ const pagina = z.object({
   verificado_em_versao: versao,
   verificado_em_data: data,
   status,
-  trilhas: z.array(z.enum(['rapida', 'completa', 'empresa'])),
+  trilhas: z.array(z.enum(['venda', 'rapida', 'completa', 'empresa'])),
+  nivel: z.enum(['essencial', 'aprofundamento']).optional(),
   exercicios: z.array(exercicio),
 });
 

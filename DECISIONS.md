@@ -160,3 +160,15 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Navegação:** o mapa mostra só o ponto da parte 1 (`MetroMapa` ignora ids terminados em `-N`); o menu lateral lista todas; as trilhas trazem as partes (`comPartes`).
 - **Tempo:** soma dos 30 cabeçalhos = 1.772 minutos (29 h 32 min), com nenhuma parte acima de 80.
 - **Feito com um script único** (não mantido); a regra 43 e a seção 10 do guia explicam como escrever já em partes.
+
+## D023 · Preparação, Vender, caminho essencial, glossário e tutor (14/11/2026, pedido do autor)
+
+- **Pedido:** itens 2 a 5 da lista de prioridades feita depois de pensar no público (não programadores que vendem serviços a pequenos negócios). Itens 1 (hospedagem e WhatsApp real) e 6 (validação de demanda local) ficaram de fora por escolha do autor.
+- **Parte Vender (p11, antes da Temporada 2):** `v1`/`v1-2` preço (estimativa em modo plano, calculadora, tabela de pacotes, fases), `v2`/`v2-2` proposta e contrato simples (LGPD, controlador e operador), `v3`/`v3-2` portfólio e abordagem local. O curso **não diz quanto cobrar**: a calculadora usa os números do aluno. Nenhum valor de MEI, imposto ou plano é citado; as páginas indicam onde conferir e avisam que não são aconselhamento jurídico.
+- **Parte Preparação (p12, antes da Temporada 1):** `t0a` computador e diagnóstico (instalação `nao-testado`), `t0b` plano, limite de uso e custo (`/usage`, pedido vago x específico), `t0c` tutor.
+- **Tutor:** skill `revisar-entrega` com `allowed-tools` só de leitura e quatro rubricas de 12 itens (`t1`, `t2`, `t3`, `v`), em `lab/estados/t0c-tutor`. Instala-se copiando `.claude` para o projeto. Não escreve a solução, não abre `.env` nem `dados/`. Referido nas Entregas finais de t1d-3, t2d-3 e t3d-4.
+- **Caminho essencial x aprofundamento:** campo opcional `nivel` no conteúdo; `t2c` e `t2c-2` (hooks e skills) marcadas `aprofundamento`, com aviso "pode pular na primeira passada". Trilha nova **Primeira venda** (`venda`): preparação, Temporada 1 e Vender.
+- **Glossário:** página `/glossario/` gerada dos `<Conceitos>` (`aprender`), sem manutenção manual; link no rodapé.
+- **Ordem:** Preparação, Temporada 1, Vender, Temporada 2 (pré-requisito de `t2a` passou a ser `v3-2`; `t1a` exige `t0c`).
+- **Achado:** a estimativa de horas apontou uma contradição no pedido da Lia (sistema offline no computador x formulário no celular). Nota adicionada em `t2a-2` e tratada como pendência na proposta.
+- **Cores das linhas:** `--linha-11` `#00657f` (Vender), `--linha-12` `#4a4a4a` (Preparação).

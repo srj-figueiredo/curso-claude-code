@@ -100,7 +100,7 @@ const apendicesProntos = await apendicesEscritos();
           “Claude Code” são citados apenas para identificar o produto de que o curso trata.
         </p>
         <p class="nao-imprimir">
-          <a href={u('/sumario/')}>Sumário</a> · <a href={u('/progresso/')}>Seu progresso</a>{apendicesProntos.has('f') || apendicesProntos.has('h') ? ' · ' : ''}
+          <a href={u('/sumario/')}>Sumário</a> · <a href={u('/progresso/')}>Seu progresso</a> · <a href={u('/glossario/')}>Glossário</a>{apendicesProntos.has('f') || apendicesProntos.has('h') ? ' · ' : ''}
           {apendicesProntos.has('f') && <a href={u('/f/')}>O que mudou</a>}
           {apendicesProntos.has('f') && apendicesProntos.has('h') && ' · '}
           {apendicesProntos.has('h') && <a href={u('/h/')}>Fontes</a>}

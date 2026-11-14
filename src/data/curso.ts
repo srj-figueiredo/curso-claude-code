@@ -5,11 +5,13 @@ export const DATA_VERIFICACAO = '12/11/2026';
 
 export type Parte = { id: string; rotulo: string; titulo: string };
 export type Estacao = { id: string; parte: string; titulo: string; curto: string };
-export type TrilhaId = 'rapida' | 'completa' | 'empresa';
+export type TrilhaId = 'venda' | 'rapida' | 'completa' | 'empresa';
 
 export const PARTES: Parte[] = [
   { id: 'p0', rotulo: 'Guias', titulo: 'Antes de começar' },
+  { id: 'p12', rotulo: 'Preparação', titulo: 'Antes do primeiro cliente' },
   { id: 'p8', rotulo: 'Temporada 1', titulo: 'Primeiro cliente' },
+  { id: 'p11', rotulo: 'Vender', titulo: 'Do portfólio ao primeiro cliente' },
   { id: 'p9', rotulo: 'Temporada 2', titulo: 'Sistema do cliente' },
   { id: 'p10', rotulo: 'Temporada 3', titulo: 'Atendimento com IA' },
   { id: 'p1', rotulo: 'Guias', titulo: 'Fundamentos' },
@@ -25,6 +27,9 @@ const e = (id: string, parte: string, titulo: string, curto = titulo): Estacao =
 
 export const ESTACOES: Estacao[] = [
   e('m0', 'p0', 'Mapa do Claude Code e regras do jogo', 'Mapa e regras'),
+  e('t0a', 'p12', 'Preparar o computador: o que instalar e como conferir', 'Computador'),
+  e('t0b', 'p12', 'O plano, o limite de uso e o custo do dia a dia', 'Limite'),
+  e('t0c', 'p12', 'O tutor: revise a sua entrega com o Claude', 'Tutor'),
   e('t1a', 'p8', 'Seu primeiro cliente: o site no navegador', 'Primeiro site'),
   e('t1a-2', 'p8', 'Seu primeiro cliente, parte 2: mexer na receita e provar', 'Receita'),
   e('t1b', 'p8', 'Conduzir o trabalho: planejar, pedir e conferir', 'Conduzir'),
@@ -34,6 +39,12 @@ export const ESTACOES: Estacao[] = [
   e('t1d', 'p8', 'Guardar e publicar: histórico e site no ar', 'No ar'),
   e('t1d-2', 'p8', 'Guardar e publicar, parte 2: publicar e fazer o projeto final', 'Projeto'),
   e('t1d-3', 'p8', 'Guardar e publicar, parte 3: o pacote e a reunião de entrega', 'Entrega'),
+  e('v1', 'p11', 'Quanto cobrar: do custo ao preço', 'Preço'),
+  e('v1-2', 'p11', 'Quanto cobrar, parte 2: provar e montar a sua tabela', 'Tabela'),
+  e('v2', 'p11', 'A proposta e o contrato simples', 'Proposta'),
+  e('v2-2', 'p11', 'A proposta e o contrato, parte 2: provar e entregar', 'Contrato'),
+  e('v3', 'p11', 'Achar o primeiro cliente e montar o portfólio', 'Portfólio'),
+  e('v3-2', 'p11', 'Achar o primeiro cliente, parte 2: a abordagem e a primeira conversa', 'Abordagem'),
   e('t2a', 'p9', 'O sistema da oficina: dados de verdade', 'Dados'),
   e('t2a-2', 'p9', 'O sistema da oficina, parte 2: provar e mostrar ao cliente', 'Mostrar'),
   e('t2b', 'p9', 'Quem entra e o que o Claude pode ver', 'Acesso'),
@@ -114,10 +125,15 @@ const faixa = (prefixo: string, de: number, ate: number) =>
 const comPartes = (ids: string[]) => ids.flatMap((id) => [id, ...ESTACOES.filter((s) => s.id.startsWith(`${id}-`)).map((s) => s.id)]);
 
 export const TRILHAS: Record<TrilhaId, { titulo: string; resumo: string; ids: string[] }> = {
+  venda: {
+    titulo: 'Primeira venda',
+    resumo: 'Do computador pronto ao primeiro cliente fechado.',
+    ids: comPartes(['m0', 't0a', 't0b', 't0c', 't1a', 't1b', 't1c', 't1d', 'v1', 'v2', 'v3']),
+  },
   rapida: {
     titulo: 'Rápida para Cases',
     resumo: 'O mínimo para entregar um projeto de cliente.',
-    ids: comPartes([...faixa('m', 0, 3), 't1a', 't1b', 't1c', 't1d', 't2a', 't2b', 't2c', 't2d', 't3a', 't3b', 't3c', 't3d', 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)]),
+    ids: comPartes([...faixa('m', 0, 3), 't0a', 't0b', 't0c', 't1a', 't1b', 't1c', 't1d', 'v1', 'v2', 'v3', 't2a', 't2b', 't2c', 't2d', 't3a', 't3b', 't3c', 't3d', 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)]),
   },
   completa: {
     titulo: 'Completa',

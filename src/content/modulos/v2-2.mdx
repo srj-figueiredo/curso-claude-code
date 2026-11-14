@@ -1,0 +1,146 @@
+---
+id: v2-2
+titulo: "A proposta e o contrato simples, parte 2: o contrato e a prova de domínio"
+parte: p11
+ordem: 2.1
+minutos: 55
+pre_requisitos: [v2]
+objetivos:
+  - Escrever um contrato simples com partes, objeto, preço, prazo, propriedade, dados pessoais e encerramento.
+  - Explicar com exemplos quem é controlador e quem é operador de dados.
+  - Passar a venda pelo tutor e corrigir o que ele apontar.
+  - Provar o domínio montando proposta e contrato para um cliente novo.
+tldr:
+  - Contrato simples é uma folha que diz quem faz o quê, por quanto, até quando, de quem é o resultado e como se encerra.
+  - Quando você guarda dados de pessoas para o cliente, a lei de proteção de dados entra. O contrato diz quem é responsável por quê.
+  - O modelo do curso é de treino. Antes de um cliente real, leve para um profissional revisar.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [venda, rapida, completa]
+exercicios: []
+---
+
+## Nesta parte
+
+Esta é a segunda parte da estação "A proposta e o contrato simples". Na primeira você escreveu a proposta. Agora escreve o contrato, passa o tutor na venda e prova que domina.
+
+<Conceitos
+  aprender={[
+    { termo: 'Contrato simples', simples: 'Uma folha curta que registra o acordo: quem, o quê, quanto, quando, de quem é o resultado e como se encerra.' },
+    { termo: 'Propriedade do trabalho', simples: 'De quem é o site ou sistema depois de pago: o cliente costuma receber o direito de uso, e você pode manter o direito de mostrar no portfólio.' },
+    { termo: 'Dados pessoais', simples: 'Qualquer informação que identifica uma pessoa: nome, telefone, e-mail. A lei brasileira de proteção de dados (LGPD) regula como guardá-los.' },
+    { termo: 'Controlador', simples: 'Quem decide para que os dados servem. No sistema da Lia, é a Lia.' },
+    { termo: 'Operador', simples: 'Quem trata os dados em nome do controlador, seguindo as instruções dele. No projeto, é você.' },
+    { termo: 'Aviso de revisão', simples: 'A frase que diz que o modelo não é aconselhamento jurídico e deve ser revisado por profissional.' },
+  ]}
+/>
+
+### O contrato simples
+
+O contrato **não** substitui a proposta: a proposta descreve o **trabalho**, o contrato registra o **acordo**. Para um serviço pequeno, uma ou duas páginas bastam. As cláusulas que um contrato simples costuma ter:
+
+| Cláusula | O que registra |
+|---|---|
+| **Partes** | Quem contrata e quem presta o serviço, com identificação |
+| **Objeto** | O que será feito. Aponta para a proposta aprovada |
+| **Preço e pagamento** | Valor, forma e datas, igual à proposta |
+| **Prazo** | Datas das entregas e o que acontece se o cliente atrasar o material |
+| **Alterações** | Mudanças de escopo viram orçamento novo |
+| **Propriedade** | De quem é o resultado depois do pagamento, e o que você pode mostrar no portfólio |
+| **Dados pessoais** | Quem é controlador e quem é operador, e como os dados são protegidos |
+| **Suporte** | O que a manutenção inclui, e o tempo de resposta |
+| **Uso de IA** | Que a IA ajuda no trabalho e que há revisão humana |
+| **Encerramento** | Como qualquer lado cancela e o que se paga até ali |
+
+Na nossa execução (Claude Haiku 5.5), o contrato saiu com cerca de **1.144 palavras** e cobria essas cláusulas, mais um bloco sobre proteção de dados.
+
+### Dados pessoais: quem é quem
+
+Quando o sistema da Lia guarda nome e telefone das alunas, existem **dois papéis**:
+
+| Papel | Quem | O que faz |
+|---|---|---|
+| **Controlador** | A Lia (o cliente) | Decide que dados guardar e para quê |
+| **Operador** | Você | Constrói e mantém o sistema seguindo o que a Lia decide |
+
+Isso muda o que você pode fazer: **não use** os dados das alunas para outra coisa, não guarde cópia fora do sistema e apague quando a Lia pedir. O contrato escreve isso, e o sistema precisa **conseguir** fazer (por isso a Lia precisa poder apagar os dados de uma aluna).
+
+<Nota rotulo="Isto não é aconselhamento jurídico">
+O contrato do curso é um **modelo de treino**, escrito com ajuda do Claude e **não revisado por advogado**. A lei de proteção de dados tem detalhes (base legal, prazo de guarda, direitos da pessoa) que um texto simples não cobre. Antes de usar com cliente real, leve para um profissional.
+</Nota>
+
+### Passe o tutor na venda
+
+Com proposta e contrato prontos, rode a revisão da rubrica **v** (venda). Ela tem 12 itens: conta do preço, faixas, proposta (escopo, fora do escopo, prazo, pagamento, aceite), contrato, aviso de revisão, transparência sobre IA, portfólio e abordagem.
+
+Na nossa execução, o tutor deu **8 de 12** na pasta da proposta (7 passos, 24 segundos). Faltavam o portfólio e a abordagem (que vêm na estação seguinte) e dois itens ficaram **em parte**: a data da consulta dos custos e a forma de pagamento. É o resultado esperado nesse ponto do curso: o tutor diz o que falta, e você corrige.
+
+<Entrega titulo="Prove que dominou e entregue a proposta e o contrato">
+
+### Teste de domínio: um cliente novo
+
+Baixe o material de um cliente que **ainda não existe** no seu portfólio e faça tudo sozinho.
+
+- [Cliente: `t2-dominio-inicio.zip`](../lab/t2-dominio-inicio.zip) (se você já usou este, invente um segundo cliente com um negócio diferente)
+
+**Sua missão, sem passo a passo:**
+
+1. Estime as horas (modo plano, três cenários) e faça a conta com os **seus** números.
+2. Escreva a `proposta.md` com as oito seções.
+3. Escreva o `contrato.md` com as dez cláusulas e o aviso de revisão.
+4. Passe o tutor (`/revisar-entrega v`) e corrija os itens de preço, proposta e contrato.
+5. Escreva **uma frase** dizendo qual é a pendência que mais te preocupa antes de enviar ao cliente.
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- listar as oito seções da proposta e dizer por que o fora do escopo importa;
+- listar as cláusulas de um contrato simples;
+- explicar quem é controlador e quem é operador no projeto;
+- dizer o que **não** prometer numa proposta;
+- dizer por que o modelo do curso não substitui um profissional.
+
+### Compare com o exemplo
+
+Depois de terminar a sua, compare com o exemplo (que usa a Studio Lia):
+
+<Arquivo estado="v2-gabarito" nome="proposta.md" dica="proposta do exemplo" />
+
+<Arquivo estado="v2-gabarito" nome="contrato.md" dica="contrato do exemplo" />
+
+Procure: o que o exemplo tem que a sua não tem? E o contrário? **Não copie**: o exemplo é para comparar depois.
+
+### Entregue o pacote da venda
+
+Uma pasta com:
+
+- `calculo-do-preco.md` e `tabela-de-precos.md`;
+- `proposta.md` e `contrato.md`;
+- o resultado do tutor (copiado para `revisoes.md`), com a nota antes e depois.
+
+Duas regras:
+
+1. **Todo número de treino leva a marca EXEMPLO.** Se um dia o arquivo for parar nas mãos de um cliente real por engano, a marca evita um prejuízo.
+2. **Nunca coloque dado real de pessoa** (CPF, telefone, endereço) em arquivo de treino.
+
+</Entrega>
+
+<Saida>
+
+- Escrevi um contrato simples com as dez cláusulas e o aviso de revisão.
+- Sei quem é controlador e quem é operador de dados no meu projeto.
+- Passei o tutor na venda e corrigi o que ele apontou.
+- Provei o domínio com um cliente novo, sem passo a passo.
+- Tenho o pacote da venda, com a marca EXEMPLO onde cabe.
+
+</Saida>
+
+**Próxima estação:** [Achar o primeiro cliente e montar o portfólio](../v3/). Falta o que todo prestador novo não tem: casos para mostrar e um jeito honesto de começar a conversa.
+
+<Fontes>
+
+- [Extend Claude with skills](https://code.claude.com/docs/en/skills.md): a skill do tutor, usada na rubrica de venda.
+- Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018): consulte o texto atual e um profissional. O curso não a interpreta.
+- Execuções locais registradas em `VERIFICATION/vender.md`: proposta, contrato e tutor (Claude Haiku 5.5).
+
+</Fontes>

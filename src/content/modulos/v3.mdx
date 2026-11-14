@@ -1,0 +1,225 @@
+---
+id: v3
+titulo: "Achar o primeiro cliente e montar o portfólio"
+parte: p11
+ordem: 3
+minutos: 60
+pre_requisitos: [v2-2]
+objetivos:
+  - Explicar por que o portfólio de quem está começando usa casos de treino, e como identificá-los com honestidade.
+  - Montar uma página de portfólio com três casos, cada um com problema, solução e resultado.
+  - Conferir no celular e com um teste de acessibilidade antes de mostrar.
+  - Dizer quais números você não pode inventar.
+tldr:
+  - Sem clientes ainda, o portfólio são os projetos do curso. O que importa é dizer com clareza que são casos de treino.
+  - Cada caso mostra o problema, o que foi feito e o que foi verificado. Número inventado derruba a confiança.
+  - O portfólio é uma página simples que abre no celular. O Claude monta, e você confere cada afirmação.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [venda, rapida, completa]
+exercicios:
+  - { id: v3-e1, titulo: Montar a página de portfólio, minutos: 30, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Portfólio', simples: 'Uma página que mostra trabalhos seus. Quem não tem clientes ainda mostra casos de treino, identificados como tal.' },
+    { termo: 'Caso de treino', simples: 'Um projeto feito para praticar, com um negócio fictício ou autorizado. Não finja que foi um cliente pagante.' },
+    { termo: 'Problema, solução, resultado', simples: 'A estrutura de cada caso: qual era a dor, o que você fez e o que foi verificado depois.' },
+    { termo: 'Prova verificável', simples: 'Algo que um visitante pode conferir: um teste que passou, uma nota de avaliação, uma página que abre no celular.' },
+    { termo: 'Marcador de contato', simples: 'Um trecho como [SEU WHATSAPP] que você troca pelo seu contato real antes de publicar.' },
+  ]}
+  depois={[
+    { termo: 'Publicar o portfólio', quando: 'na estação do Pendências você já publicou um site no GitHub Pages. O mesmo caminho serve aqui.' },
+    { termo: 'Depoimentos de clientes', quando: 'só depois do primeiro cliente real, e só com a permissão dele. Nunca invente.' },
+  ]}
+/>
+
+O problema de quem começa é conhecido: o cliente quer ver trabalhos, e você não tem clientes. A saída honesta é mostrar **o que você já construiu**: os projetos deste curso. A Doce Esquina, a Oficina Boa Estrada, o Pet Shop Patas Felizes. São **casos de treino**, e dizer isso com clareza é uma força, não uma fraqueza: mostra que você sabe fazer, sem fingir um histórico que não tem.
+
+### O que um bom caso mostra
+
+Cada caso tem três partes, curtas:
+
+| Parte | Pergunta | Exemplo (Pet Shop Patas Felizes) |
+|---|---|---|
+| **Problema** | Qual era a dor do negócio? | "Perguntas repetidas no WhatsApp e atendimento fora do horário" |
+| **Solução** | O que foi construído? | "Um atendente que responde só o que está na base de conhecimento e repassa o resto" |
+| **Resultado** | O que foi **verificado**? | "Em 144 testes automáticos, e numa avaliação de 20 casos, o atendente chegou a 100% depois de dois ajustes" |
+
+Repare no que o resultado **não** diz: "aumentou as vendas em 40%". Você **não mediu isso**, porque não houve cliente. O que você mediu é o que está na conferência. Isto é o que torna o portfólio crível: cada frase tem prova atrás.
+
+### O que não inventar
+
+| Não faça | Por quê | Faça |
+|---|---|---|
+| "Aumentou as vendas em X%" | Você não mediu | "Passou em N testes" |
+| "Cliente satisfeito: depoimento" | Nunca houve | Deixe a seção de depoimentos para depois |
+| Logo de uma empresa real como se fosse cliente | É falso e pode dar problema | Use o nome fictício do caso |
+| Prints do site de um negócio real sem permissão | Direito de imagem e confiança | Use o site do caso de treino |
+
+### Montar a página com o Claude
+
+O portfólio é **uma página simples**, que abre bem no celular. O pedido que funcionou:
+
+```text
+Crie docs/index.html: um portfólio de uma página, em português, para quem está começando a vender sites, sistemas e atendentes de WhatsApp a pequenos negócios.
+- No topo, um aviso claro: "Estes são casos de treino, com negócios fictícios".
+- Três casos (Doce Esquina, Oficina Boa Estrada, Pet Shop Patas Felizes), cada um com Problema, Solução e Resultado.
+- O Resultado só pode usar o que está nos arquivos do projeto (testes, avaliação). Não invente números.
+- Um botão de contato com o texto [SEU WHATSAPP] no lugar do número.
+- Funcione bem no celular, sem arquivos externos, com contraste adequado.
+```
+
+Na nossa execução (modo `acceptEdits`, Claude Haiku 5.5, 5 passos, 40 segundos), saiu um `docs/index.html` de cerca de 11 KB com o aviso de casos de treino, os três casos (Doce Esquina com quatro verificações, Oficina com 74 testes e Patas Felizes com 144 testes e avaliação de 100%) e o marcador `[SEU WHATSAPP]`. Um teste de acessibilidade (axe), numa tela de 390 pixels de largura, deu **0 violações e nenhuma rolagem horizontal**.
+
+### Confira antes de mostrar
+
+1. **Cada número tem origem?** Para cada resultado, aponte o arquivo ou o teste.
+2. **O aviso de "casos de treino" está visível?** Sem precisar rolar a página.
+3. **O contato é seu?** Troque `[SEU WHATSAPP]` pelo seu número real, **só no momento de publicar**.
+4. **Abre no celular?** Abra no seu telefone ou reduza a janela do navegador.
+5. **É legível?** Texto com contraste e botões com tamanho de toque.
+
+<Nota rotulo="O que não foi testado">
+Testamos a página com um teste automático de acessibilidade e numa tela de 390 pixels. **Não** testamos em aparelhos reais nem em todos os navegadores. Confira no seu celular.
+</Nota>
+
+### Como vender isso
+
+- **Comece pelo caso mais parecido com o cliente.** Uma loja de bairro vai se identificar mais com o caso da loja do que com o da oficina.
+- **Mostre, não conte.** Um link para o caso funcionando vale mais que um parágrafo.
+- **Seja direto sobre o que são casos de treino.** O cliente respeita quem avisa. Quem descobre sozinho que era inventado não volta.
+- **Atualize depois do primeiro cliente.** Com permissão dele, o caso real passa a ser o primeiro.
+
+<Camada tipo="capo" titulo="Por baixo do capô: por que a prova importa">
+
+### O Claude tende a "embelezar"
+
+Pedir um portfólio sem restrição leva a frases como "resultados impressionantes" ou "aumento significativo nas vendas". O modelo escreve o que **soa** como um bom portfólio. A restrição "só use o que está nos arquivos" faz com que cada resultado venha de um arquivo real.
+
+### Uma página, sem dependências
+
+Uma única página, com CSS dentro do próprio arquivo, abre em qualquer lugar: no celular, enviada por mensagem, hospedada de graça. Menos peças, menos coisas para quebrar.
+
+### O marcador `[SEU WHATSAPP]`
+
+Deixar um marcador evita dois problemas: publicar o número de outra pessoa por engano e o seu número aparecer em arquivos de treino que vão para um repositório público. Troque só na versão que você vai realmente publicar.
+
+### Acessibilidade em um minuto
+
+Um teste automático (axe) não garante que a página seja acessível a todos, mas pega o básico: contraste, texto alternativo, nome em botões. Nos nossos testes ele é o mesmo usado em todas as páginas do curso.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Inventar resultado
+
+É o erro que mais custa. Se o cliente pedir para ver o número, você não terá de onde tirar.
+
+### Esconder que são casos de treino
+
+Aviso pequeno, no rodapé, não vale. Vai no topo.
+
+### Publicar o contato de treino
+
+Deixe o marcador até o momento de publicar de verdade.
+
+### Portfólio longo demais
+
+Três casos bem contados valem mais que dez superficiais.
+
+### Usar nome ou imagem de negócio real sem permissão
+
+Mesmo "de graça", sem licença é problema.
+
+### Não conferir no celular
+
+A maioria dos seus clientes vai abrir pelo telefone.
+
+</Camada>
+
+## Fichas de campo
+
+<Ficha
+  id="v3-e1"
+  n={1}
+  titulo="Montar a página de portfólio"
+  objetivo="Pedir ao Claude uma página de portfólio com três casos de treino, conferir cada afirmação e abrir no celular."
+  minutos={30}
+  pre="Os projetos do curso (Doce Esquina, Oficina, Patas Felizes) e os resultados que você guardou"
+  versao="2.1.325"
+>
+
+- [Ponto de partida: `v3-inicio.zip`](../lab/v3-inicio.zip) (pasta `meu-portfolio`, com a planilha de prospecção e o modelo de abordagem)
+
+1. Extraia o ZIP e entre na pasta:
+
+   <SO unix="unzip -o ~/Downloads/v3-inicio.zip -d ~/Documents/clientes && cd ~/Documents/clientes/meu-portfolio && mkdir -p docs" win={`Expand-Archive "$HOME\\Downloads\\v3-inicio.zip" -DestinationPath "$HOME\\Documents\\clientes" -Force; cd "$HOME\\Documents\\clientes\\meu-portfolio"; New-Item -ItemType Directory -Force docs | Out-Null`} />
+
+2. Escreva, num arquivo `casos.md`, **os resultados verificados** de cada projeto (testes que passaram, nota da avaliação, o que foi entregue). Só o que você realmente tem.
+3. Abra o Claude e peça a página (use o pedido da seção anterior, e acrescente: "use os resultados do casos.md").
+4. Abra `docs/index.html` no navegador e faça a **conferência de cinco pontos**.
+5. Para cada número da página, escreva ao lado a origem (o arquivo de onde veio).
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits`, dentro de `meu-portfolio`. Foi assim que executamos (Claude Haiku 5.5). Para o teste de acessibilidade, usamos o axe, o mesmo das páginas do curso.
+</Nota>
+
+<Prova>
+
+Existe um `docs/index.html` que abre no navegador, com o aviso de casos de treino no topo, **três casos** com problema, solução e resultado, e o marcador `[SEU WHATSAPP]`. Na nossa execução (5 passos, 40 segundos), o arquivo tinha cerca de 11 KB, e o axe, numa tela de 390 pixels, deu **0 violações e nenhuma rolagem horizontal**.
+
+</Prova>
+
+<Gabarito>
+
+O seu texto será diferente. O que prova que está certo:
+
+- o aviso "casos de treino" aparece **sem rolar**;
+- cada resultado tem uma origem que você consegue apontar;
+- **nenhuma** frase promete venda, posição no Google ou "clientes satisfeitos";
+- abre no celular sem rolar para o lado.
+
+Se achar um número sem origem, **apague ou peça a origem** ao Claude. Se ele não souber, você não pode usar.
+
+</Gabarito>
+
+<DeuErro>
+
+- **A página tem "resultados" que você não reconhece.** O Claude inventou. Mande: "use só o que está em casos.md e remova o resto".
+- **O aviso de casos de treino sumiu ou ficou pequeno.** Peça para colocá-lo no topo, visível sem rolar.
+- **O teste de acessibilidade aponta contraste.** Peça para escurecer o texto ou clarear o fundo e rode de novo.
+- **O botão de contato não faz nada.** Normal enquanto está o marcador `[SEU WHATSAPP]`. Troque só ao publicar.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude uma **versão de um caso só**, em formato de mensagem de WhatsApp (até 5 linhas), para mandar a um possível cliente. O que sobrou? Cabe a prova verificável?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei por que o portfólio de quem começa usa casos de treino e como avisar isso.
+- Montei uma página com três casos, cada um com problema, solução e resultado.
+- Cada número da página tem origem, e eu consigo apontar o arquivo.
+- Conferi no celular e sei o que não foi testado.
+
+</Saida>
+
+**Próxima parte:** [Achar o primeiro cliente, parte 2: a abordagem e a primeira conversa](../v3-2/). Com o portfólio pronto, você escolhe negócios perto de você, escreve a primeira mensagem sem incomodar ninguém e treina a conversa.
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): modos de permissão e uso sem a tela interativa.
+- Execução local registrada em `VERIFICATION/vender.md`: portfólio gerado em modo `acceptEdits` (Claude Haiku 5.5), com verificação de acessibilidade pelo axe a 390 px.
+
+</Fontes>

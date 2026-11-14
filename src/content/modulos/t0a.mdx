@@ -1,0 +1,313 @@
+---
+id: t0a
+titulo: "Preparar o computador: o que instalar e como conferir"
+parte: p12
+ordem: 1
+minutos: 60
+pre_requisitos: []
+objetivos:
+  - Dizer para que serve cada programa que o curso usa, com palavras simples.
+  - Rodar um diagnóstico que mostra o que está instalado e o que falta.
+  - Instalar o que faltar pelos sites oficiais e conferir de novo.
+  - Criar uma pasta de trabalho organizada para os projetos dos clientes.
+tldr:
+  - O curso usa quatro programas. Um diagnóstico de dez segundos mostra quais já estão no seu computador.
+  - Instale só pelos sites oficiais e confira de novo. Fechar e abrir o terminal resolve a maioria dos erros.
+  - Uma pasta por cliente, num lugar fácil de achar, evita perder trabalho e misturar projetos.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [venda, rapida, completa]
+exercicios:
+  - { id: t0a-e1, titulo: Rodar o diagnóstico, minutos: 15, custo: gratis }
+  - { id: t0a-e2, titulo: Instalar o que faltar e criar a pasta de trabalho, minutos: 30, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Terminal', simples: 'A janela onde você conversa com o computador por texto. É por ela que o Claude Code funciona.' },
+    { termo: 'Programa instalado', simples: 'Um programa que o terminal sabe encontrar. Se o terminal diz que "não reconhece" um comando, quase sempre ele só não sabe onde o programa mora.' },
+    { termo: 'Node.js', simples: 'O motor que roda os pequenos programas do curso, como as conferências e os sistemas dos clientes.' },
+    { termo: 'Git', simples: 'O programa que guarda o histórico do seu trabalho, como os pontos de salvamento de um jogo.' },
+    { termo: 'GitHub e gh', simples: 'O GitHub é um cofre na internet para os seus projetos. O gh é o botão que liga o seu computador a ele.' },
+    { termo: 'Diagnóstico', simples: 'Uma lista de verificação que pergunta ao computador o que está instalado e mostra o que falta.' },
+  ]}
+  depois={[
+    { termo: 'Instalar o Claude Code', quando: 'a instalação e o login estão na primeira ficha da estação "Seu primeiro cliente".', ref: 'm1' },
+    { termo: 'Conta paga', quando: 'o Claude Code exige um plano pago ou uma conta de API. A próxima estação trata do limite de uso.' },
+  ]}
+/>
+
+Quem vende serviços com o Claude Code precisa de um computador que **não trave no meio de um trabalho**. A experiência mais comum de quem está começando não é um erro difícil: é perder uma tarde porque um programa "não é reconhecido". Esta estação evita isso. Em uma hora você deixa o computador pronto e **comprova** que está.
+
+### O que o curso usa, em linguagem simples
+
+Quatro programas bastam. Pense numa oficina: cada um é uma ferramenta, e o diagnóstico confere se a caixa está completa.
+
+| Programa | Para que serve neste curso | Analogia |
+|---|---|---|
+| **Claude Code** (`claude`) | O assistente que lê e escreve nos arquivos de um projeto | O profissional que você contratou |
+| **Node.js** (`node`) | Roda as conferências e os sistemas que você entrega | O motor da oficina |
+| **Git** (`git`) | Guarda o histórico de cada trabalho e permite desfazer | O caderno de versões |
+| **GitHub CLI** (`gh`) | Liga o seu computador ao GitHub, onde o projeto pode ser publicado | O malote até o cofre online |
+
+Além deles, você precisa de três coisas que não são programas: um **navegador** (qualquer um), um **editor de texto** (o Bloco de Notas serve) e uma **pasta** onde guardar os projetos.
+
+### O diagnóstico
+
+Em vez de adivinhar, pergunte ao computador. O comando abaixo faz uma pergunta para cada programa e responde **OK** (com a versão) ou **FALTA**. Ele não instala, não muda nada e leva segundos. A Ficha 1 mostra onde colar.
+
+Um resultado de um computador pronto tem esta cara:
+
+```text
+claude OK (2.1.325 (Claude Code))
+node   OK (v24.19.0)
+git    OK (git version 2.55.0.windows.3)
+gh     OK (gh version 2.100.0 (2026-09-03))
+```
+
+Os números de versão do seu computador serão outros. O que importa é a palavra **OK** em cada linha. Se aparecer **FALTA**, a ficha seguinte diz o que fazer.
+
+### Quando algo "não é reconhecido"
+
+É o erro mais frequente do começo, e quase sempre tem uma de três causas:
+
+1. **O programa ainda não foi instalado.** O diagnóstico mostra FALTA.
+2. **Você abriu o terminal antes de instalar.** O terminal "tira uma foto" da lista de programas quando abre. Feche e abra um novo.
+3. **Você está no terminal errado.** No Windows, o curso usa o **PowerShell** (procure no menu Iniciar). O Prompt de Comando (CMD) parece parecido, mas os comandos mudam.
+
+Antes de pedir ajuda a qualquer pessoa, resolva a causa 2: feche e abra o terminal. Resolve a maior parte.
+
+### Uma pasta por cliente
+
+A segunda fonte de dor é perder arquivos. A regra é simples: **uma pasta por cliente, dentro de uma pasta só para os clientes**, num lugar que você acha sem pensar. Por exemplo, dentro de **Documentos**:
+
+```text
+Documentos
+  clientes
+    doce-esquina
+    oficina-boa-estrada
+    studio-lia
+```
+
+Evite pastas dentro de serviços de sincronização que mudam arquivos sozinhos enquanto você trabalha, e evite nomes com acento e espaço nos programas que você vai rodar: `studio-lia` é mais seguro que `Studio da Lia (novo)`.
+
+### Como vender isso
+
+Esta estação parece interna, mas tem valor comercial:
+
+- **Um computador pronto é a sua primeira garantia ao cliente.** Quem perde uma tarde com instalação perde prazo, e prazo é o que o cliente cobra.
+- **O diagnóstico é um recurso que você leva para os clientes.** Quando você instalar um sistema no computador dele, rodar esse mesmo diagnóstico antes é o que separa um sistema que liga de um que dá erro às seis da tarde.
+- **Guarde a saída do diagnóstico.** Ela é o seu registro de "o que estava instalado e em qual versão" no dia da entrega.
+
+<Camada tipo="capo" titulo="Por baixo do capô: o que o diagnóstico faz">
+
+### O que ele pergunta
+
+Para cada nome (`claude`, `node`, `git`, `gh`), o comando faz duas perguntas: "esse programa existe?" e, se existir, "qual é a sua versão?" (com `--version`). Não altera nada no computador.
+
+### Por que a versão importa
+
+Programas mudam com o tempo. A versão registrada no diagnóstico ajuda a explicar um erro depois ("funcionava na versão X"). O curso foi testado com Node 24; o sistema com banco de dados da Temporada 2 usa um recurso que vem dentro dele, então não use uma versão muito antiga.
+
+### Windows, Mac e Linux
+
+O comando é diferente em cada sistema, e o seletor de sistema do curso mostra o do seu. No Windows ele roda no PowerShell 5.1, que já vem com o sistema.
+
+### O que não está no diagnóstico
+
+O diagnóstico não confere a sua conta (login no Claude Code e no GitHub) nem o seu plano. A conta do Claude Code é tema da próxima estação, e o login no GitHub entra quando for preciso publicar.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Instalar por site que não é o oficial
+
+Programas de download "grátis" fora dos sites oficiais podem trazer algo a mais. Use sempre o site do próprio programa.
+
+### Não fechar o terminal depois de instalar
+
+É a causa mais comum de "não reconhecido". Feche e abra um novo.
+
+### Rodar como administrador sem precisar
+
+Os programas do curso não exigem. Rodar tudo como administrador aumenta o estrago de um erro.
+
+### Guardar projetos na área de trabalho, solta
+
+Vira bagunça em uma semana. Use a pasta `clientes`.
+
+### Nome de pasta com acento, espaço e parênteses
+
+Alguns programas se confundem. Prefira letras minúsculas e hífen.
+
+### Achar que o diagnóstico garante tudo
+
+Ele diz que os programas existem, não que a sua conta funciona. A próxima estação cuida disso.
+
+</Camada>
+
+## Fichas de campo
+
+<Ficha
+  id="t0a-e1"
+  n={1}
+  titulo="Rodar o diagnóstico"
+  objetivo="Descobrir quais programas do curso já estão no seu computador e quais faltam."
+  minutos={15}
+  pre="Nenhum"
+  versao="2.1.325"
+>
+
+1. Abra o terminal. No Windows, procure **PowerShell** no menu Iniciar (não precisa ser administrador). No Mac, abra o app **Terminal**.
+2. Cole o diagnóstico do seu sistema e aperte Enter:
+
+   <SO unix={`for c in claude node git gh; do if command -v $c >/dev/null 2>&1; then echo "$c OK ($($c --version 2>&1 | head -1))"; else echo "$c FALTA"; fi; done`} win={`foreach ($c in 'claude','node','git','gh') { $x = Get-Command $c -ErrorAction SilentlyContinue; if ($x) { $v = & $c --version 2>&1 | Select-Object -First 1; "{0,-7}OK ({1})" -f $c, $v } else { "{0,-7}FALTA" -f $c } }`} />
+
+3. Anote quais linhas disseram **FALTA**.
+
+<Prova>
+
+Aparecem quatro linhas, cada uma com **OK** ou **FALTA**. Na nossa máquina, no PowerShell 5.1, as quatro vieram **OK**:
+
+```text
+claude OK (2.1.325 (Claude Code))
+node   OK (v24.19.0)
+git    OK (git version 2.55.0.windows.3)
+gh     OK (gh version 2.100.0 (2026-09-03))
+```
+
+Se o `claude` aparecer como FALTA, é normal nesta altura: a instalação dele é a Ficha 1 da estação seguinte. Os outros três você instala na Ficha 2.
+
+</Prova>
+
+<Gabarito>
+
+O que prova que você fez certo é ter uma lista, no papel ou na tela, com o estado de **cada** um dos quatro. Se o terminal reclamou do próprio comando (um erro vermelho em vez das quatro linhas), você provavelmente está no terminal errado: no Windows, use o PowerShell.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O PowerShell mostra um erro de "execução de scripts desabilitada".** O diagnóstico é um comando colado, não um arquivo de script, então isso não deveria acontecer. Confira se você colou o comando e não abriu um arquivo.
+- **Só aparece uma linha, ou nenhuma.** Cole o bloco inteiro, de uma vez, incluindo o final.
+- **Aparece FALTA mesmo depois de instalar.** Feche o terminal e abra um novo. Se persistir, a instalação não terminou: refaça a Ficha 2.
+
+</DeuErro>
+
+<Desafio>
+
+Rode o diagnóstico de novo, mas peça também a versão de outro programa que você já usa (por exemplo, troque `gh` por `python` ou `code`). O que a resposta mostra quando o programa não existe?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t0a-e2"
+  n={2}
+  titulo="Instalar o que faltar e criar a pasta de trabalho"
+  objetivo="Instalar pelos sites oficiais o que o diagnóstico mostrou como FALTA e montar a pasta de clientes."
+  minutos={30}
+  pre="Ficha 1"
+  verificacao="nao-testado"
+>
+
+Esta ficha **não foi executada aqui**: a máquina de teste já tinha tudo instalado, e instalar programas no computador de quem faz é decisão sua. Os passos seguem a página oficial de cada programa, e a conferência (passo 4) é a mesma da Ficha 1.
+
+1. Para cada programa que deu FALTA, abra o **site oficial** e baixe a versão para o seu sistema:
+   - **Node.js:** nodejs.org. Escolha a versão **LTS**.
+   - **Git:** git-scm.com. No Windows, ele traz também o **Git Bash**.
+   - **GitHub CLI (`gh`):** cli.github.com.
+   - **Claude Code:** fica para a próxima estação.
+2. Instale com as opções padrão. Se um instalador perguntar algo que você não entende, deixe a sugestão dele.
+3. **Feche o terminal e abra um novo.**
+4. Rode o diagnóstico da Ficha 1 de novo.
+5. Crie a pasta de trabalho:
+
+   <SO unix="mkdir -p ~/Documents/clientes && cd ~/Documents/clientes && pwd" win={`New-Item -ItemType Directory -Force "$HOME\\Documents\\clientes" | Out-Null; cd "$HOME\\Documents\\clientes"; Get-Location`} />
+
+6. Salve o resultado do diagnóstico num arquivo, como registro:
+
+   <SO unix={`for c in claude node git gh; do if command -v $c >/dev/null 2>&1; then echo "$c OK ($($c --version 2>&1 | head -1))"; else echo "$c FALTA"; fi; done > ~/Documents/clientes/diagnostico.txt`} win={`$r = foreach ($c in 'claude','node','git','gh') { $x = Get-Command $c -ErrorAction SilentlyContinue; if ($x) { $v = & $c --version 2>&1 | Select-Object -First 1; "{0,-7}OK ({1})" -f $c, $v } else { "{0,-7}FALTA" -f $c } }; $r | Out-File "$HOME\\Documents\\clientes\\diagnostico.txt" -Encoding utf8`} />
+
+<Prova>
+
+O segundo diagnóstico mostra **OK** nos programas que você instalou (o `claude` pode ainda aparecer FALTA), o terminal está na pasta `clientes` e existe um arquivo `diagnostico.txt` lá dentro. Não executamos a instalação; executamos o diagnóstico e a criação da pasta (o comando do PowerShell foi conferido no PowerShell 5.1).
+
+</Prova>
+
+<Gabarito>
+
+O arquivo `diagnostico.txt` é o seu comprovante. Quando algo quebrar no futuro, mostre-o a quem for ajudar: ele diz o que estava instalado e em qual versão.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O instalador pediu permissão de administrador e eu não tenho.** Peça a quem administra o computador. Não use um instalador de fonte desconhecida para contornar.
+- **`node` ainda não é reconhecido depois de instalar.** Feche **todas** as janelas do terminal e abra uma nova. Se ainda assim falhar, reinicie o computador uma vez.
+- **O Git Bash apareceu e eu não sei qual terminal usar.** Pode ficar no PowerShell. O Git Bash é opcional neste curso.
+
+</DeuErro>
+
+<Desafio>
+
+Peça a uma pessoa de confiança que rode o diagnóstico no computador dela e leia o resultado para você. Você consegue dizer, só pela resposta, o que ela precisa instalar primeiro e por quê?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que o seu computador está pronto">
+
+### Teste de domínio: o amigo que não consegue
+
+Um amigo, também iniciante, manda uma mensagem: *"Instalei o Node mas o terminal diz que `node` não é reconhecido. E agora?"*
+
+**Sua missão, sem passo a passo:** escreva a resposta que você mandaria, em até 6 linhas, com os passos **na ordem certa**. Depois confira se ela inclui:
+
+- a pergunta sobre **em que momento** ele abriu o terminal (antes ou depois de instalar);
+- a pergunta sobre **qual terminal** ele usa;
+- o comando que mostra se o programa existe (o diagnóstico);
+- o que fazer se continuar falhando, sem sugerir nada arriscado.
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- dizer para que serve cada um dos quatro programas;
+- explicar por que "feche e abra o terminal" costuma resolver;
+- ler o resultado do diagnóstico e dizer o que fazer com cada FALTA;
+- explicar por que uma pasta por cliente e nomes sem acento evitam problemas.
+
+### Entregue o comprovante
+
+O seu entregável é o arquivo **`diagnostico.txt`**, salvo na pasta `clientes`, com os quatro programas em OK (ou o `claude` em FALTA, se a instalação for na próxima estação). Ele tem dois usos:
+
+1. **Para você:** o registro de como o seu computador estava no dia em que você começou.
+2. **Para pedir ajuda:** cole o conteúdo quando alguém (ou o próprio Claude Code, mais adiante) perguntar o que está instalado.
+
+Mais adiante o curso mostra o **tutor**, uma ferramenta que revisa as suas entregas. Ele começa a valer a partir do primeiro projeto.
+
+</Entrega>
+
+<Saida>
+
+- Sei dizer para que serve cada um dos quatro programas do curso.
+- Rodei o diagnóstico e sei ler o OK e o FALTA.
+- Instalei o que faltava pelos sites oficiais e conferi de novo.
+- Criei a pasta `clientes` e guardei o `diagnostico.txt` como comprovante.
+- Sei responder a quem diz que um programa "não é reconhecido".
+
+</Saida>
+
+**Próxima estação:** [O plano, o limite de uso e o custo do dia a dia](../t0b/): o Claude Code é uma ferramenta paga e tem um limite de uso. Você vai entender como ele funciona, como acompanhar o seu gasto e como gastar menos sem perder qualidade.
+
+<Fontes>
+
+- [Setup](https://code.claude.com/docs/en/setup.md): instalação e requisitos do Claude Code (a instalação em si é a primeira ficha da estação "Seu primeiro cliente").
+- Execuções locais registradas em `VERIFICATION/preparacao.md`. O diagnóstico foi executado no PowerShell 5.1; a instalação dos programas **não** foi.
+
+</Fontes>

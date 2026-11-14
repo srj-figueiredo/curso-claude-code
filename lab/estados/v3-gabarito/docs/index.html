@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfólio — Sites, sistemas e atendentes para pequenas empresas</title>
+<meta name="description" content="Três casos de treino: site com formulário de encomenda, sistema de ordens de serviço e atendente de WhatsApp. Clientes fictícios.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f3f5f8;
+    --ink: #111827;
+    --ink-soft: #374151;
+    --line: #d1d5db;
+    --navy: #1e3a5f;
+    --navy-dark: #132741;
+    --accent: #7a4b00;
+    --note-bg: #fff7e0;
+    --note-line: #8a5a00;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg);
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  h1, h2, h3 {
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 0 0 12px;
+  }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.6rem; }
+  h3 { font-size: 1.25rem; }
+
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 1.3em; }
+  li { margin-bottom: 8px; }
+
+  a { color: var(--navy); font-weight: 600; }
+  a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* Faixa de aviso no topo */
+  .banner {
+    background: var(--note-bg);
+    border-bottom: 3px solid var(--note-line);
+    color: #1f1600;
+    padding: 18px 0;
+  }
+  .banner strong { display: block; font-size: 1.15rem; margin-bottom: 4px; }
+
+  /* Cabeçalho */
+  header.hero {
+    background: var(--navy-dark);
+    color: #ffffff;
+    padding: 56px 0 48px;
+  }
+  header.hero h1 { color: #ffffff; }
+  header.hero p { color: #e5ebf3; font-size: 1.1rem; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin-bottom: 18px;
+  }
+
+  section { padding: 44px 0; border-bottom: 1px solid var(--line); }
+  section.alt { background: var(--bg-alt); }
+  section:last-of-type { border-bottom: none; }
+
+  .lead { font-size: 1.15rem; color: var(--ink-soft); }
+
+  /* Índice */
+  .index ul { list-style: none; padding: 0; }
+  .index li { margin-bottom: 0; border-bottom: 1px solid var(--line); }
+  .index a {
+    display: block;
+    padding: 14px 4px;
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
+  .index a:hover { text-decoration: underline; }
+
+  /* Casos */
+  .case {
+    background: #ffffff;
+    border: 2px solid var(--ink-soft);
+    border-radius: var(--radius);
+    padding: 24px 22px;
+    margin-bottom: 28px;
+  }
+  .case-tag {
+    display: inline-block;
+    background: var(--navy-dark);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .case h3 { font-size: 1.4rem; margin-bottom: 14px; }
+  .case h4 {
+    font-size: 1.05rem;
+    margin: 20px 0 8px;
+    color: var(--navy-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .check-count {
+    display: inline-block;
+    font-weight: 700;
+    background: var(--bg-alt);
+    border: 1px solid var(--ink-soft);
+    border-radius: 6px;
+    padding: 2px 8px;
+  }
+
+  /* Como eu trabalho */
+  .two-col h3 { margin-top: 20px; }
+  .not-list li::marker { color: #991b1b; font-weight: 700; }
+
+  /* Contato */
+  .contact {
+    background: var(--navy-dark);
+    color: #ffffff;
+    text-align: center;
+    padding: 56px 0;
+  }
+  .contact h2 { color: #ffffff; }
+  .contact p { color: #e5ebf3; }
+  .btn {
+    display: inline-block;
+    width: 100%;
+    max-width: 380px;
+    background: #ffffff;
+    color: var(--navy-dark);
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 18px 24px;
+    border-radius: var(--radius);
+    border: 3px solid #ffffff;
+    margin-top: 8px;
+  }
+  .btn:hover { background: #e5ebf3; }
+  .btn-note { font-size: 0.95rem; color: #d6dee9; margin-top: 14px; }
+
+  footer {
+    padding: 28px 0;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+
+  /* Telas maiores */
+  @media (min-width: 600px) {
+    body { font-size: 20px; }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.9rem; }
+    .case { padding: 32px 30px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Faixa de aviso: os três casos são de treino -->
+<div class="banner" role="note">
+  <div class="wrap">
+    <strong>Atenção: os três casos abaixo são de treino.</strong>
+    Os clientes (Doce Esquina, Oficina Boa Estrada e Pet Shop Patas Felizes) são <strong style="display:inline;font-size:inherit">fictícios</strong>.
+    Não são clientes reais e não há depoimentos, resultados de vendas ou números de negócio aqui.
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Portfólio em construção</span>
+    <h1>Sites, sistemas e atendentes de WhatsApp para pequenas empresas</h1>
+    <p>Sou iniciante e estou montando meu portfólio. Abaixo estão três casos de treino, cada um com o problema do cliente, o que foi entregue e como foi conferido.</p>
+  </div>
+</header>
+
+<nav class="index" aria-label="Seções da página">
+  <div class="wrap">
+    <ul>
+      <li><a href="#casos">1. Os três casos de treino</a></li>
+      <li><a href="#doce-esquina">2. Caso a: Doce Esquina (site)</a></li>
+      <li><a href="#oficina">3. Caso b: Oficina Boa Estrada (sistema)</a></li>
+      <li><a href="#pet-shop">4. Caso c: Pet Shop Patas Felizes (atendente)</a></li>
+      <li><a href="#como-trabalho">5. Como eu trabalho</a></li>
+      <li><a href="#contato">6. Contato</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- 1. Visão geral dos casos -->
+<section id="casos">
+  <div class="wrap">
+    <h2>Os três casos de treino</h2>
+    <p class="lead">Estes são projetos de treino com clientes fictícios. Eu os criei para praticar o que vendo: um site simples, um sistema com login e um atendente de WhatsApp com regras claras.</p>
+    <p>Cada caso mostra o mesmo formato: o problema, o que foi entregue e a forma de conferência. Nenhum número aqui é de cliente real.</p>
+  </div>
+</section>
+
+<!-- 2. Caso a -->
+<section id="doce-esquina" class="alt">
+  <div class="wrap">
+    <div class="case">
+      <span class="case-tag">Caso de treino a · Site</span>
+      <h3>Doce Esquina (confeitaria fictícia)</h3>
+
+      <h4>O problema do cliente</h4>
+      <p>A confeitaria recebe encomendas por mensagens soltas, e muitas chegam sem data, sabor ou quantidade. A dona perde tempo perguntando as mesmas coisas e não tem um lugar para mostrar o cardápio.</p>
+
+      <h4>O que foi entregue</h4>
+      <ol>
+        <li>Um site de uma página, pensado para celular, com apresentação e cardápio.</li>
+        <li>Um formulário de encomenda que pede os dados principais e, ao enviar, abre o WhatsApp com a mensagem já preenchida.</li>
+        <li>Um botão de WhatsApp sempre visível na tela do celular.</li>
+      </ol>
+
+      <h4>Como foi conferido</h4>
+      <p>O site passou por <span class="check-count">4 verificações automáticas</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. Caso b -->
+<section id="oficina">
+  <div class="wrap">
+    <div class="case">
+      <span class="case-tag">Caso de treino b · Sistema</span>
+      <h3>Oficina Boa Estrada (oficina fictícia)</h3>
+
+      <h4>O problema do cliente</h4>
+      <p>A oficina controla as ordens de serviço em papel e planilha. Fica difícil saber em que etapa está cada carro, e dono e atendente acabam dividindo a mesma senha.</p>
+
+      <h4>O que foi entregue</h4>
+      <ol>
+        <li>Um sistema de ordens de serviço para abrir, acompanhar o status e fechar cada serviço.</li>
+        <li>Login separado para dono e atendente. As senhas são guardadas só como hash, nunca em texto puro.</li>
+        <li>Um backup ensaiado: a cópia é gerada e a restauração foi testada, para saber que ela funciona de fato.</li>
+      </ol>
+
+      <h4>Como foi conferido</h4>
+      <p>O sistema passou por <span class="check-count">74 verificações automáticas</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Caso c -->
+<section id="pet-shop" class="alt">
+  <div class="wrap">
+    <div class="case">
+      <span class="case-tag">Caso de treino c · Atendente de WhatsApp</span>
+      <h3>Pet Shop Patas Felizes (pet shop fictício)</h3>
+
+      <h4>O problema do cliente</h4>
+      <p>A equipe responde todo dia as mesmas perguntas de horário, produto e preço. Quando o atendimento é automático, o risco é o robô inventar uma informação que não existe.</p>
+
+      <h4>O que foi entregue</h4>
+      <ol>
+        <li>Um atendente de WhatsApp que responde só com o que está na base de conhecimento da loja.</li>
+        <li>Passagem para uma pessoa quando o atendente não sabe a resposta, em vez de chutar.</li>
+        <li>Proteções na saída: a resposta é checada antes de ser enviada.</li>
+      </ol>
+
+      <h4>Como foi conferido</h4>
+      <p>Avaliado em <span class="check-count">20 casos de treino</span> com <span class="check-count">nota 100%</span>, e conferido por <span class="check-count">144 verificações automáticas</span>.</p>
+      <p>A nota 100% vale para estes 20 casos de treino. Não é uma medida de desempenho com clientes reais.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Como eu trabalho -->
+<section id="como-trabalho">
+  <div class="wrap two-col">
+    <h2>Como eu trabalho</h2>
+    <p>Eu uso o <strong>Claude Code</strong> para escrever e alterar o código. Não confio só no que a ferramenta gera:</p>
+    <ul>
+      <li>Confiro tudo com <strong>testes automáticos</strong>, que rodam sempre que algo muda.</li>
+      <li>Testo o fluxo <strong>com uso real</strong>, como um cliente faria no celular.</li>
+      <li>Uma <strong>pessoa (eu) revisa tudo</strong> antes de qualquer entrega.</li>
+    </ul>
+
+    <h3>O que o atendente NÃO faz</h3>
+    <ul class="not-list">
+      <li>Não promete resultado, venda ou prazo que a loja não tenha dito.</li>
+      <li>Não confirma horário, agendamento ou disponibilidade. Isso fica com a equipe.</li>
+      <li>Não inventa preço, produto ou política que não esteja na base de conhecimento.</li>
+      <li>Não substitui uma pessoa: quando não sabe, passa o caso para ela.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 6. Contato -->
+<section id="contato" class="contact">
+  <div class="wrap">
+    <h2>Quer conversar sobre um projeto?</h2>
+    <p>Mande uma mensagem pelo WhatsApp e conte qual é a sua necessidade.</p>
+    <!-- Troque [SEU WHATSAPP] pelo seu número com DDI e DDD, só dígitos. Exemplo: 5511999999999 -->
+    <a class="btn" href="https://wa.me/[SEU WHATSAPP]" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    <p class="btn-note">Os casos acima são de treino. Ao chamar, você fala com uma pessoa.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Página de portfólio. Os três clientes citados são fictícios.</p>
+  </div>
+</footer>
+
+</body>
+</html>

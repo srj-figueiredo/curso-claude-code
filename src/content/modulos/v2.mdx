@@ -1,0 +1,242 @@
+---
+id: v2
+titulo: "A proposta e o contrato simples"
+parte: p11
+ordem: 2
+minutos: 70
+pre_requisitos: [v1-2]
+objetivos:
+  - Escrever uma proposta com escopo verificável, fora do escopo, prazo, preço e aceite.
+  - Usar o Claude para redigir e conferir cada trecho contra a sua conta de preço.
+  - Listar o que conferir sobre nota fiscal e formalização, sem tratar o curso como aconselhamento jurídico.
+  - Registrar o que ainda está pendente antes de enviar ao cliente.
+tldr:
+  - A proposta é o primeiro produto que o cliente vê. Se for clara, vende. Se for vaga, vira discussão.
+  - O Claude redige rápido, mas só você sabe o que prometeu. Revise cada número contra o seu cálculo.
+  - Nada de aconselhamento jurídico aqui. O curso mostra o que conferir e onde, e indica revisão por profissional.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [venda, rapida, completa]
+exercicios:
+  - { id: v2-e1, titulo: Redigir a proposta com o Claude, minutos: 30, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Proposta', simples: 'O documento que diz o que você vai entregar, quanto custa, em quanto tempo e como o cliente aprova.' },
+    { termo: 'Escopo', simples: 'A lista do que está incluído. Cada item precisa ser verificável: dá para dizer "feito" ou "não feito".' },
+    { termo: 'Aceite', simples: 'A aprovação por escrito. Uma mensagem de "pode fazer" também vale, desde que guardada.' },
+    { termo: 'Pendência', simples: 'Algo que ainda não está decidido e precisa ser resolvido antes de começar. Fica escrito na proposta.' },
+    { termo: 'Nota fiscal', simples: 'O documento que comprova o serviço. Se você precisa emitir, e de que tipo, depende da sua situação.' },
+  ]}
+  depois={[
+    { termo: 'Formalização (MEI e outros)', quando: 'quando você começar a vender com regularidade. Aqui você aprende o que perguntar, não a decidir.' },
+    { termo: 'Contrato revisado por profissional', quando: 'antes de usar com um cliente real. A versão simples da próxima parte serve para treinar.' },
+  ]}
+/>
+
+O cliente leu o seu portfólio, conversou com você e perguntou o preço. A **proposta** é o que vem agora: um documento de poucas páginas que transforma uma conversa em um acordo. Uma boa proposta faz três coisas: mostra que você **entendeu** o que ele precisa, deixa **claro** o que será entregue (e o que não será) e dá a ele uma forma **fácil de aprovar**.
+
+### O que vai numa proposta
+
+| Seção | Pergunta que responde | Exemplo curto |
+|---|---|---|
+| **Resumo** | O que você entendeu do pedido? | "A Lia precisa de um site e de uma agenda de aulas experimentais" |
+| **Escopo** | O que será entregue, em itens verificáveis? | "Página com horários, endereço e botão de WhatsApp, testada no celular" |
+| **Fora do escopo** | O que **não** está incluído? | "Login de alunas, pagamento online, fotos profissionais" |
+| **Prazo e fases** | Quando cada parte fica pronta? | "Fase 1: site, em 2 semanas" |
+| **Preço e pagamento** | Quanto, como e quando? | "50% na aprovação, 50% na entrega" |
+| **O que dependo de você** | Que material e decisão preciso do cliente? | "Textos e fotos até o dia 10" |
+| **Pendências** | O que ainda está em aberto? | "Onde o sistema vai rodar" |
+| **Aceite** | Como o cliente aprova? | "Responder 'aprovado' a este documento" |
+
+A seção que mais evita problema é a de **fora do escopo**. Ela vale mais que qualquer cláusula: o que não está escrito como incluído não está incluído.
+
+### O Claude redige, você decide
+
+Peça a proposta ao Claude **dando os arquivos como material**: o briefing, o `calculo-do-preco.md` e a tabela de preços. Assim ele não inventa número. E instrua assim:
+
+```text
+Escreva a proposta.md para a Lia, com base no briefing.md, na agenda.md e no calculo-do-preco.md.
+Use as seções: resumo, escopo (itens verificáveis), fora do escopo, prazo e fases,
+preço e pagamento, o que depende do cliente, pendências e aceite.
+Use só os valores do calculo-do-preco.md. Marque como EXEMPLO tudo que for número de treino.
+Se faltar uma informação, escreva em Pendências, e não invente.
+```
+
+Na nossa execução (modo `acceptEdits`, Claude Haiku 5.5, 5 passos, 86 segundos, junto com o contrato da próxima parte), o resultado foi uma proposta de cerca de **1.500 palavras**, com:
+
+- itens de escopo numerados e verificáveis;
+- uma lista de **dez** itens fora do escopo;
+- cinco fases em sete semanas;
+- pagamento em 50% e 50%;
+- uma seção de pendências que incluía a contradição que a estimativa tinha achado (sistema offline no computador do studio × formulário no celular da aluna), com **duas opções** para a Lia decidir.
+
+Repare no último ponto: o Claude **não escolheu por ela**. Colocou a decisão onde ela deve estar, na pendência. É isso que se espera de uma proposta honesta.
+
+### Revise antes de enviar
+
+O texto do Claude é um rascunho. Antes de mandar, **você** confere:
+
+1. **Os valores batem com o seu cálculo?** Abra os dois lado a lado.
+2. **Cada item de escopo é verificável?** "Site bonito" não é. "Página que abre no celular em menos de 3 segundos" é.
+3. **O que prometeu cabe no prazo?** Compare com o seu cenário provável de horas.
+4. **Há alguma promessa de resultado?** ("Vai aumentar as vendas", "vai aparecer no Google"). Tire. Você não controla isso.
+5. **A proposta diz que a IA ajuda no trabalho, com revisão humana?** Transparência evita problema depois.
+
+### Nota fiscal e formalização: o que conferir
+
+Esta é a parte em que o curso **não responde por você**. Quem presta serviço com regularidade costuma precisar de alguma **formalização** e de emitir **nota fiscal**. O que se aplica a você depende da sua situação e muda com o tempo.
+
+O que o curso consegue fazer é indicar **onde conferir e o que perguntar**:
+
+- **O portal oficial do governo** para o Microempreendedor Individual (MEI) explica quem pode ser MEI, quais atividades são permitidas e quais os limites de faturamento. Os valores e as regras mudam: leia a versão **atual** no portal, e não a de um curso.
+- **A lista de atividades permitidas**: confira se o serviço que você vende (site, sistema, atendente) está na lista da formalização que você escolher. **Nós não confirmamos** que programação e criação de sites constam para MEI: verifique você mesmo.
+- **A emissão de nota fiscal**: pergunte à prefeitura da sua cidade ou a um contador como emitir, para você e para o tipo de cliente.
+- **Imposto**: a calculadora do curso **não** inclui imposto. Some o que um contador indicar ao seu preço.
+
+<Nota rotulo="Isto não é aconselhamento jurídico nem contábil">
+O curso é independente, escrito por quem ensina a usar o Claude Code. Nenhum texto desta estação foi revisado por advogado ou contador. Use os modelos para **treinar** e leve a versão final para revisão profissional antes do primeiro cliente real.
+</Nota>
+
+### Como vender isso
+
+- **Envie a proposta por escrito, mesmo depois de uma boa conversa.** O que ficou só no papo some. Uma mensagem "segue o que conversamos" já ajuda.
+- **Dê um prazo de validade.** "Esta proposta vale até o dia 20" evita que um preço de hoje seja cobrado daqui a seis meses.
+- **Peça o aceite com uma frase pronta.** "Para aprovar, responda 'aprovado' a este e-mail." Quanto mais fácil, mais rápido.
+- **Não esconda pendências.** Mostrar o que falta decidir passa seriedade.
+
+<Camada tipo="capo" titulo="Por baixo do capô: por que dar o material ao Claude">
+
+### Sem material, ele inventa
+
+Se você pede "escreva uma proposta para um site", o Claude produz algo plausível com **números plausíveis**, e eles não são os seus. Quando você entrega o `calculo-do-preco.md`, ele **cita** o arquivo em vez de criar valores. A regra no pedido ("use só os valores do arquivo") reforça isso.
+
+### Por que a instrução "se faltar, escreva em Pendências"
+
+Os modelos tendem a preencher lacunas com uma suposição razoável. Numa proposta, uma suposição calada é uma promessa. Mandar a lacuna para a seção de pendências transforma a suposição em **pergunta ao cliente**.
+
+### O tamanho
+
+Uma proposta de 1.500 palavras é longa para um cliente pequeno. É um bom **rascunho completo**, e o que você manda pode ser um resumo de uma ou duas páginas, com o documento completo em anexo. Peça: "faça uma versão de uma página, só com escopo, preço e prazo".
+
+### Conferência por outro olhar
+
+O tutor (`/revisar-entrega v`) olha a proposta contra uma lista de itens. Ele não substitui um profissional, mas pega o que você esqueceu: falta o aceite, o fora do escopo, a forma de pagamento.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Mandar o texto do Claude sem ler
+
+Ele escreve bem e com confiança, inclusive o que você não prometeu. Leia tudo.
+
+### Escopo vago
+
+"Site moderno e responsivo" não dá para conferir. Escreva o que a pessoa vai **ver e fazer**.
+
+### Esquecer o fora do escopo
+
+É onde nasce o "ah, mas eu pensei que incluía".
+
+### Prometer resultado
+
+Vender mais, aparecer no Google e crescer no Instagram dependem de muita coisa que você não controla.
+
+### Usar modelo de contrato como se fosse definitivo
+
+Os modelos do curso são de treino. Para um cliente real, passe por revisão profissional.
+
+### Esquecer a forma de aprovar
+
+Sem aceite escrito, "ele disse que sim" não prova nada.
+
+</Camada>
+
+## Fichas de campo
+
+<Ficha
+  id="v2-e1"
+  n={1}
+  titulo="Redigir a proposta com o Claude"
+  objetivo="Pedir ao Claude a proposta da Lia a partir do briefing e do seu cálculo, e revisar cada número contra o cálculo."
+  minutos={30}
+  pre="O calculo-do-preco.md da estação anterior, na pasta studio-lia"
+  versao="2.1.325"
+>
+
+- [Cliente: `t2-dominio-inicio.zip`](../lab/t2-dominio-inicio.zip) (briefing e pedido da agenda, se ainda não extraiu)
+- [Exemplo pronto: `v2-gabarito.zip`](../lab/v2-gabarito.zip) (cálculo, proposta e contrato, para **comparar depois**)
+
+1. Entre na pasta `studio-lia`, onde está o seu `calculo-do-preco.md`:
+
+   <SO unix="cd ~/Documents/clientes/studio-lia && ls" win={`cd "$HOME\\Documents\\clientes\\studio-lia"; Get-ChildItem`} />
+
+2. Abra o Claude e peça a proposta (copie o pedido da seção anterior).
+3. Aprove a criação do `proposta.md` e abra o arquivo.
+4. Faça a **revisão de cinco pontos** da seção "Revise antes de enviar" e anote o que mudou.
+5. Compare com o exemplo pronto só **depois** de revisar a sua. Procure: o que ele tem que a sua não tem?
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits`, dentro de `studio-lia`. Foi assim que executamos (Claude Haiku 5.5). Sem a tela interativa, o pedido precisa incluir tudo, porque não há como responder a perguntas no meio.
+</Nota>
+
+<Prova>
+
+Existe um `proposta.md` com as oito seções, e os valores são **os do seu `calculo-do-preco.md`**, sem números novos. Na nossa execução (5 passos, 86 segundos), a proposta saiu com cerca de 1.525 palavras, escopo em itens, dez itens fora do escopo, cinco fases em sete semanas, pagamento de 50% e 50% e uma pendência com duas opções para a Lia.
+
+</Prova>
+
+<Gabarito>
+
+O seu texto vai diferir, e deve. O que prova que está certo:
+
+- **nenhum valor** que não esteja no seu cálculo;
+- cada item de escopo é algo que dá para marcar "feito" ou "não feito";
+- há uma seção **Fora do escopo** com pelo menos cinco itens;
+- as dúvidas estão em **Pendências**, e não escondidas em frases suaves;
+- não há promessa de vendas, de posição no Google ou de resultado.
+
+Se achar um número que você não reconhece, **peça ao Claude a origem** ou apague.
+
+</Gabarito>
+
+<DeuErro>
+
+- **A proposta tem valores que você não calculou.** O Claude não leu o cálculo. Confira se o arquivo está na pasta e se o pedido citou o nome dele.
+- **O texto ficou enorme.** Peça a versão de uma página. O rascunho longo serve de anexo.
+- **Aparecem cláusulas jurídicas pesadas.** Peça para tirar: a proposta é comercial, e o contrato simples vem na próxima parte.
+- **O Claude escolheu sozinho uma opção que devia ser do cliente.** Mande de volta: "mova essa decisão para Pendências".
+
+</DeuErro>
+
+<Desafio>
+
+Peça uma **segunda versão** da mesma proposta, de uma página, para ser lida no celular do cliente. O que o Claude cortou? O que você acrescentaria de volta?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei as oito seções de uma proposta e por que o fora do escopo é a mais importante.
+- Pedi a proposta ao Claude dando o material e só os valores do meu cálculo.
+- Revisei os cinco pontos antes de considerar enviar.
+- Sei onde conferir nota fiscal e formalização, e que o curso não responde por mim.
+
+</Saida>
+
+**Próxima parte:** [A proposta e o contrato simples, parte 2: o contrato e a prova de domínio](../v2-2/). Você escreve o contrato simples, passa o tutor na venda e prova que domina.
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): modos de permissão e uso sem a tela interativa.
+- Portal oficial do governo para o Microempreendedor Individual (gov.br): consulte a versão atual para regras e limites. O curso não cita valores nem confirma atividades.
+- Execução local registrada em `VERIFICATION/vender.md`: proposta e contrato gerados em modo `acceptEdits`, com Claude Haiku 5.5.
+
+</Fontes>

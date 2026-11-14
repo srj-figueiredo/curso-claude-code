@@ -1,0 +1,257 @@
+---
+id: v1
+titulo: "Quanto cobrar: do custo ao preço"
+parte: p11
+ordem: 1
+minutos: 60
+pre_requisitos: [t0c]
+objetivos:
+  - Estimar as horas de um projeto com o Claude em modo plano, em três cenários.
+  - Montar o preço a partir de horas, valor da hora, custos e folga.
+  - Separar o preço do projeto da manutenção mensal.
+  - Dizer quais premissas sustentam o número e o que acontece se uma falhar.
+tldr:
+  - Preço não é palpite. É horas vezes valor da hora, mais custos, mais uma folga para o imprevisto.
+  - O Claude estima horas melhor quando você pede três cenários e as premissas. Ele também acha contradições no pedido.
+  - O curso não diz quanto cobrar. A calculadora faz a conta com os seus números.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [venda, rapida, completa]
+exercicios:
+  - { id: v1-e1, titulo: Estimar as horas com o Claude, minutos: 25, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Estimativa de horas', simples: 'Quanto tempo de trabalho o projeto deve levar. Vem em três números: o mínimo, o provável e o máximo.' },
+    { termo: 'Premissa', simples: 'Algo que você assume que é verdade para a estimativa valer. Se a premissa falha, o número muda.' },
+    { termo: 'Preço mínimo', simples: 'O menor valor que cobre o seu trabalho e os custos. Abaixo dele, você paga para trabalhar.' },
+    { termo: 'Folga', simples: 'Uma margem percentual para imprevistos: o cliente muda de ideia, o Claude erra, o prazo escorrega.' },
+    { termo: 'Manutenção', simples: 'O trabalho mensal depois da entrega: corrigir, atualizar, responder dúvidas. Cobra-se à parte.' },
+  ]}
+  depois={[
+    { termo: 'Impostos e formalização', quando: 'a estação seguinte mostra o que conferir sobre nota fiscal e MEI, sem dar aconselhamento jurídico.' },
+    { termo: 'Preço por valor', quando: 'cobrar pelo resultado que o cliente ganha, e não pelas horas. É uma técnica mais avançada, que vem com experiência.' },
+  ]}
+/>
+
+Quem aprende a construir com o Claude Code costuma travar na pergunta mais simples do cliente: **"quanto custa?"**. Responder "R$ 500, acho" é arriscado: se o projeto leva três vezes mais do que você imaginou, você trabalha de graça. Responder um valor muito alto sem saber por quê faz você perder o cliente.
+
+Esta estação dá um método. Ele não diz **quanto** cobrar (isso depende da sua cidade, da sua experiência e do seu cliente), mas garante que o seu número tenha **uma conta por trás**, que você consegue explicar.
+
+### A conta em quatro passos
+
+```text
+1. Horas       quanto tempo o projeto leva (três cenários)
+2. Valor/hora  quanto você precisa receber por hora de trabalho
+3. Custos      o que você paga por causa deste cliente
+4. Folga       uma margem para o imprevisto
+
+mínimo       = horas x valor da hora + custos
+recomendado  = mínimo x (1 + folga)
+manutenção   = horas de manutenção x valor da hora, por mês
+```
+
+Cada um dos quatro é uma decisão sua. O Claude ajuda no primeiro (horas) e te lembra do terceiro (custos). O **valor da hora** é seu: pense no que você precisa ganhar por mês e em quantas horas realmente consegue vender (nem todas as horas do mês são de projeto: tem reunião, proposta, imprevisto).
+
+### Passo 1: estimar as horas com o Claude
+
+O modo plano (a tecla <kbd>Shift</kbd>+<kbd>Tab</kbd>, ou `claude --permission-mode plan`) faz o Claude **ler e pensar sem alterar nada**. Para estimativa, é ideal: ele analisa o pedido, lista o que precisa ser feito e dá números, e você ainda não gastou tempo construindo.
+
+O pedido que funcionou melhor foi este (resumido):
+
+```text
+Leia o briefing e a agenda.md. Estime as horas para entregar o site e a agenda.
+Dê três cenários: mínimo, provável e máximo.
+Liste as premissas de cada cenário e os maiores riscos.
+Aponte qualquer contradição no pedido.
+Não escreva código.
+```
+
+Na nossa execução (modo plano, Claude Sonnet 5.5, 4 passos, 26 segundos), para o site e a agenda do Studio Lia, o resultado foi:
+
+| Cenário | Horas | O que assume |
+|---|---|---|
+| **Mínimo** | 26 h | O cliente aprova de primeira, o texto vem pronto e nada muda no meio |
+| **Provável** | 46 h | Duas rodadas de ajuste e um pouco de retrabalho |
+| **Máximo** | 85 h | Mudança de escopo, problemas de hospedagem e testes que falham |
+
+Os números são **de exemplo**: com outro cliente e outro dia, o Claude dá outros. O valor da conversa não está no número exato, e sim em **três coisas**:
+
+1. A **faixa** mostra o risco. Uma faixa de 26 a 85 horas diz que o pedido ainda tem muita incerteza.
+2. As **premissas** viram cláusulas da sua proposta ("o cliente entrega os textos até tal data").
+3. As **contradições** aparecem antes de você prometer.
+
+#### A contradição que o Claude achou
+
+O pedido da Lia dizia duas coisas que não combinam: o sistema **roda no computador do studio, sem internet**, mas a **aluna preenche o formulário no celular dela**. Para a aluna enviar o pedido de casa, o sistema precisa estar na internet, e isso significa hospedagem, custo mensal e outros cuidados. Se você prometesse o preço sem ver isso, o custo real viria depois.
+
+Esse tipo de achado é o que justifica pedir a estimativa **antes** da proposta.
+
+### Passo 2 a 4: a calculadora
+
+Preencha com **os seus** números. Os valores já na calculadora são de exemplo (os mesmos que o Claude usou no nosso teste), só para você ver a conta andar.
+
+<Calculadora />
+
+Com os números de exemplo da nossa execução (46 horas, R$ 50 por hora, R$ 150 de custos, folga de 20%, 2 horas de manutenção), o resultado foi:
+
+| | Conta | Resultado de exemplo |
+|---|---|---|
+| Mínimo | 46 x 50 + 150 | R$ 2.450 |
+| Recomendado | 2.450 x 1,20 | R$ 2.940 |
+| Manutenção | 2 x 50 por mês | R$ 100/mês |
+
+**Estes valores são só de exemplo.** Não são uma sugestão de preço, e a sua conta terá outros números.
+
+<Nota rotulo="O que a calculadora não inclui">
+Ela não calcula impostos, taxa de nota fiscal nem o que a formalização custa. Isso depende da sua situação, e a estação seguinte mostra o que conferir. Também não calcula quanto vale o resultado para o cliente: é uma conta de custo, e não de valor.
+</Nota>
+
+### Como vender isso
+
+- **Mostre a faixa, entregue o preço.** Internamente você usa mínimo, provável e máximo. Para o cliente, vai um preço fechado, com o escopo que o justifica.
+- **Use as premissas na proposta.** Cada premissa vira uma frase: "o preço vale se o cliente entregar os textos e fotos em até 5 dias".
+- **Cobre a manutenção à parte.** O preço do projeto cobre a entrega. O que vem depois (mudanças, dúvidas, correções) é mensalidade.
+- **Nunca prometa preço antes de ver o pedido.** "Depende do que vocês precisam" é uma resposta profissional.
+
+<Camada tipo="capo" titulo="Por baixo do capô: por que três cenários">
+
+### A estimativa é uma faixa
+
+Ninguém acerta horas de um projeto novo. Estimar com um único número dá a ilusão de precisão. Três cenários mostram onde está a **incerteza**: se o máximo é três vezes o mínimo, o pedido está vago e vale gastar uma conversa com o cliente antes de cobrar.
+
+### Por que o Claude erra a estimativa
+
+Ele conhece o tipo de projeto, mas não conhece **você**: a sua velocidade, o seu cliente, o seu ritmo de revisão. Use o número dele como ponto de partida, e depois **ajuste com a sua experiência**. Depois de três ou quatro projetos, registre quanto levou de verdade e compare. Assim a sua estimativa melhora.
+
+### A folga não é gordura
+
+Ela é uma reserva, e tem um custo para o cliente. Folga de 0% significa que qualquer imprevisto sai do seu bolso. Folga muito alta pode derrubar a venda. O ponto certo vem do histórico: quanto os seus projetos passam do estimado, em média.
+
+### O valor da hora
+
+Um jeito de pensar: quanto você precisa ganhar por mês, dividido pelas horas que de fato consegue **vender** (não todas as horas do mês). Quem divide pelas 160 horas de um mês de trabalho se engana, porque proposta, reunião e suporte não entram na conta.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Cobrar pelo número do Claude sem ajustar
+
+O Claude estima horas de "alguém que sabe o que faz". Pode ser mais rápido ou mais lento do que você.
+
+### Esquecer a manutenção
+
+Todo projeto tem vida depois da entrega. Sem mensalidade, cada dúvida do cliente vira trabalho grátis.
+
+### Esquecer os custos do cliente
+
+Domínio, hospedagem e IA entram. Veja a folha de custos da estação do plano de uso.
+
+### Estimar sem ler as contradições
+
+Um pedido que diz "sem internet" e "no celular da aluna" vai estourar o prazo e o preço. Pergunte ao Claude pelas contradições.
+
+### Dar desconto sem tirar escopo
+
+Se o cliente quer pagar menos, **tire algo da entrega** em vez de baixar o preço do mesmo trabalho.
+
+</Camada>
+
+## Fichas de campo
+
+<Ficha
+  id="v1-e1"
+  n={1}
+  titulo="Estimar as horas com o Claude"
+  objetivo="Pedir ao Claude, em modo plano, uma estimativa em três cenários para o pedido da Lia, e ler as premissas e contradições."
+  minutos={25}
+  pre="Claude Code instalado e a estação do tutor concluída"
+  versao="2.1.325"
+>
+
+- [Cliente: `t2-dominio-inicio.zip`](../lab/t2-dominio-inicio.zip) (briefing do site e pedido da agenda)
+
+1. Extraia o ZIP e entre na pasta:
+
+   <SO unix="unzip -o ~/Downloads/t2-dominio-inicio.zip -d ~/Documents/clientes && cd ~/Documents/clientes/studio-lia" win={`Expand-Archive "$HOME\\Downloads\\t2-dominio-inicio.zip" -DestinationPath "$HOME\\Documents\\clientes" -Force; cd "$HOME\\Documents\\clientes\\studio-lia"`} />
+
+2. Abra o Claude em **modo plano**:
+
+   ```bash
+   claude --permission-mode plan
+   ```
+
+3. Peça a estimativa:
+
+   ```text
+   Leia o briefing.md e a agenda.md. Estime as horas para entregar o site e a agenda.
+   Dê três cenários: mínimo, provável e máximo.
+   Liste as premissas de cada cenário e os maiores riscos.
+   Aponte qualquer contradição no pedido.
+   Não escreva código.
+   ```
+
+4. Copie os três números e as premissas para um arquivo `calculo-do-preco.md`.
+5. Preencha a calculadora acima com **as suas** horas (use a provável), o **seu** valor da hora e os custos da sua folha.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode plan`, na pasta `studio-lia`. Foi assim que executamos (Claude Sonnet 5.5).
+</Nota>
+
+<Prova>
+
+O Claude responde com os três cenários, as premissas e os riscos, **sem criar nem alterar arquivo nenhum** (confira com `git status` ou listando a pasta). Na nossa execução (4 passos, 26 segundos) a resposta foi **26 h / 46 h / 85 h** e apontou a contradição entre "roda offline no computador do studio" e "a aluna preenche no celular".
+
+</Prova>
+
+<Gabarito>
+
+Os seus números serão diferentes, e tudo bem. O que prova que funcionou:
+
+- **três** números, com o máximo claramente maior que o mínimo;
+- **premissas** escritas, que você consegue transformar em frases de proposta;
+- pelo menos **um risco ou contradição** que você não tinha visto.
+
+Se o Claude entregar um número só, peça de novo pedindo os três cenários. Se ele escrever arquivos, você não estava em modo plano.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude criou arquivos.** Você não estava em modo plano. Saia, rode `claude --permission-mode plan` e peça de novo.
+- **A estimativa veio sem premissas.** Releia o pedido: a linha "liste as premissas" é o que força isso.
+- **Os números parecem altos ou baixos demais.** Pergunte ao Claude de onde vêm ("detalhe as horas por tarefa") e ajuste o que você sabe que é diferente.
+- **No Git Bash, a barra do ZIP ou do comando vira caminho.** Use `MSYS_NO_PATHCONV=1` antes do comando.
+
+</DeuErro>
+
+<Desafio>
+
+Peça a mesma estimativa a **outro modelo** (`claude --model haiku`, por exemplo) e compare as três faixas. Onde eles divergem? O que isso diz sobre a incerteza do pedido?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Sei estimar horas em três cenários, com premissas e riscos.
+- Conheço a conta do preço: mínimo, recomendado e manutenção.
+- Preenchi a calculadora com os meus números e guardei o `calculo-do-preco.md`.
+- Sei que o preço do projeto e a manutenção mensal são coisas separadas.
+
+</Saida>
+
+**Próxima parte:** [Quanto cobrar, parte 2: da conta à tabela de preços](../v1-2/). Você transforma a conta em uma tabela de pacotes que dá para mostrar ao cliente e prova que dominou.
+
+<Fontes>
+
+- [Common workflows: plan mode](https://code.claude.com/docs/en/common-workflows.md): como usar o modo plano para analisar sem alterar.
+- Execução local registrada em `VERIFICATION/vender.md`: estimativa em modo plano (Claude Sonnet 5.5) para o pedido do Studio Lia.
+
+</Fontes>

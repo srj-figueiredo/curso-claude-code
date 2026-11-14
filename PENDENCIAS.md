@@ -139,3 +139,7 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
 - **7.15** T3: formato do pacote do WhatsApp Business, regras e custos da plataforma oficial e hospedagem 24 horas não verificados.
 - **7.16** T3: falta no atendente a função de apagar as conversas de um número (a página diz); `reativar.mjs` imprime o telefone inteiro.
 - **7.17** T3: `$env:PROVEDOR=...` e `$LASTEXITCODE` no PowerShell 5.1 não foram executados; textos de política, proposta de custo e termo de aceite não validados com cliente nem profissional jurídico.
+- **7.19** Preparação e Vender: instalação do Claude Code e criação da pasta de clientes (`t0a`) **não testadas**; ensaio de conversa de venda com o Claude e abordagem com pessoas reais não executados.
+- **7.20** Vender: textos de proposta, contrato e abordagem são modelos de treino, sem revisão jurídica. Se programação e criação de sites constam como atividade de MEI **não foi confirmado** (conferir no portal oficial). Nenhum valor de MEI, imposto ou plano foi citado.
+- **7.21** Tutor: uma execução por entrega e um só modelo (Haiku 5.5); a nota pode variar. Rubricas `t2` e `t3` não foram executadas, apenas `t1` e `v`.
+- **7.22** Contradição do pedido da Lia (sistema offline x formulário no celular) foi só sinalizada em nota; a hospedagem real continua fora do curso (ver 7.15).

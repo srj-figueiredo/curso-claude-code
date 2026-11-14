@@ -50,6 +50,7 @@ const nomesTrilhas = dados.trilhas.map((t) => TRILHAS[t].titulo).join(' · ');
           <Selo versao={dados.verificado_em_versao} data={dados.verificado_em_data} />
           {dados.status === 'beta' && <Selo tipo="beta" />}
           {dados.status === 'depende-de-plano' && <Selo tipo="plano" texto="varia" />}
+          {(dados as any).nivel === 'aprofundamento' && <span class="selo">Aprofundamento: pode pular na primeira passada</span>}
         </li>
       </ul>
     </header>

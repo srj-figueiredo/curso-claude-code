@@ -21,6 +21,7 @@ import LinkInterno from '../components/LinkInterno.astro';
 import Conceitos from '../components/Conceitos.astro';
 import Arquivo from '../components/Arquivo.astro';
 import Entrega from '../components/Entrega.astro';
+import Calculadora from '../components/Calculadora.astro';
 
 export const componentes = {
   Camada,
@@ -43,6 +44,7 @@ export const componentes = {
   Conceitos,
   Arquivo,
   Entrega,
+  Calculadora,
   // Elementos HTML do Markdown trocados por componentes:
   table: Tabela,
   a: LinkInterno,

@@ -1,0 +1,167 @@
+---
+id: v1-2
+titulo: "Quanto cobrar, parte 2: da conta à tabela de preços"
+parte: p11
+ordem: 1.1
+minutos: 45
+pre_requisitos: [v1]
+objetivos:
+  - Transformar a conta do preço em uma tabela de pacotes para mostrar ao cliente.
+  - Cobrar o projeto por fases, com o que cada fase entrega.
+  - Separar projeto, manutenção e o que o cliente paga direto.
+  - Provar o domínio calculando o preço de um cliente novo, sem passo a passo.
+tldr:
+  - A conta fica com você. O cliente vê uma tabela clara, com o que está incluído em cada pacote.
+  - Cobrar por fases protege os dois lados. Cada fase tem entrega, preço e prazo.
+  - Tudo que o cliente paga direto (domínio, IA, hospedagem) aparece à parte, com a data da consulta.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [venda, rapida, completa]
+exercicios: []
+---
+
+## Nesta parte
+
+Esta é a segunda parte da estação "Quanto cobrar". Na primeira você estimou as horas e fez a conta. Agora transforma a conta numa **tabela de preços** e prova que dominou.
+
+<Conceitos
+  aprender={[
+    { termo: 'Pacote', simples: 'Um conjunto fechado do que está incluído, por um preço. Facilita a decisão do cliente.' },
+    { termo: 'Fase', simples: 'Uma parte do projeto com entrega, prazo e preço próprios. O cliente paga e aprova fase por fase.' },
+    { termo: 'Custo direto do cliente', simples: 'O que o cliente paga ao fornecedor, no nome dele: domínio, hospedagem, IA. Não passa pelo seu preço.' },
+    { termo: 'Fora do escopo', simples: 'A lista do que não está incluído. Protege você de pedidos novos disfarçados de "detalhe".' },
+  ]}
+/>
+
+### Da conta à tabela
+
+A conta que você fez na parte 1 é **interna**. O cliente não precisa ver horas e folga, e sim **o que recebe por quanto**. Um formato que funciona bem para quem está começando é a tabela de **três pacotes**, em que cada um inclui um pouco mais:
+
+| | Básico | Completo | Completo + manutenção |
+|---|---|---|---|
+| O que entrega | Site de uma página | Site + formulário que guarda pedidos | Tudo do Completo |
+| Revisões incluídas | 1 rodada | 2 rodadas | 2 rodadas |
+| Prazo | (sua estimativa) | (sua estimativa) | (sua estimativa) |
+| Preço do projeto | (sua conta) | (sua conta) | (sua conta) |
+| Manutenção mensal | não inclui | não inclui | (sua conta) |
+
+Os valores ficam em branco de propósito: **são seus**. O que a tabela faz é dar ao cliente uma **escolha** entre opções concretas, em vez de uma pergunta em aberto ("quanto você quer pagar?").
+
+Três regras para montá-la:
+
+1. **Cada pacote tem entrega verificável.** "Site profissional" não é verificável. "Uma página com horários, endereço e botão de WhatsApp, testada no celular" é.
+2. **O pacote do meio é o que você quer vender.** Os outros dois servem de referência.
+3. **A lista "fora do escopo" vale para todos.** O que não está escrito como incluído não está incluído.
+
+### Cobrar por fases
+
+Um projeto de 46 horas pode ser pago em partes. O modelo que usamos nos testes foi **50% na aprovação da proposta e 50% na entrega**. Para projetos maiores, as fases protegem os dois lados:
+
+| Fase | Entrega | Quando se paga |
+|---|---|---|
+| 1. Site | Página no ar, testada | Na aprovação da proposta |
+| 2. Agenda | Formulário que guarda os pedidos | Ao entregar a fase 1 |
+| 3. Ajustes | Duas rodadas de revisão | Ao entregar a fase 2 |
+
+Vantagem para o cliente: ele só paga a fase seguinte depois de ver a anterior funcionando. Vantagem para você: entra dinheiro durante o projeto, e o cliente que some no meio já pagou a parte que você fez.
+
+### O que o cliente paga direto
+
+Alguns custos **não são seus**. Combine desde o início:
+
+| Custo | Em nome de quem | Por quê |
+|---|---|---|
+| Domínio | Do cliente | Se você sair, o endereço fica com ele |
+| Hospedagem | Do cliente (ou repassada, com aviso) | Varia por fornecedor e pode mudar |
+| IA do atendente (API) | Do cliente | A chave e a conta são dele, com teto de gasto |
+
+Anote cada valor com a **data da consulta** e o endereço de onde veio. O curso não cita preços porque eles mudam: consulte você mesmo na hora de montar a proposta.
+
+### Como vender isso
+
+- **Apresente três opções, não uma.** Quem escolhe entre três geralmente escolhe. Quem recebe um número só tende a negociar o número.
+- **Diga o que fica de fora.** "Isto não está incluído e pode ser feito depois, com orçamento à parte" evita 90% das discussões.
+- **Mostre a manutenção como proteção.** "Se algo quebrar ou mudar, você tem quem resolva" é mais fácil de vender que "mensalidade".
+- **Fale em prazo e entrega.** O cliente pequeno raramente compara hora de trabalho, e sim o que vai receber e quando.
+
+<Entrega titulo="Prove que dominou e monte a sua tabela de preços">
+
+### Teste de domínio: o preço de um cliente novo
+
+Sem olhar a página, calcule o preço para um **cliente que você escolher** (pode ser real ou inventado): um pequeno negócio que precisa de um site e de um formulário de pedidos.
+
+**Sua missão, sem passo a passo:**
+
+1. Escreva em três linhas o que o cliente pediu.
+2. Peça ao Claude, em modo plano, a estimativa de horas em três cenários, com premissas e contradições.
+3. Faça a conta com **os seus** números (calculadora) e escreva o `calculo-do-preco.md`.
+4. Monte a tabela de três pacotes e a lista "fora do escopo".
+5. Diga qual **premissa**, se falhar, mais estoura o seu preço.
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- escrever a fórmula do preço mínimo, do recomendado e da manutenção;
+- explicar por que a estimativa vem em três cenários;
+- dizer o que o cliente paga direto e o que entra no seu preço;
+- montar uma tabela de pacotes com entrega verificável;
+- dizer por que não se baixa o preço sem tirar escopo.
+
+### Entregue o cálculo e a tabela
+
+Dois arquivos na pasta do cliente:
+
+```markdown
+# calculo-do-preco.md
+
+Cliente: ...        Data da conta: ...
+Horas: mínimo __ / provável __ / máximo __
+Valor da hora: R$ __     Custos: R$ __ (fontes e datas abaixo)
+Folga: __ %
+Mínimo: R$ __   Recomendado: R$ __   Manutenção: R$ __/mês
+
+Premissas: 1) ... 2) ...
+Custos e fontes: domínio (valor, data, site), hospedagem (valor, data, site)
+```
+
+```markdown
+# tabela-de-precos.md
+
+| | Básico | Completo | Completo + manutenção |
+|---|---|---|---|
+| Entrega | ... | ... | ... |
+| Revisões | ... | ... | ... |
+| Prazo | ... | ... | ... |
+| Preço | R$ __ | R$ __ | R$ __ |
+
+Fora do escopo: ...
+Pago direto pelo cliente: ...
+```
+
+Duas regras:
+
+1. **Todo valor leva data.** Preço sem data envelhece sem aviso.
+2. **Marque "exemplo" em tudo que você inventou para treinar.** Se o cálculo for de um cliente fictício, deixe isso escrito. Nunca apresente número de treino como preço real.
+
+Na próxima estação você usa estes arquivos para escrever a proposta. Quando terminar a proposta, o tutor (`/revisar-entrega v`) confere os dois itens de preço.
+
+</Entrega>
+
+<Saida>
+
+- Sei montar a conta do preço e explicá-la.
+- Transformei a conta numa tabela de três pacotes, com o que fica de fora.
+- Sei separar o que entra no meu preço do que o cliente paga direto.
+- Calculei o preço de um cliente novo sem passo a passo.
+- Tenho `calculo-do-preco.md` e `tabela-de-precos.md`, com datas e a marca "exemplo" onde cabe.
+
+</Saida>
+
+**Próxima estação:** [A proposta e o contrato simples](../v2/). Com o preço fechado, você escreve o documento que o cliente aprova por escrito e o contrato que protege os dois lados.
+
+<Fontes>
+
+- [Manage costs effectively](https://code.claude.com/docs/en/costs.md): como reduzir o uso de tokens, que entra nos seus custos.
+- Execução local registrada em `VERIFICATION/vender.md`: o exemplo de conta (46 h, folga de 20%) veio de uma execução real, e todos os valores estão marcados como exemplo.
+
+</Fontes>

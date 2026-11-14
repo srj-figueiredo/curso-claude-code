@@ -1,0 +1,134 @@
+---
+// Glossário automático: reúne os termos dos avisos "Conceitos desta estação" de todas as páginas.
+// Nada é escrito à mão aqui: ao criar uma estação nova com <Conceitos>, o termo entra sozinho.
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Base from '../layouts/Base.astro';
+import { rotulo, nome } from '../data/curso';
+import { pagina } from '../lib/url';
+
+type Termo = { termo: string; simples: string; onde: string[] };
+const pasta = join(process.cwd(), 'src', 'content', 'modulos');
+const achados = new Map<string, Termo>();
+const padrao = /termo:\s*'((?:[^'\\]|\\.)*)',\s*simples:\s*'((?:[^'\\]|\\.)*)'/g;
+
+for (const arquivo of readdirSync(pasta).filter((f) => f.endsWith('.mdx')).sort()) {
+  const id = arquivo.replace(/\.mdx$/, '');
+  const texto = readFileSync(join(pasta, arquivo), 'utf8');
+  // só os termos de "aprender": ignora os de "depois", que ainda não foram ensinados
+  const blocos = texto.match(/<Conceitos[\s\S]*?\/>/g) ?? [];
+  for (const bloco of blocos) {
+    const aprender = bloco.split('depois=')[0];
+    for (const m of aprender.matchAll(padrao)) {
+      const termo = m[1].replace(/\\'/g, "'");
+      const chave = termo.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+      const atual = achados.get(chave);
+      if (atual) {
+        if (!atual.onde.includes(id)) atual.onde.push(id);
+      } else {
+        achados.set(chave, { termo, simples: m[2].replace(/\\'/g, "'"), onde: [id] });
+      }
+    }
+  }
+}
+
+const lista = [...achados.values()].sort((a, b) => a.termo.localeCompare(b.termo, 'pt-BR'));
+const inicial = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '')[0].toUpperCase();
+const grupos = new Map<string, Termo[]>();
+for (const t of lista) {
+  const k = inicial(t.termo);
+  grupos.set(k, [...(grupos.get(k) ?? []), t]);
+}
+const letras = [...grupos.keys()];
+---
+
+<Base titulo="Glossário" corrente="Glossário" buscavel={true}>
+  <div class="folha">
+    <h1>Glossário</h1>
+    <p class="folha__lide">
+      {lista.length} termos, em palavras simples, reunidos dos avisos de cada estação. Quem aparece em mais de uma estação mostra todas.
+    </p>
+    <nav class="letras" aria-label="Ir para a letra">
+      {letras.map((l) => <a href={`#letra-${l}`}>{l}</a>)}
+    </nav>
+    {
+      [...grupos.entries()].map(([letra, termos]) => (
+        <section class="grupo" aria-labelledby={`letra-${letra}`}>
+          <h2 id={`letra-${letra}`}>{letra}</h2>
+          <dl>
+            {termos.map((t) => (
+              <div class="termo">
+                <dt>{t.termo}</dt>
+                <dd>
+                  {t.simples}
+                  <span class="onde">
+                    {' '}
+                    Aparece em:{' '}
+                    {t.onde.map((id, i) => (
+                      <>
+                        {i > 0 && ', '}
+                        <a href={pagina(id)}>{rotulo(id) === 'Guia' ? nome(id) : rotulo(id)}</a>
+                      </>
+                    ))}
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .folha {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: var(--e-7) clamp(var(--e-4), 5vw, var(--e-6)) var(--e-7);
+  }
+  h1 {
+    font-size: var(--t-xl);
+  }
+  .folha__lide {
+    margin-top: var(--e-3);
+    color: var(--tinta-2);
+  }
+  .letras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-2);
+    margin: var(--e-4) 0 var(--e-5);
+  }
+  .letras a {
+    min-width: 2.25rem;
+    padding: 0.35rem 0.6rem;
+    text-align: center;
+    border: 2px solid var(--tinta);
+    border-radius: var(--pilula);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .grupo h2 {
+    margin: var(--e-5) 0 var(--e-2);
+    font-size: var(--t-l, 1.6rem);
+    color: var(--sinal);
+  }
+  dl {
+    margin: 0;
+    display: grid;
+    gap: var(--e-3);
+  }
+  dt {
+    font-weight: 700;
+  }
+  dd {
+    margin: 0;
+  }
+  .onde {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.9rem;
+    color: var(--tinta-2);
+  }
+</style>

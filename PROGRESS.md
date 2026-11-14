@@ -26,6 +26,7 @@ Roteiro aprovado em `docs/ROTEIRO-V2.md`; o mapa de conceitos dos módulos antig
 - **Temporada 3 (Atendimento com IA), escrita e verificada:** T3A (base, simulador, provedor local), T3B (guardrails, limite, privacidade), T3C (provedor da API paga, testado só contra servidor falso; fita "Troca por pago"), T3D (avaliação com nota antes de corrigir, relatório, manutenção e entrega). Cliente Pet Shop Patas Felizes; projeto final: atendente do Studio Lia. Verificação em `VERIFICATION/t3.md`. Labs `lab/estados/t3*`.
 - **Guias antigos renomeados (D019):** sem códigos M, R, C no mapa, na navegação e no texto.
 - **Estações divididas em partes (D022):** as 12 estações viraram 30 páginas de 40 a 80 minutos (t1a, t1a-2...). O mapa mostra um ponto por estação.
+- **Preparação, Vender, tutor e glossário (D023, 14/11/2026):** `t0a` a `t0c` (computador, plano e limite, tutor) e `v1` a `v3-2` (preço, proposta e contrato, portfólio e abordagem), trilha Primeira venda, nível aprofundamento em `t2c` e `t2c-2`, glossário automático. Verificação em `VERIFICATION/preparacao.md` e `VERIFICATION/vender.md`. axe (112 testes) e calculadora passam.
 - **Próximo:** Temporada 4 (automação com IA e relatórios). A API real, o WhatsApp oficial e a hospedagem 24 horas seguem não testados (PENDENCIAS 7.14 a 7.17).
 
 Pausa anterior (limite do plano): M0 a M8 e M10 estão escritos e verificados; a Publicação saiu em 13/11/2026.

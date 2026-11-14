@@ -1,0 +1,383 @@
+---
+id: t0b
+titulo: "O plano, o limite de uso e o custo do dia a dia"
+parte: p12
+ordem: 2
+minutos: 60
+pre_requisitos: [t0a]
+objetivos:
+  - Explicar o que é o limite de uso do plano e o que acontece quando ele acaba.
+  - Ler o extrato de uso com o comando /usage.
+  - Escolher entre pedido vago e pedido específico, sabendo quanto cada um custa em trabalho.
+  - Listar cinco hábitos que gastam menos uso sem perder qualidade.
+  - Somar os custos do dia a dia de quem vende serviços com o Claude Code.
+tldr:
+  - O Claude Code tem um limite de uso que volta com o tempo. Saber ler o extrato evita ser pego de surpresa.
+  - Um pedido específico mudou 4 linhas e levou 16 segundos. O vago mudou 81 linhas e levou 57, para a mesma tarefa.
+  - Todo custo de cada cliente entra no preço. Some assinatura, ferramentas, domínio e hospedagem antes de cobrar.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: depende-de-plano
+trilhas: [venda, rapida, completa]
+exercicios:
+  - { id: t0b-e1, titulo: Ler o extrato de uso, minutos: 15, custo: gratis }
+  - { id: t0b-e2, titulo: Medir um pedido vago e um específico, minutos: 25, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Limite de uso', simples: 'O quanto do Claude Code o seu plano deixa você usar numa janela de tempo. Quando acaba, volta depois de um tempo.' },
+    { termo: 'Extrato de uso', simples: 'O comando /usage mostra quanto da janela você já gastou e o que mais pesou.' },
+    { termo: 'Token', simples: 'O pedacinho de texto pelo qual o uso é contado. Quanto mais o Claude lê e escreve, mais tokens.' },
+    { termo: 'Contexto', simples: 'Tudo o que está na conversa agora. Quanto maior, mais cada mensagem custa.' },
+    { termo: 'Pedido específico', simples: 'Um pedido que diz o arquivo, a mudança e o que não mexer. Gasta menos e erra menos.' },
+    { termo: 'Custo do projeto', simples: 'Tudo o que você paga por causa de um cliente: ferramentas, domínio, hospedagem. Entra no preço.' },
+  ]}
+  depois={[
+    { termo: 'Créditos de uso', quando: 'dá para continuar além do limite do plano comprando créditos. A ficha mostra o comando, mas a decisão de gastar é sua.' },
+    { termo: 'Preço do seu serviço', quando: 'como transformar custos e horas num preço. É a próxima parte do curso, na estação "Quanto cobrar".' },
+    { termo: 'Escolher o modelo', quando: 'modelos menores gastam menos. A estação "Trocar o simulador pela IA" volta ao assunto, com a conta.' },
+  ]}
+/>
+
+Durante a escrita deste curso, o limite de uso do plano **bateu uma vez**, no meio de um trabalho, e a única opção foi esperar. Não é uma falha: é o jeito como o serviço funciona. Mas quem vende serviços e tem prazo com cliente não pode ser pego de surpresa. Esta estação ensina a **enxergar o seu consumo**, a **gastar menos** e a **somar o que cada cliente custa** de verdade.
+
+### Como funciona o limite
+
+O Claude Code vem incluído em planos pagos, e esses planos têm um **limite de uso**: uma quantidade que você pode gastar numa janela de tempo. Quando você chega ao fim, o Claude Code avisa com uma mensagem parecida com **"You've hit your session limit"** (limite da sessão) ou **"You've hit your weekly limit"** (limite da semana). A mensagem diz **quando o uso volta**.
+
+Dois fatos que a documentação oficial dá e que evitam tentativas inúteis:
+
+- O limite é **compartilhado entre os modelos**: trocar de modelo com `/model` não devolve o acesso. A exceção é a mensagem de limite **de um modelo específico** (por exemplo, "Opus limit"): aí trocar para um modelo de outra família permite continuar.
+- Quem quer continuar além do limite do plano pode usar **créditos de uso**, com o comando `/usage-credits` (disponível quando você entrou com a conta de assinatura, não com chave de API). **A decisão de gastar é sua**, e o curso não a toma por você.
+
+<Nota rotulo="Planos e janelas">
+Os detalhes das janelas (por exemplo, a de cinco horas e a semanal descritas para planos de equipe) e o tamanho do limite de cada plano **mudam e variam por plano**. O curso não cita números: consulte a página oficial do seu plano antes de planejar.
+</Nota>
+
+### O extrato: `/usage`
+
+O comando `/usage` é o seu extrato. Ele funciona dentro de uma sessão e também sem a tela interativa (`claude -p "/usage"`). Na máquina do autor, ele respondeu assim (resumido, com valores só de exemplo):
+
+```text
+You are currently using your subscription to power your Claude Code usage
+
+Current session: 78% used · resets Nov 14, 3am
+Current week (all models): 61% used · resets Nov 19, 3pm
+
+What's contributing to your usage?
+Last 24h · 728 requests · 6 sessions
+  97%  Start fresh when you switch tasks · run /clear
+  95%  Review sessions active over many hours
+  11%  Turn off MCP servers you don't use
+```
+
+Como ler:
+
+| Linha | O que diz |
+|---|---|
+| **Current session** | Quanto da janela de agora você já usou e quando ela reinicia |
+| **Current week** | Quanto da semana você já usou e quando ela reinicia |
+| **What's contributing** | O que mais pesou, com uma sugestão (por exemplo, "comece uma conversa nova quando trocar de assunto") |
+
+Repare nas sugestões. A mais repetida, **"Start fresh when you switch tasks"**, é o hábito mais barato de todos, e é o que a próxima seção explica.
+
+### Por que o uso sobe
+
+O Claude Code usa **tokens**: o que ele lê (o seu pedido, os arquivos, a conversa até aqui) e o que ele escreve. O que mais pesa não é o que você digita agora, e sim **o tamanho da conversa inteira**, que é reenviada a cada mensagem. Uma conversa longa, misturando assuntos, fica cara e confusa.
+
+Por isso os hábitos que mais economizam, segundo a documentação oficial:
+
+| Hábito | Por quê |
+|---|---|
+| **`/clear` quando trocar de assunto** | Conversa velha pesa em toda mensagem nova |
+| **Pedido específico** | Menos leitura de arquivo à toa |
+| **Modo plano em tarefa grande** | Evita refazer o que foi na direção errada |
+| **Parar cedo** (tecla <kbd>Esc</kbd>) | Corta o caminho errado antes de gastar |
+| **Dar um jeito de conferir** | Quando ele consegue testar, acha o erro sozinho |
+
+### A prova: o mesmo pedido, de dois jeitos
+
+Pedimos a mesma tarefa de dois jeitos, no mesmo site de 399 linhas: mudar o horário de sábado, de 14h para 16h.
+
+| | Pedido vago: *"Melhore o site."* | Pedido específico: *"No `index.html`, troque o horário de sábado... Só isso."* |
+|---|---|---|
+| **Passos do Claude** | 11 | 11 |
+| **Texto que ele escreveu (tokens de saída)** | 11.761 | 2.084 |
+| **Tempo** | 57 segundos | 16 segundos |
+| **Linhas do site que mudaram** | **81** | **4** |
+
+O pedido vago gastou **5,6 vezes** mais saída e **3,5 vezes** mais tempo. E fez coisas que ninguém pediu: mexeu em cores, em botões e no cabeçalho (algumas mudanças até eram boas, mas **você** não escolheu). O pedido específico mudou exatamente 4 linhas, as certas.
+
+Foi uma execução de cada. Os números variam entre execuções. A diferença de **ordem de grandeza** não.
+
+### O custo do dia a dia
+
+O limite do plano é só uma parte. Quem vende serviços tem **custos por cliente** que precisam entrar no preço:
+
+| Custo | O que é | Como entra no preço |
+|---|---|---|
+| **Assinatura do Claude Code** | O plano que você paga todo mês | Rateie entre os clientes do mês |
+| **IA dentro do produto** | A API paga, quando o cliente usa um atendente com IA | É do **cliente**: conta e chave no nome dele |
+| **Domínio** | O endereço (`studiolia.com.br`) | Do cliente, renovado todo ano |
+| **Hospedagem** | Onde o site ou sistema fica no ar | Do cliente ou repassado, com preço que varia por fornecedor |
+| **Seu tempo** | As horas de trabalho e de manutenção | É a maior parte do preço |
+
+O curso **não cita valores**: eles mudam e variam por plano e fornecedor. A estação de preço ensina a conta, com a calculadora.
+
+### Como vender isso
+
+- **Conheça o seu custo antes de cobrar.** Quem não sabe quanto gasta por cliente corre o risco de trabalhar de graça sem perceber.
+- **Não pague o uso do cliente com o seu cartão.** Se o projeto usa a API paga, a conta é do cliente.
+- **Avise o cliente quando o prazo depender do limite.** Se um trabalho grande vai passar por uma janela de uso, planeje o dia, em vez de prometer o impossível.
+
+<Camada tipo="capo" titulo="Por baixo do capô: o que pesa na conta">
+
+### O cache
+
+O Claude Code reaproveita a parte repetida da conversa para gastar menos. Por isso o `/usage` mostra "leitura de cache" em números enormes: é o reaproveitamento funcionando. Em uma conversa longa o que importa não é o total de leitura, e sim quanto de **saída** e de **conversa nova** você gerou.
+
+### O contador ao lado do relógio
+
+Enquanto o Claude trabalha, aparece perto do indicador de espera um contador de tokens de saída daquele momento. Ele **não** inclui o que o Claude lê, só o que escreve, e reinicia a cada resposta.
+
+### `/clear` x `/compact`
+
+`/clear` começa do zero. `/compact` resume o que já houve para liberar espaço, mantendo o que você pedir. Quem vai continuar o mesmo assunto prefere `/compact`; quem vai mudar de assunto prefere `/clear`.
+
+### O que o `/insights` faz
+
+Gera um relatório sobre como você trabalha (e não só quantos tokens gastou), a partir das suas sessões recentes. Ele **também gasta uso**: os tokens dele contam no seu plano.
+
+### Modelo
+
+Modelos menores costumam gastar menos e modelos maiores costumam responder melhor em tarefas difíceis. A escolha é por tarefa, com teste, e não por nome.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Uma conversa gigante para tudo
+
+Mistura assuntos, pesa em toda mensagem e confunde o Claude. Uma conversa por assunto.
+
+### Pedir "melhore" sem dizer o quê
+
+Gasta mais, demora mais e muda o que você não pediu.
+
+### Contar com o limite sem olhar o extrato
+
+Quem não olha `/usage` descobre o limite quando ele acaba, no meio do trabalho.
+
+### Trocar de modelo para "burlar" o limite
+
+O limite é compartilhado. Só ajuda no limite de um modelo específico.
+
+### Gastar créditos sem decidir
+
+Os créditos têm custo. Decida antes, e combine com o cliente quando o prazo depender disso.
+
+### Esquecer os custos do cliente no preço
+
+Assinatura, domínio e hospedagem existem desde o primeiro dia.
+
+</Camada>
+
+## Fichas de campo
+
+<Ficha
+  id="t0b-e1"
+  n={1}
+  titulo="Ler o extrato de uso"
+  objetivo="Rodar o /usage e dizer, com as suas palavras, quanto do seu plano você já usou e o que mais pesou."
+  minutos={15}
+  pre="Claude Code instalado e com login feito (a instalação é a primeira ficha da estação seguinte)"
+  versao="2.1.325"
+>
+
+Se você ainda não instalou o Claude Code, volte a esta ficha depois da estação "Seu primeiro cliente", parte 1.
+
+1. Abra o terminal numa pasta qualquer e rode:
+
+   ```bash
+   claude -p "/usage"
+   ```
+
+   Se você abrir o Claude (`claude`), digite `/usage` na conversa.
+
+2. Leia as linhas **Current session** e **Current week** e a lista "What's contributing".
+3. Escreva duas frases: quanto você já usou e qual é a sugestão mais repetida.
+
+<Nota rotulo="No Git Bash">
+No Git Bash do Windows, a barra inicial de `/usage` pode ser trocada por um caminho. Rode com `MSYS_NO_PATHCONV=1 claude -p "/usage"`. No PowerShell isso não acontece.
+</Nota>
+
+<Prova>
+
+Aparece o extrato com a porcentagem da sessão e da semana e as sugestões. Na nossa execução, o comando respondeu sem abrir a tela interativa, e as linhas "Current session" e "Current week" mostraram a porcentagem usada e **quando cada janela reinicia**. A lista "What's contributing" trouxe "Start fresh when you switch tasks · run /clear" como a sugestão mais frequente.
+
+</Prova>
+
+<Gabarito>
+
+O seu extrato terá outros números. O que prova que você entendeu: você consegue dizer **quando o seu uso volta** e **qual hábito pesa mais**. Se o comando responder que o `/usage` não está disponível, você provavelmente entrou com uma chave de API em vez de uma assinatura: nesse caso o custo aparece em dinheiro, e a cobrança é pela API.
+
+</Gabarito>
+
+<DeuErro>
+
+- **"Unknown command" ou o comando não faz nada.** Confira a versão com `claude --version` e atualize o Claude Code.
+- **No Git Bash, o comando vira um caminho.** Use `MSYS_NO_PATHCONV=1` antes do comando.
+- **O extrato aparece em dinheiro, e não em porcentagem.** Você usa chave de API. O consumo é cobrado por uso, sem janela de assinatura.
+
+</DeuErro>
+
+<Desafio>
+
+Rode o `/usage` no começo do dia e de novo no fim. Qual foi o assunto que mais pesou? Isso muda o seu jeito de pedir amanhã?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t0b-e2"
+  n={2}
+  titulo="Medir um pedido vago e um específico"
+  objetivo="Fazer a mesma mudança de dois jeitos e comparar o quanto cada um mexeu no arquivo."
+  minutos={25}
+  pre="Ficha 1 e o site da Doce Esquina (t1c-gabarito.zip)"
+  versao="2.1.325"
+>
+
+Use o site da Doce Esquina do laboratório de uma estação futura ou de qualquer site seu pequeno. Aqui usamos o `t1c-gabarito.zip`.
+
+- [Site da Doce Esquina: `t1c-gabarito.zip`](../lab/t1c-gabarito.zip)
+
+1. Extraia o ZIP **duas vezes**, em duas pastas diferentes (`vago` e `especifico`), e entre na primeira:
+
+   <SO unix="mkdir -p ~/Documents/clientes && unzip ~/Downloads/t1c-gabarito.zip -d ~/Documents/clientes && mv ~/Documents/clientes/doce-esquina ~/Documents/clientes/vago && unzip ~/Downloads/t1c-gabarito.zip -d ~/Documents/clientes && mv ~/Documents/clientes/doce-esquina ~/Documents/clientes/especifico && cd ~/Documents/clientes/vago" win={`Expand-Archive "$HOME\\Downloads\\t1c-gabarito.zip" -DestinationPath "$HOME\\Documents\\clientes" -Force; Rename-Item "$HOME\\Documents\\clientes\\doce-esquina" vago; Expand-Archive "$HOME\\Downloads\\t1c-gabarito.zip" -DestinationPath "$HOME\\Documents\\clientes" -Force; Rename-Item "$HOME\\Documents\\clientes\\doce-esquina" especifico; cd "$HOME\\Documents\\clientes\\vago"`} />
+
+2. Na pasta `vago`, abra o Claude e peça (anote o tempo que leva):
+
+   ```text
+   Melhore o site.
+   ```
+
+3. Na pasta `especifico`, abra o Claude e peça:
+
+   ```text
+   No index.html, troque o horário de sábado de 8h às 14h para 8h às 16h, na tabela de horários e no script que diz se estamos abertos. Só isso.
+   ```
+
+4. Compare cada pasta com o arquivo original (extraia o ZIP uma terceira vez, numa pasta `original`) e conte as linhas diferentes:
+
+   <SO unix="diff original/index.html vago/index.html | grep -c '^[<>]'" win={`(Compare-Object (Get-Content original\\index.html) (Get-Content vago\\index.html)).Count`} />
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits`, dentro de cada pasta. Foi assim que executamos.
+</Nota>
+
+<Prova>
+
+O pedido específico muda **poucas linhas**, as pedidas, e o vago muda **muitas**. Na nossa execução (o mesmo site de 399 linhas, Claude Haiku 5.5, uma execução de cada):
+
+| | Vago | Específico |
+|---|---|---|
+| Linhas diferentes do original | 81 | 4 |
+| Tokens de saída | 11.761 | 2.084 |
+| Tempo | 57 s | 16 s |
+
+O pedido vago, por sua conta, reescreveu o estilo do site (cores, botões e cabeçalho) e acrescentou comentários.
+
+</Prova>
+
+<Gabarito>
+
+O seu resultado será diferente nos números, mas **o padrão** deve ser o mesmo: o vago mexe em muito e o específico mexe no que você pediu. Um detalhe importante: o pedido vago **não é errado**, ele é útil para explorar ("o que você melhoraria aqui?"). O erro é pedir uma mudança de verdade sem dizer qual.
+
+</Gabarito>
+
+<DeuErro>
+
+- **As duas pastas mudaram quase igual.** Você pode ter pedido a mesma coisa nas duas. Releia os dois pedidos.
+- **O `Compare-Object` dá 0 nas duas.** O Claude não alterou o arquivo. Confira se você aprovou a edição.
+- **A pasta `original` já tem as mudanças.** Você a extraiu depois de alterar. Extraia de novo, do ZIP.
+
+</DeuErro>
+
+<Desafio>
+
+Faça um terceiro teste: peça a mesma mudança específica, mas **depois de uma conversa longa** sobre outro assunto, sem `/clear`. O que muda no tempo e no que o Claude diz?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que dominou e monte a sua folha de custos">
+
+### Teste de domínio: o prazo que depende do limite
+
+Imagine que você prometeu um site em 3 dias e, na véspera, o limite de uso acabou no meio do trabalho.
+
+**Sua missão, sem passo a passo:**
+
+1. Liste **cinco** coisas que você teria feito antes para não chegar a esse ponto.
+2. Escreva a mensagem curta para o cliente, honesta, **sem culpar a ferramenta**, com uma nova data.
+3. Diga qual é o seu **custo por cliente** hoje, somando o que você paga por causa dele (assinatura rateada, domínio, hospedagem, IA).
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar o que é o limite de uso e o que acontece quando ele acaba;
+- ler o `/usage` e dizer quando o seu uso volta;
+- dizer por que um pedido específico gasta menos e mexe só no que você quer;
+- listar cinco hábitos que economizam uso;
+- listar os custos de um projeto e dizer quais são do cliente.
+
+### Entregue a folha de custos
+
+Crie uma folha (papel ou planilha) com **uma linha por custo** que você tem. Modelo:
+
+```markdown
+# Meus custos por mês (preencha com os seus valores e a data da consulta)
+
+| Custo | Valor | Quem paga | Consultado em |
+|---|---|---|---|
+| Assinatura do Claude Code | (valor do seu plano) | eu | (data) |
+| Domínio do cliente A | (valor) | cliente A | (data) |
+| Hospedagem do cliente A | (valor) | cliente A | (data) |
+| IA do atendente do cliente B (API) | (estimativa) | cliente B | (data) |
+
+Quantos clientes ativos eu tenho: ___
+Custo da assinatura rateado por cliente: ___
+```
+
+Duas regras:
+
+1. **Todo valor leva a data da consulta.** Preço sem data envelhece.
+2. **Escreva "quem paga".** É o que evita discussão depois.
+
+Na estação "Quanto cobrar", você usa esta folha para calcular o preço.
+
+</Entrega>
+
+<Saida>
+
+- Sei o que é o limite de uso e o que acontece quando ele acaba.
+- Li o `/usage` e sei dizer quando o meu uso volta.
+- Medi um pedido vago e um específico e vi a diferença no que o Claude mudou.
+- Conheço cinco hábitos que gastam menos uso.
+- Montei a folha de custos, com data e quem paga em cada linha.
+
+</Saida>
+
+**Próxima estação:** [O tutor: revise a sua entrega com o Claude](../t0c/): você não tem um professor ao lado. Esta estação instala um tutor, uma ferramenta que revisa as suas entregas contra uma lista de critérios e aponta o que falta, sem escrever o trabalho por você.
+
+<Fontes>
+
+- [Manage costs effectively](https://code.claude.com/docs/en/costs.md): `/usage`, limites, `/usage-credits` e como reduzir o uso de tokens.
+- Execuções locais registradas em `VERIFICATION/preparacao.md`. Os números do pedido vago e do específico vêm de uma execução de cada.
+
+</Fontes>
