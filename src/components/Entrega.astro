@@ -1,0 +1,37 @@
+---
+// Fecho de cada estação das Temporadas: a prova de que o aluno domina o que fez
+// e o material para entregar ao cliente. O conteúdo vai no slot, em Markdown.
+import Mascote from './Mascote.astro';
+
+interface Props {
+  titulo: string;
+}
+const { titulo } = Astro.props;
+---
+
+<section class="entrega" aria-labelledby="entrega-t">
+  <p class="entrega__rotulo rotulo"><Mascote humor="feliz" tamanho={28} /> Domínio e entrega</p>
+  <h2 id="entrega-t">{titulo}</h2>
+  <slot />
+</section>
+
+<style>
+  .entrega {
+    margin: var(--e-7, 3rem) 0 var(--e-6);
+    padding: var(--e-5);
+    border: 3px solid var(--tinta);
+    border-radius: var(--raio);
+    border-top: 14px solid var(--linha);
+    background: var(--papel);
+    box-shadow: 6px 6px 0 var(--linha);
+  }
+  .entrega__rotulo {
+    display: flex;
+    align-items: center;
+    gap: var(--e-2);
+    margin: 0 0 var(--e-2);
+  }
+  .entrega :global(h3) {
+    margin-top: var(--e-5);
+  }
+</style>

@@ -30,3 +30,10 @@ CLI: 2.1.325 · Data: 13/11/2026 · Doc: cache local; GitHub Pages conforme o M5
 ## Rechecagem (13/11/2026)
 
 Conferidos: os códigos dos commits (`3d27e40`, `f5859af`), a saída `nothing to commit, working tree clean`, a estrutura final da pasta (`CLAUDE.md`, `briefing.md`, `conferir.mjs`, `docs/index.html`) e o conteúdo do `t1d-gabarito.zip` (4 arquivos). Corrigido um trecho impreciso ("quatro comandos" virou "uma sequência de comandos"). Links: 0 quebrados. Axe: ok.
+
+## Adendo (13/11/2026): projeto da Lia, modelos e rubrica
+
+- A missão do projeto final reaproveita o que foi executado nas quatro estações para a Lia (dúvidas, `CLAUDE.md`, site, conferência) e para a Doce Esquina (git, desfazer, `docs/`).
+- **Não testados:** o passo "No ar" para a Lia (publicação exige conta do aluno), a reunião de entrega e os modelos de relatório, manual e termo de aceite (são textos; foram escritos para esta página, não conferidos com cliente real).
+- Os modelos trazem aviso de que não são aconselhamento jurídico.
+- Corrigido na rechecagem: a lista de verificação usava caixas de seleção sem rótulo (falha de acessibilidade do axe), e foi trocada por lista simples.

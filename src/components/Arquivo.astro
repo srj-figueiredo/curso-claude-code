@@ -1,0 +1,58 @@
+---
+// Mostra, dentro da página, o conteúdo de um arquivo do laboratório (a "receita" que o Claude lê),
+// lido na hora do build de lab/estados/<estado>/<nome>. Assim o texto da página nunca fica diferente do ZIP.
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Props {
+  estado: string;
+  nome: string;
+  aberto?: boolean;
+  dica?: string;
+}
+const { estado, nome, aberto = false, dica = 'a receita que o Claude lê' } = Astro.props;
+const texto = readFileSync(join(process.cwd(), 'lab', 'estados', estado, nome), 'utf8').replace(/\r\n/g, '\n').trimEnd();
+const linhas = texto.split('\n').length;
+---
+
+<details class="arquivo" open={aberto}>
+  <summary>
+    <span class="arquivo__nome mono">{nome}</span>
+    <span class="arquivo__dica">{dica} · {linhas} linhas</span>
+  </summary>
+  <pre><code>{texto}</code></pre>
+</details>
+
+<style>
+  .arquivo {
+    margin: var(--e-4) 0;
+    border: 2px solid var(--tinta);
+    border-radius: var(--raio);
+    background: var(--papel-2);
+    overflow: hidden;
+  }
+  .arquivo summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--e-2) var(--e-3);
+    padding: var(--e-3) var(--e-4);
+    cursor: pointer;
+    background: var(--linha);
+    color: var(--linha-t);
+  }
+  .arquivo__nome {
+    font-weight: 700;
+  }
+  .arquivo__dica {
+    font-size: 0.9rem;
+  }
+  .arquivo pre {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    max-height: 28rem;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+</style>

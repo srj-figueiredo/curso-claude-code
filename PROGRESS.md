@@ -19,6 +19,7 @@ Roteiro aprovado em `docs/ROTEIRO-V2.md`; o mapa de conceitos dos módulos antig
 - **Temporada 1 (Primeiro cliente), escrita e verificada:** T1A, T1B, T1C, T1D (`src/content/modulos/t1*.mdx`, cliente fictício
   Doce Esquina, labs `lab/estados/t1*`). Cada estação abre com `<Conceitos>` (o que vai aprender e o que só ouve falar, com link
   para o módulo de referência). A ficha 4 da T1D (publicar no GitHub Pages) é `nao-testado`.
+- **Domínio e entrega (D018):** cada estação termina com teste de domínio (cliente Studio Lia), rubrica e material de entrega; a T1D fecha com o projeto final da Lia. `<Arquivo>` mostra a receita (briefing, conferir.mjs) e a T1A tem a ficha "Mexa na receita".
 - **Módulos antigos (M0 a M8, M10) continuam no ar como Referência.** M9 e M11 (Planejar e verificar) entram reescritos dentro das
   Temporadas (M11 em T1 e T5; M9 em T2). O estado `lab/estados/m11-inicio/` fica guardado para quando chegar a hora.
 - **Próximo:** aguardar o retorno do autor sobre a T1; depois a **Temporada 2 (Sistema do cliente)**, na ordem do roteiro.

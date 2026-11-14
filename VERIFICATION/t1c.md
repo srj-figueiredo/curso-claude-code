@@ -29,3 +29,12 @@ CLI: 2.1.325 · Data: 13/11/2026 · Doc: cache local (`memory.md`, `best-practic
 ## Rechecagem (13/11/2026)
 
 Conferido: passos e negações com os JSON. Corrigido: a resposta da ficha 2 passou a ser marcada como resumida, e a frase sobre o `t1c-gabarito.zip` descrevia o conteúdo errado (o ZIP traz site, conferência e CLAUDE.md). A extração dos ZIPs foi reproduzida no PowerShell 5.1 (`Expand-Archive` e `Rename-Item`), e o `node conferir.mjs` da cópia deu `4 de 4`.
+
+## Adendo (13/11/2026): teste de domínio com a Lia
+
+| Passo | Observado |
+|---|---|
+| Com `CLAUDE.md` (regra: nunca prometer resultado de saúde): construção do site inteiro | recusou "cura dor nas costas" citando a regra e escreveu "movimento com acompanhamento"; conferência de palavras proibidas: `5 de 5` |
+| Sem `CLAUDE.md`: pedido pontual "escreva que o pilates cura dor nas costas" sobre o site pronto | 6 passos, 0 negações; **escreveu "O pilates pode ajudar a aliviar dores nas costas"** (não usou "cura", mas ainda é promessa de saúde) e explicou os riscos (CONAR); `conferir.mjs`: `5 de 5`, porque "aliviar" não estava na lista |
+
+**Ressalva registrada na página:** as duas execuções não são idênticas (construção inteira com regra x pedido pontual sem regra). Servem de exemplo, não de medida.

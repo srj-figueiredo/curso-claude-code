@@ -3,16 +3,16 @@ id: t1b
 titulo: "Conduzir o trabalho: planejar, pedir e conferir"
 parte: p8
 ordem: 102
-minutos: 60
+minutos: 85
 pre_requisitos: [t1a]
 objetivos:
   - Pedir um plano antes de uma mudança e ler o plano como se fosse um orçamento.
   - Aprovar, ajustar e mandar executar sem perder o controle do que muda.
-  - Pedir ao Claude uma conferência automática do trabalho e rodá-la você mesma.
+  - Pedir ao Claude uma conferência automática do trabalho e rodá-la por conta própria.
   - Provocar uma falha de propósito para ter certeza de que a conferência enxerga erros.
 tldr:
   - Em mudanças maiores, peça o plano antes. Ler cinco linhas custa menos do que desfazer uma obra.
-  - Pronto é o que você consegue provar, não o que o Claude diz. Peça uma conferência que você mesma roda.
+  - Pronto é o que você consegue provar, não o que o Claude diz. Peça uma conferência que você roda.
   - Toda conferência tem ponto cego. Teste a página de verdade além de rodar o roteiro.
 verificado_em_versao: 2.1.325
 verificado_em_data: 13/11/2026
@@ -108,6 +108,14 @@ Saída da nossa execução, rodada por nós depois:
 
 O arquivo termina com **código de saída 1 quando algo falha**, e com 0 quando tudo passa. Isso permite que qualquer ferramenta (ou o próprio Claude) saiba se o trabalho está bom.
 
+### A conferência também é um arquivo que você pode abrir
+
+Assim como o `briefing.md` é a receita do site, o `conferir.mjs` é a **receita da conferência**. Abra e dê uma olhada:
+
+<Arquivo estado="t1b-gabarito" nome="conferir.mjs" dica="a conferência que o Claude escreveu" />
+
+Você não precisa entender cada linha. Precisa saber três coisas: ele **existe** (é um arquivo, não mágica), ele **lista verificações** (cada uma vira uma linha OK ou FALHOU) e você pode **pedir mudança** ("acrescente uma verificação que confira o horário de sábado"). Quem sabe pedir isso tem controle sobre o próprio trabalho.
+
 ### Uma conferência que nunca falha não vale nada
 
 Antes de confiar no roteiro, **estrague de propósito** e veja se ele reclama. Trocamos `R$ 9,00` por `R$ 10,00` no HTML e rodamos de novo:
@@ -128,7 +136,7 @@ A conferência passa, e a página ainda pode ter defeito. Testamos o formulário
 O roteiro nunca checou isso, porque você nunca pediu. Duas lições:
 
 1. **A conferência só pega o que você mandou ela pegar.** Quanto mais você pensa no que pode dar errado, melhor o roteiro.
-2. **Teste a página você mesma.** Na Ficha 2 você faz quatro testes manuais em dois minutos.
+2. **Teste a página por conta própria.** Na Ficha 2 você faz quatro testes manuais em dois minutos.
 
 ### Licenças específicas
 
@@ -357,6 +365,83 @@ Corrija o defeito do domingo: peça ao Claude que, quando a data mínima cair nu
 
 </Ficha>
 
+<Entrega titulo="Prove que dominou e entregue o relatório">
+
+O teste agora é maior. O formulário da Doce Esquina você fez com o roteiro na mão. Faça o da Lia **sem ele**.
+
+### Teste de domínio: o formulário da Lia
+
+Parta do briefing da Lia (o mesmo `t1-dominio-inicio.zip` da estação anterior). A Lia respondeu às suas dúvidas:
+
+- A turma "Noite tardia" (21h) foi cancelada.
+- O plano trimestral aparece como "Consulte".
+- Nada de promessa de saúde: o texto fala em "movimento com acompanhamento".
+- A aula experimental é gratuita, **só às terças e quintas**, e **precisa de 24 horas de antecedência**. A única turma nesses dias é a do Almoço.
+
+**Sua missão, sem passo a passo:**
+
+1. Peça o **plano** do site com o formulário de aula experimental. Leia e responda ao que ele deixar para você decidir.
+2. Construa.
+3. Peça um `conferir.mjs` com **pelo menos 5 verificações**, uma delas de "o que **não** pode aparecer" (por exemplo, a turma das 21h).
+4. **Estrague duas coisas de propósito** e mostre o `FALHOU`.
+5. Teste à mão no celular: uma terça (abre o WhatsApp), uma quarta e um sábado (recusam), e uma terça ou quinta com menos de 24 horas.
+
+Na nossa execução (11 passos, 2 negações de comando), o Claude criou o site e uma conferência de 5 verificações, todas OK. Testamos o formulário num navegador de verdade:
+
+| Data escolhida | O que o formulário fez |
+|---|---|
+| Terça, 17/11/2026 | Abriu o WhatsApp com "Turma: Almoço, Data: 17/11/2026" |
+| Quinta, 19/11/2026 | Abriu o WhatsApp com a mensagem pronta |
+| Quarta, 18/11/2026 | Recusou: "A aula experimental é só às terças e quintas" |
+| Sábado, 21/11/2026 | Recusou, com o mesmo aviso |
+
+A regra das **24 horas** não deu para exercitar: no dia do teste (sexta), nenhuma terça ou quinta cai no dia seguinte. É exatamente o caso que a conferência automática não pega e que só aparece se você testar **no dia certo**. O próprio Claude avisou no fim: "não abri o site num navegador nem testei o formulário ao vivo".
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar por que pediu o plano antes de construir e o que decidiu a partir dele;
+- mostrar uma verificação de "o que não pode aparecer" e ela falhando quando você planta o erro;
+- apontar um caso que a sua conferência **não** cobre e dizer como o testa à mão;
+- explicar à Lia, em duas frases, o que o formulário faz e o que não faz (ele só abre o WhatsApp; não guarda os dados).
+
+### Entregue o relatório de entrega
+
+Mandar o link não é entregar. Entregar é dizer **o que foi combinado, o que foi feito, como você conferiu e o que ficou de fora**. Uma página resolve. Modelo para adaptar:
+
+```markdown
+# Relatório de entrega: site do Studio Lia (versão 1)
+
+## O que foi combinado
+- Site de uma página, para celular, com turmas, planos, formulário de aula experimental e WhatsApp.
+
+## O que foi feito
+- Todas as seções acima, nas cores da marca.
+- O formulário só aceita terça e quinta e abre o WhatsApp com a mensagem pronta.
+
+## Como conferi
+- Conferência automática: 5 de 5 verificações OK (cole aqui a saída de `node conferir.mjs`).
+- Teste à mão no celular: terça e quinta abrem o WhatsApp; quarta e sábado são recusados.
+
+## O que ficou de fora
+- Plano trimestral: aparece como "Consulte" até a Lia informar o valor.
+- Fotos do studio: a Lia preferiu não usar.
+
+## O que depende da cliente
+- Aprovar o texto de boas-vindas.
+- Informar o valor do plano trimestral.
+
+## Próximo passo
+- Publicar o site depois da aprovação.
+```
+
+Três cuidados ao preencher:
+
+1. **Cole o resultado real da conferência.** É a sua prova, e quem lê entende "5 de 5".
+2. **Escreva o que ficou de fora.** Uma lista de pendências honesta evita a conversa difícil depois.
+3. **Evite adjetivos** ("ficou perfeito", "super rápido"). Dados convencem; adjetivos fazem quem lê duvidar.
+
+</Entrega>
+
 <Saida>
 
 - Peço um plano antes de mudanças maiores e leio as decisões que ele deixa para mim.
@@ -365,6 +450,8 @@ Corrija o defeito do domingo: peça ao Claude que, quando a data mínima cair nu
 - Estrago de propósito para provar que a conferência enxerga erros.
 - Testo a página de verdade, porque nenhuma conferência pega tudo.
 - Libero só o comando necessário, e uso `/clear` quando mudo de assunto.
+- Abro o `conferir.mjs` e sei que posso pedir mudanças nele.
+- Fiz o formulário da Lia sem o roteiro e sei montar o relatório de entrega.
 
 </Saida>
 

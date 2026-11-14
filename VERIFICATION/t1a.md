@@ -30,3 +30,14 @@ Pastas de transcrição criadas em `~/.claude/projects` pelos testes foram apaga
 ## Rechecagem (13/11/2026)
 
 Refeita contra os números, a documentação e o HTML final. Corrigido: "créditos de API" virou "uma conta de API" (a doc diz conta Console). Conferido sem mudança: 20 s, 4 passos, 6,6 KB, a tabela da Prova, 0 links quebrados, axe (papel e console) e renderização sem Markdown solto.
+
+## Adendo (13/11/2026): ficha 3 e bloco de domínio
+
+| Passo | Observado |
+|---|---|
+| Editar `briefing.md` (cor `#B4682B` para `#8A3B5A`, sábado `8h às 16h`, tom divertido) e pedir a atualização, em cópia do `t1a-gabarito` | 12 passos, 0 negações; `diff` do HTML: cor (`--caramelo`), cor do hover (`#9A5622` para `#6E2D46`, escolha do Claude, avisada), sábado na tabela e no script "aberto agora" (14h para 16h), "caixas de brigadeiro" para "caixas". **O tom de voz não foi tocado**, e o Claude não comentou. A página usa isso como lição |
+| Briefing da Lia: "liste dúvidas e contradições, sem alterar arquivo" | 3 passos, nenhum arquivo alterado; 17 pontos, incluindo turma 21h fora do horário, "cura dor nas costas", só a turma Almoço cai em terça/quinta, contraste do sálvia, trimestral a definir |
+| Contraste conferido por cálculo (luminância WCAG) | sálvia `#5E7D68` sobre areia `#F7F3EC` = **4,12:1**; escuro `#26352C` sobre areia = 11,66:1; branco sobre sálvia = 4,56:1. O Claude estimou "cerca de 4,1:1": confere |
+| Visualizador `<Arquivo>` | renderiza o `briefing.md` (52 linhas) a partir de `lab/estados`, com botão de copiar; conferido em 1280 e 390 px |
+
+Não testado: o aluno editar o briefing no Bloco de Notas (passo a passo descrito, não filmado).

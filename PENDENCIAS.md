@@ -128,3 +128,5 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
 - **7.5** O gabarito `t1b-gabarito` carrega de propósito um defeito real (o aviso das 48 horas pode sugerir um domingo); é o Desafio da T1B.
 - **7.6** `VERSAO_CLI` em `src/data/curso.ts` ainda diz 2.1.323; as estações novas foram executadas na 2.1.325. Atualizar o selo global quando os módulos antigos forem reexecutados.
 - **7.7** O M7 piloto e a T1 aguardam a leitura do autor (tom, tamanho, lacunas).
+- **7.8** O projeto final da T1 pede publicar a Lia no GitHub Pages; não testado (conta do aluno). Os modelos de relatório, manual e termo de aceite não foram validados com cliente real nem com profissional jurídico.
+- **7.9** A regra das 24 horas do formulário da Lia só aparece no dia certo (terça ou quinta próxima); não foi exercitada no navegador.

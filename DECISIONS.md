@@ -113,3 +113,15 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Mapa do metrô:** nova linha roxa `p8` (Temporada 1) entre a Parte 0 e a Parte I; as cores agora vêm do número do id da Parte (`--linha-N`), não da posição no array. Reorganização completa do mapa fica para quando as Temporadas existirem.
 - **Versão nas fichas:** `Ficha` aceita `versao` (as estações novas foram executadas na CLI 2.1.325; as antigas, na 2.1.323).
 - **Modelo e variação:** os `claude -p` desta máquina usam o modelo padrão, que variou entre Sonnet 5.5 e Haiku 5.5. As páginas dizem que o texto varia.
+
+## D018 · Domínio e entrega ao fim de cada estação; ver e editar a receita (13/11/2026, pedido do autor)
+
+- **Por quê:** o autor pediu que o aluno tenha a segurança de dominar o que fez e saiba **entregar** ao cliente, e que possa ver e editar o arquivo MD que gerou o site para entender como o Claude Code funciona.
+- **O que entrou:**
+  - Componente `<Entrega>` (bloco "Domínio e entrega", antes do checklist de saída). Cada estação traz: **teste de domínio sem passo a passo** com um segundo cliente (Studio Lia, `lab/estados/t1-dominio-inicio`), **rubrica** ("você domina se consegue...") e **material de entrega** (T1A prévia e mensagem; T1B relatório de entrega; T1C manual do site; T1D pacote, reunião de 15 minutos, termo de aceite, quem é dono de cada peça).
+  - T1D fecha com o **projeto final da Temporada 1** (Lia, do briefing à entrega), com autoavaliação de 7 perguntas.
+  - Componente `<Arquivo estado nome>`: mostra na página o arquivo do laboratório (lido no build, sem duplicar texto), com copiar. Usado para `briefing.md` e `conferir.mjs`.
+  - T1A, ficha 3 **"Mexa na receita"**: editar três linhas do briefing e pedir ao Claude para atualizar o site, com `diff`.
+  - O rótulo "Desafio extra" passou a **"Vá além"**.
+- **Honestidade do teste:** o Claude acha armadilhas que não plantamos (contraste, ambiguidade do plano mensal) e às vezes aplica a mudança de cor e horário mas ignora o tom de voz; ambos viraram lições na página.
+- **Linguagem neutra:** o texto não presume o gênero de quem lê; "cliente" genérico virou "quem contratou".

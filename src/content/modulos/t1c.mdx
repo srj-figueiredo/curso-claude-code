@@ -3,7 +3,7 @@ id: t1c
 titulo: "A memória do cliente: o CLAUDE.md"
 parte: p8
 ordem: 103
-minutos: 50
+minutos: 75
 pre_requisitos: [t1b]
 objetivos:
   - Explicar por que uma conversa nova do Claude não lembra o que você combinou na anterior.
@@ -77,6 +77,8 @@ Site de uma página da confeitaria Doce Esquina (cliente fictício do curso). Ar
 - Antes de mudar o conteúdo, leia o `briefing.md`.
 - Depois de qualquer mudança no `index.html`, rode `node conferir.mjs` e mostre o resultado.
 ```
+
+Esse arquivo é só texto. Você pode abri-lo em qualquer editor, mudar uma linha e ver o efeito na **próxima** conversa. É assim que se "ensina" o Claude: não com mágica, e sim editando o caderno.
 
 Repare no padrão. Toda linha é uma **instrução verificável**: dá para olhar o resultado e dizer "cumpriu" ou "não cumpriu". "Não invente preços" é verificável. "Seja profissional" não é: cada pessoa entende uma coisa. E o arquivo é curto: a doc recomenda menos de 200 linhas.
 
@@ -315,6 +317,79 @@ Acrescente a regra "Antes de mudar qualquer preço, pergunte". Peça "mude o caf
 
 </Ficha>
 
+<Entrega titulo="Prove que dominou e entregue o manual do site">
+
+O teste desta estação é descobrir **até onde** o seu caderno de regras alcança, e onde ele deixa passar.
+
+### Teste de domínio: o caderno da Lia
+
+Use a pasta da Lia com o site e a conferência da estação anterior.
+
+**Sua missão, sem passo a passo:**
+
+1. Escreva um `CLAUDE.md` para o Studio Lia, com **no máximo 20 linhas**: marca, regras de conteúdo, as decisões da Lia e como trabalhar.
+2. Faça duas cópias da pasta, **uma sem** o `CLAUDE.md` e **uma com**. Em cada uma, peça: "escreva no texto de boas-vindas que o pilates cura dor nas costas".
+3. Leia as duas respostas. A regra segurou o que você queria?
+4. Se a conferência **não** pegou algo que a regra proíbe, **alargue a conferência** e prove que ela agora falha quando você planta o erro.
+
+O que aconteceu na nossa execução:
+
+| | Sem o `CLAUDE.md` | Com o `CLAUDE.md` |
+|---|---|---|
+| **O que escreveu** | "O pilates pode ajudar a aliviar dores nas costas" | Nada de saúde: "movimento com acompanhamento" |
+| **O que explicou** | Que não há base para "cura" e que a promessa dá problema com o CONAR | Que a regra do projeto proíbe promessa de saúde |
+| **A conferência** (palavras proibidas: cura, trata, emagrece) | `5 de 5 OK` | `5 de 5 OK` |
+
+Repare na linha de baixo. Sem a regra, o Claude já **recusou** a palavra "cura", o que é bom, mas escreveu "aliviar dores nas costas", que **ainda é promessa de saúde**. E a conferência passou, porque "aliviar" não estava na lista de palavras proibidas. Dois aprendizados:
+
+1. **A regra escrita e a conferência precisam ter o mesmo alcance.** Se o caderno diz "nunca prometa resultado de saúde", a conferência deve procurar também "alivia", "dor", "tratamento".
+2. **O Claude é um bom aliado, não uma garantia.** Aqui ele errou para o lado seguro sozinho, mas outra execução pode sair diferente.
+
+<Nota rotulo="As duas execuções não são idênticas">
+O lado "com regra" construiu o site inteiro com o `CLAUDE.md` no projeto; o lado "sem regra" foi um pedido pontual sobre o site já pronto. Por isso o contraste vale como exemplo, não como medida. No seu teste, mantenha o pedido igual nos dois lados.
+</Nota>
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar por que o Claude não lembra da conversa anterior e o que o `CLAUDE.md` muda;
+- mostrar uma regra sua que dá para conferir e uma que não dá, e dizer por quê;
+- provar, com duas pastas, a diferença que o caderno faz;
+- mostrar uma palavra que sua conferência deixava passar e como a corrigiu;
+- dizer o que o `CLAUDE.md` **não** garante.
+
+### Entregue o manual do site
+
+O site entregue não é só uma página: é algo que **vai continuar existindo**. Daqui a seis meses alguém precisará mudar um preço. Esse alguém pode ser você, outro profissional ou a própria dona. O manual dá a essa pessoa o caminho. Escreva em linguagem de quem **não** é técnico:
+
+```markdown
+# Como atualizar o site da Doce Esquina
+
+## Onde está cada coisa
+- O site fica no endereço: (cole aqui o endereço).
+- Os dados do site (preços, horários, cores) estão no arquivo `briefing.md`.
+- As regras de como mexer estão no arquivo `CLAUDE.md`.
+
+## Como pedir uma mudança
+1. Me mande uma mensagem dizendo o que mudar (ex.: "o bolo inteiro passou para R$ 72").
+2. Eu atualizo, rodo a conferência e te aviso quando estiver no ar.
+3. Prazo combinado: até 2 dias úteis.
+
+## O que não fazer
+- Não apague nem renomeie arquivos da pasta do site.
+- Não envie senhas por mensagem.
+
+## O que está incluído e o que não está
+- Incluído: trocar preços, horários, textos e cores.
+- Fora do combinado: novas páginas, loja virtual, logotipo.
+```
+
+Duas escolhas importantes:
+
+- **Defina quem mexe depois.** Se for você, combine prazo e valor da manutenção. Se for outra pessoa, passe o `CLAUDE.md` e o `conferir.mjs`: eles reduzem muito o risco de alguém estragar o que você fez.
+- **Escreva o que está fora do combinado.** "Posso fazer uma loja virtual" vira outro orçamento, e não uma obrigação da manutenção.
+
+</Entrega>
+
 <Saida>
 
 - Sei por que uma conversa nova do Claude não lembra da anterior.
@@ -322,6 +397,8 @@ Acrescente a regra "Antes de mudar qualquer preço, pergunte". Peça "mude o caf
 - Provei a diferença: sem o arquivo ele faz e avisa depois, com o arquivo ele para e pergunta.
 - Sei que o CLAUDE.md orienta mas não obriga, e que regras críticas pedem permissão ou hook.
 - Entendo o CLAUDE.md como parte da entrega ao cliente.
+- Editei uma regra à mão e sei que ela só vale na próxima conversa.
+- Alarguei uma conferência para pegar o que a regra proíbe e sei escrever o manual do site para quem vier depois.
 
 </Saida>
 

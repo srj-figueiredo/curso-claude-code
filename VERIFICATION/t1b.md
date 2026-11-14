@@ -32,3 +32,14 @@ CLI: 2.1.325 · Data: 13/11/2026 · Doc: cache local. Ambiente como na T1A (mode
 ## Rechecagem (13/11/2026)
 
 Números conferidos com os JSON das execuções (passos 6, 7 e 7; negações 0, 2 e 1). Conferido sem mudança: saída 1 na falha, `4 de 4`, 0 links quebrados e axe. Corrigido um `tldr` do frontmatter que começava com aspas e quebrava o YAML.
+
+## Adendo (13/11/2026): teste de domínio com a Lia
+
+| Passo | Observado |
+|---|---|
+| Site da Lia com formulário de aula experimental e `conferir.mjs` de 5 verificações, com `CLAUDE.md` já no projeto | 11 passos, 2 negações (`-p`); `5 de 5 verificações passaram`; conferência confirmada por nós com `node conferir.mjs` |
+| Navegador (Playwright, 390 px), interceptando a navegação para `wa.me` | terça 17/11 e quinta 19/11: mensagem "Olá, Lia! ... Turma: Almoço, Data: 17/11/2026"; quarta 18/11 e sábado 21/11: aviso "A aula experimental é só às terças e quintas" |
+| Regra das 24 horas | **não exercitada**: no dia do teste (sexta) nenhuma terça ou quinta cai no dia seguinte. A página diz isso |
+| Limites informados pelo próprio Claude | "não abri o site num navegador nem testei o formulário ao vivo" |
+
+Observação: a execução da Lia tinha um `CLAUDE.md` (assunto da T1C) com as decisões da cliente; a página diz que o aluno pode passá-las no pedido.
