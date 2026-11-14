@@ -1,0 +1,384 @@
+---
+id: t2a
+titulo: "O sistema da oficina: dados de verdade"
+parte: p9
+ordem: 201
+minutos: 120
+pre_requisitos: [t1d]
+objetivos:
+  - Explicar com suas palavras o que é um servidor, um banco de dados e uma API.
+  - Pedir o plano de um sistema, decidir o que cabe a você e acompanhar a construção.
+  - Subir o sistema no seu computador, abrir no navegador e usá-lo como o cliente usaria.
+  - Ler o resultado de uma conferência com 25 verificações e dizer o que ela cobre.
+  - Fazer o primeiro teste de domínio da temporada, com a agenda do Studio Lia.
+tldr:
+  - Um sistema é uma tela, um servidor que recebe os pedidos da tela e um banco que guarda os dados.
+  - Peça o plano antes, decida os pontos que o Claude deixa para você e exija só o que já vem com o Node.
+  - O que a conferência não cobre você testa à mão. E o cliente precisa ver o fluxo funcionando antes de dizer que sim.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t2a-e1, titulo: Briefing, caderno e plano, minutos: 30, custo: gratis }
+  - { id: t2a-e2, titulo: Construir, conferir e abrir, minutos: 45, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Servidor', simples: 'Um programa que fica ligado esperando pedidos. A tela pede, o servidor responde.' },
+    { termo: 'Endereço local (localhost) e porta', simples: 'O endereço do seu próprio computador e o número da "portaria" por onde o sistema atende. Aqui: localhost, porta 3000.' },
+    { termo: 'Banco de dados', simples: 'Uma planilha organizada, que o programa consulta e grava. Aqui ele é um único arquivo, o SQLite.' },
+    { termo: 'API', simples: 'O "balcão" do servidor: a lista de pedidos que a tela pode fazer, como "cadastrar ordem" ou "mostrar o painel".' },
+    { termo: 'Cadastro, lista e atualização', simples: 'Criar um registro, ver os registros e mudar um deles. É o coração de quase todo sistema de gestão.' },
+    { termo: 'Teste automático', simples: 'O roteiro de conferência da temporada anterior, agora com dezenas de verificações que sobem o sistema inteiro.' },
+  ]}
+  depois={[
+    { termo: 'Login e papéis', quando: 'quem entra e o que cada pessoa pode ver. É a próxima estação.', ref: 'm7' },
+    { termo: 'Hospedagem e acesso pela internet', quando: 'por enquanto o sistema roda só no computador do cliente. Colocá-lo na internet entra mais adiante.', ref: 'm5' },
+    { termo: 'Segredos e senhas', quando: 'como guardar uma senha sem expô-la. Entra na próxima estação.', ref: 'm7' },
+  ]}
+/>
+
+Seu Antônio tem uma oficina mecânica de bairro, a **Boa Estrada**. Anota as ordens de serviço num caderno. Já perdeu uma página, já não soube que carro estava pronto para retirar e chega ao fim do mês sem saber quanto entrou. Ele não quer um site. Quer algo que **guarde** as informações dele e responda a uma pergunta simples: "o que está aberto, o que está pronto e quanto faturei?"
+
+É a diferença entre as duas temporadas. O site da Temporada 1 **mostra** informação. O sistema desta temporada **guarda** informação e age sobre ela. E guardar dado de cliente real muda tudo: pede cuidado, pede teste e pede um jeito de entregar que não deixe o dono na mão.
+
+### Um sistema tem três partes
+
+Imagine um restaurante. O cliente senta e olha o **cardápio** (a tela). O **garçom** leva o pedido até a cozinha e traz a resposta (o servidor). A **despensa** guarda tudo o que existe (o banco de dados). Nenhuma das três sozinha vira restaurante.
+
+| No restaurante | No sistema da oficina | O que é de verdade |
+|---|---|---|
+| Cardápio | A página que o Seu Antônio abre | `index.html`, `app.js` e `estilo.css` |
+| Garçom | O programa que atende os pedidos da tela | `servidor.mjs`, ligado enquanto o sistema roda |
+| Despensa | O lugar onde as ordens ficam guardadas | `dados/oficina.db`, um arquivo SQLite |
+| Lista de pedidos do garçom | Os pedidos que a tela pode fazer ao servidor | A API: cadastrar, listar, mudar status, painel |
+
+### Peça o plano, e decida o que é seu
+
+A receita deste sistema é o `briefing.md`. Leia, porque tudo nasce dele:
+
+<Arquivo estado="t2a-inicio" nome="briefing.md" dica="o briefing da oficina" />
+
+Antes de construir, o pedido é o mesmo da temporada passada: **modo plano**. Só que agora o plano tem mais peso, porque um sistema tem muito mais decisões escondidas. A única regra técnica que impomos está no `CLAUDE.md`: **use só o que já vem com o Node, sem instalar pacote de terceiros**. É uma escolha de profissional, por dois motivos: o sistema roda em qualquer computador que tenha o Node, sem internet, e você não depende de código de estranhos que um dia pode quebrar ou ser comprometido.
+
+<Arquivo estado="t2a-inicio" nome="CLAUDE.md" dica="o caderno de regras da oficina" />
+
+O pedido de plano da Ficha 1 diz que **por enquanto** é só o cadastro, a lista, a troca de status e o painel, **sem login**. Dividir em fases é como se constrói sistema: primeiro o que dá valor mais rápido, depois o que dá segurança.
+
+Na nossa execução (4 passos, nenhum arquivo alterado), o Claude devolveu um plano e, o mais valioso, **nove decisões que eram nossas**. As quatro que mudavam o comportamento:
+
+| Decisão que ele deixou para nós | O que escolhemos |
+|---|---|
+| O faturamento sem login: a Clara não pode vê-lo, mas o sistema ainda não sabe quem é quem | Não mostrar faturamento até existir login |
+| O que conta como "aberta" no painel | Só o status "aberta" |
+| Qual mês entra no faturamento | O mês corrente, pela data de entrega |
+| A troca de status é livre ou só avança? | Livre, para a Clara corrigir enganos |
+
+As outras (editar e excluir, ordens de exemplo, validação de campos, aparência, backup) ele propôs com uma recomendação. Repare no que um plano bem feito faz: **ele transforma uma pergunta que você ia descobrir só depois de pronto em uma pergunta feita antes, de graça**.
+
+### Construir e conferir
+
+Com as decisões respondidas, é só mandar. Na nossa execução, o Claude levou cerca de 2 minutos, em 19 passos, e criou:
+
+| Arquivo | O que faz | Linhas |
+|---|---|---|
+| `servidor.mjs` | Atende os pedidos da tela | 125 |
+| `banco.mjs` | Cria e consulta o banco | 129 |
+| `publico/index.html`, `app.js`, `estilo.css` | A tela | 69, 103 e 116 |
+| `conferir.mjs` | Sobe o sistema numa porta de teste e confere tudo | 158 |
+
+Cerca de 700 linhas no total. E a conferência que ele mesmo escreveu passou em **25 de 25 verificações**: o painel responde, um cadastro válido é aceito, placa ou valor inválidos são recusados com mensagem útil, a troca de status atualiza o painel, status inválido dá erro, e a tela **não mostra a palavra faturamento**.
+
+Mas lembre da estação anterior: a conferência só pega o que ela testa. Por isso o Claude avisou, com honestidade, **o que não testou**: "não testei a porta 3000 à mão". É a nossa vez.
+
+### Use como o cliente usaria
+
+Subimos o sistema de verdade (`node servidor.mjs`), abrimos no navegador e usamos. O painel mostrou "Ordens abertas 1" e "Prontas para retirar 1" (as três ordens de exemplo, marcadas EXEMPLO), e a tela tinha os campos que o briefing pedia: nome, telefone, placa, modelo, descrição e valor, em letra grande, como o Seu Antônio quer.
+
+Só quando você vê o sistema no seu navegador, cadastrando uma ordem, é que sabe se ele serve. É também **a demonstração que o cliente precisa ver**. Mostre cedo: ele sempre acha algo que você não imaginou.
+
+### O que ficou de fora de propósito
+
+Duas coisas, e ambas com motivo:
+
+- **Login e faturamento.** Quem usa o sistema agora é qualquer pessoa que abrir a página no computador. Para uma oficina com um computador no balcão isso já serve para o teste, mas **não** para entregar. A próxima estação resolve.
+- **Backup.** Os dados estão num arquivo único. Se o computador quebrar, as ordens somem. A última estação resolve.
+
+### Como vender isso
+
+- **Venda em fases.** "Fase 1: cadastro, lista e painel" tem preço e prazo claros. "Fase 2: login e papéis" vem depois. Assim o cliente vê valor cedo e você não promete o que ainda não sabe medir.
+- **Mostre os dados de exemplo.** Um sistema vazio não impressiona. Três ordens marcadas EXEMPLO mostram o painel funcionando sem inventar cliente real.
+- **Pergunte antes de construir o que ainda é dúvida.** As nove decisões do plano são um bom roteiro de conversa com o cliente.
+- **Diga em que computador ele roda.** "Roda no computador da oficina, sem internet" é uma vantagem (não depende de mensalidade) e um limite (só funciona ali). O cliente precisa saber.
+
+<Camada tipo="capo" titulo="Por baixo do capô: o que o Claude escolheu">
+
+### Por que o Node puro
+
+O Claude usou `node:http` para o servidor e `node:sqlite` para o banco. Ambos vêm dentro do Node, sem instalar nada. O banco SQLite é um **arquivo** (`dados/oficina.db`), então "fazer backup" é copiar um arquivo, e "mover para outro computador" também.
+
+### Valores em centavos
+
+O valor de R$ 1.250,50 foi guardado como `125050`. Dinheiro em número inteiro de centavos evita erros de arredondamento. É um cuidado que o Claude teve sozinho: a conferência provou ("valor `1.250,50` guardado como `125050` centavos").
+
+### Consultas parametrizadas
+
+O plano dizia: "consultas parametrizadas e texto escapado na tela". Quer dizer que o que a pessoa digita nunca é colado direto numa instrução do banco, nem mostrado como código na tela. É a proteção contra um dos ataques mais comuns a sistemas, e o cliente nem precisa saber que ela existe, mas você precisa conferir que existe.
+
+### O servidor só atende o próprio computador
+
+Sem login, o Claude fez o servidor escutar só em `127.0.0.1`, o endereço do próprio computador. Ninguém da rede consegue abrir. É uma decisão de segurança boa que ele tomou e avisou.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Pedir o sistema inteiro de uma vez
+
+"Faça um sistema de oficina completo, com tudo" mistura decisões demais. Divida em fases: dados, depois acesso, depois proteção.
+
+### Aprovar o plano sem responder às decisões
+
+O plano termina com "decisões suas". Se você as ignora, o Claude escolhe sozinho, e você descobre depois de pronto.
+
+### Mostrar o sistema vazio ao cliente
+
+Sem dados de exemplo, o cliente não entende o painel. Use exemplos claramente falsos e marcados.
+
+### Confiar só na conferência
+
+Ela rodou em outra porta, com banco temporário. Suba o sistema de verdade e use.
+
+### Esquecer de dizer o que ainda não existe
+
+Sem login e sem backup, o sistema **não** está pronto para entrega. Diga isso ao cliente por escrito.
+
+### Entregar com os dados de exemplo dentro
+
+As três ordens EXEMPLO vão para o banco real. Apague-as antes de entregar.
+
+</Camada>
+
+## Fichas de campo
+
+Esta temporada usa um cliente novo: a **Oficina Boa Estrada**. Todo o material vem em um ZIP.
+
+- [Ponto de partida: `t2a-inicio.zip`](../lab/t2a-inicio.zip) (briefing e caderno de regras)
+
+Você precisa do **Node.js** instalado (você o instalou na temporada anterior). Confirme com `node --version`.
+
+<Ficha
+  id="t2a-e1"
+  n={1}
+  titulo="Briefing, caderno e plano"
+  objetivo="Ler o briefing da oficina e pedir um plano de sistema, decidindo o que cabe a você."
+  minutos={30}
+  pre="Temporada 1 concluída e Node.js instalado"
+  versao="2.1.325"
+>
+
+1. Extraia a pasta e entre nela:
+
+   <SO unix="unzip ~/Downloads/t2a-inicio.zip -d ~/Documents && cd ~/Documents/oficina-boa-estrada" win={`Expand-Archive "$HOME\\Downloads\\t2a-inicio.zip" -DestinationPath "$HOME\\Documents" -Force; cd "$HOME\\Documents\\oficina-boa-estrada"`} />
+
+2. Leia o `briefing.md` e o `CLAUDE.md` (estão no quadro acima). Anote duas dúvidas que **você** teria antes de construir.
+3. Abra o Claude, ative o modo plano (<kbd>Shift</kbd>+<kbd>Tab</kbd> até aparecer **plan mode on**) e peça:
+
+   ```text
+   Leia o briefing.md e o CLAUDE.md. Faça um plano do sistema: por enquanto só o cadastro, a lista com filtro, a troca de status e o painel, sem login (o login vem depois). Diga quais decisões são minhas. Não altere nenhum arquivo ainda.
+   ```
+
+4. Leia o plano. Procure a lista de **decisões suas** e compare com as duas dúvidas que você anotou. Quantas ele achou que você não tinha pensado?
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode plan`, dentro da pasta. O plano fica salvo em `~/.claude/plans/`.
+</Nota>
+
+<Prova>
+
+O Claude devolve um plano e uma **lista de decisões**, sem alterar arquivo algum. Na nossa execução (4 passos, 0 negações): base em Node puro, arquivos previstos (`servidor.mjs`, `banco.mjs`, `publico/`, `conferir.mjs`), a tabela `ordens` **sem CPF**, e nove decisões. Ele percebeu sozinho que a pasta não tinha `conferir.mjs`, que o `CLAUDE.md` manda rodar, e incluiu a criação dele no plano.
+
+</Prova>
+
+<Gabarito>
+
+O seu plano será parecido, não igual. O teste: ele separou **o que é técnico** (ele decide) do **que é do negócio** (você decide)? Se uma decisão do negócio apareceu como feita ("vou mostrar o faturamento para todos"), responda e corrija antes de construir.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude já criou os arquivos.** Você não estava no modo plano. Confira o "plan mode on" e repita.
+- **`node` não é reconhecido.** O Node.js não está instalado ou o terminal foi aberto antes. Instale (nodejs.org), feche e abra o terminal.
+- **O plano não tem decisões para você.** Peça: "liste as decisões que dependem do cliente e não de você".
+
+</DeuErro>
+
+<Desafio>
+
+Responda às decisões com uma que contraria a recomendação dele (por exemplo, "a troca de status só pode avançar na ordem"). O plano muda? O que muda no que a Clara consegue fazer?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t2a-e2"
+  n={2}
+  titulo="Construir, conferir e abrir"
+  objetivo="Mandar construir, rodar a conferência, subir o sistema e usá-lo no navegador."
+  minutos={45}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+1. Na mesma sessão, responda às decisões e mande construir. Se quiser, copie:
+
+   ```text
+   Minhas decisões: 1) sem faturamento até existir login (o painel mostra só abertas e prontas); 2) 'abertas' conta só o status aberta; 3) faturamento do mês corrente pela data de entrega, mas só entra depois do login; 4) troca de status livre; 5) sem editar nem excluir; 6) as três ordens de exemplo marcadas EXEMPLO; 7) validação como você propôs; 8) texto livre e visual simples de letra grande; 9) backup fica para depois. Pode implementar o plano e crie o conferir.mjs, que deve subir o servidor numa porta de teste, usar um banco temporário, cadastrar uma ordem, trocar o status e conferir o painel. Rode node conferir.mjs e mostre o resultado.
+   ```
+
+2. Aprove as criações de arquivo e o comando `node conferir.mjs`. Quando terminar, saia (`/exit`).
+3. Rode você mesmo a conferência:
+
+   ```bash
+   node conferir.mjs
+   ```
+
+4. **Suba o sistema.** O terminal vai ficar ocupado, mostrando que o sistema está no ar:
+
+   ```bash
+   node servidor.mjs
+   ```
+
+5. Abra o endereço no navegador:
+
+   <SO mac="open http://localhost:3000" linux="xdg-open http://localhost:3000" win="start http://localhost:3000" />
+
+6. **Use como o Seu Antônio.** Cadastre uma ordem, mude o status dela para "pronta" e veja o painel mudar. Tente um cadastro com a placa `123` e leia a mensagem de erro.
+7. Para desligar o sistema, volte ao terminal e aperte <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido do passo 1>" --continue --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`. Sem tela, o Claude não pôde subir o servidor (comando negado) e avisou: por isso os passos 4 a 6 são seus.
+</Nota>
+
+<Prova>
+
+A conferência termina em `25 de 25 verificações OK`, e o navegador mostra o painel e o formulário. Na nossa execução (19 passos, 8 comandos negados porque o `-p` não deixa rodar o que não foi liberado, cerca de 2 minutos):
+
+| O que você faz | O que acontece |
+|---|---|
+| `node conferir.mjs` | `25 de 25 verificações OK`, incluindo "tela não mostra faturamento" |
+| Abrir `localhost:3000` | Painel com "Ordens abertas 1" e "Prontas para retirar 1" (as três ordens EXEMPLO) |
+| Cadastro com placa inválida | Recusado, com a mensagem do que corrigir |
+| Cadastro válido | A ordem aparece na lista como "aberta" e o painel soma 1 |
+| Mudar para "pronta" | O painel troca uma aberta por uma pronta |
+
+O Claude fez **menos** do que poderia: não criou login, backup nem edição de ordens, como pedimos. Ele também listou **o que decidiu sem o briefing dizer**: por exemplo, que o valor de cada ordem aparece na lista (só o total é que seria o faturamento).
+
+</Prova>
+
+<Gabarito>
+
+O seu sistema será parecido, com visual um pouco diferente. O que prova que está certo: a conferência passa, **e** você consegue cadastrar e mudar status no navegador. Nosso resultado está em [`t2a-gabarito.zip`](../lab/t2a-gabarito.zip), caso queira comparar ou seguir com a mesma base.
+
+</Gabarito>
+
+<DeuErro>
+
+- **`EADDRINUSE` ou "porta em uso".** O sistema já está rodando em outro terminal, ou outro programa usa a porta 3000. Feche o terminal antigo ou peça ao Claude para usar outra porta.
+- **A página não abre.** O servidor escuta só neste computador: use `http://localhost:3000` (ou `http://127.0.0.1:3000`) no mesmo computador, não em outro aparelho.
+- **A conferência falha em algo que eu não mexi.** Rode de novo uma vez. Se persistir, cole a saída para o Claude e peça: "explique o que falhou e conserte só isso".
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "mostre as três ordens guardadas no banco como uma tabela" (libere `Bash(node *)` se pedir). Depois feche o servidor, abra de novo e confirme que as ordens que você cadastrou **continuam lá**: é isso que um banco de dados faz.
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que dominou e mostre o sistema ao cliente">
+
+O Seu Antônio é seu cliente. Agora é a hora de ver se você entendeu o que construiu, usando outro cliente: a **Lia**, do Studio Lia, que gostou do site e quer o próximo passo.
+
+### Teste de domínio: a agenda da Lia, primeira fase
+
+Baixe o material. Ele traz o briefing do site e um pedido novo.
+
+- [Cliente: `t2-dominio-inicio.zip`](../lab/t2-dominio-inicio.zip) (briefing do site e pedido da agenda)
+
+<Arquivo estado="t2-dominio-inicio" nome="agenda.md" dica="o pedido novo da Lia" />
+
+**Sua missão, sem passo a passo:**
+
+1. Escreva o `CLAUDE.md` da agenda (uma estação atrás você já sabe como, e o da oficina é um modelo). Inclua a regra "só o que já vem com o Node".
+2. Peça o **plano** da primeira fase: o formulário **guarda** o pedido de aula experimental e a Lia **vê a lista por data**, com as regras da terça e da quinta e das 24 horas. **Sem login ainda.**
+3. Decida o que o plano deixar para você e construa.
+4. Peça um `conferir.mjs` que teste as regras num banco temporário.
+5. Suba o sistema e use: envie um pedido numa terça, depois numa quarta, e veja a diferença.
+
+Na nossa execução (do pedido completo, com login e outras partes), o Claude construiu o sistema em 29 passos e uma conferência de 29 testes. **Ele achou um erro de verdade sozinho**: um filtro de data aceitava `2026-13-99` porque só olhava o formato. Corrigiu e anotou. Repare nisto: um bom roteiro de conferência não serve só para você, serve para o próprio Claude se corrigir.
+
+Quando usamos o sistema real, o pedido de uma terça foi aceito, e o de uma quarta foi recusado com a mensagem "A aula experimental é só às terças e quintas".
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar a diferença entre a tela, o servidor e o banco, com um exemplo do dia a dia;
+- dizer por que o plano é pedido **antes** e o que você decidiu a partir dele;
+- mostrar o que a sua conferência cobre e uma coisa que **não** cobre;
+- usar o sistema no navegador e provar que os dados continuam depois de fechar o servidor;
+- dizer por que o sistema ainda **não** está pronto para entregar (o que falta).
+
+### Mostre o sistema ao cliente
+
+Entregar um sistema não é mandar um arquivo. É **sentar com o cliente e mostrá-lo funcionando**. Roteiro de uma demonstração de 20 minutos, para a Fase 1:
+
+1. **Contexto (2 min).** "Hoje eu te mostro como as ordens vão sair do caderno e ir para o computador."
+2. **Cadastro (5 min).** Peça que **ele** cadastre uma ordem de verdade (com dados de teste). Quem usa se convence mais do que quem assiste.
+3. **Lista e status (5 min).** Mude o status de uma ordem e mostre o painel mudando.
+4. **O que não está pronto (3 min).** "Ainda não tem login nem backup. Isso é a Fase 2. Até lá, usem só para teste."
+5. **Perguntas dele (5 min).** Anote tudo.
+
+E mande, depois, uma mensagem curta:
+
+```text
+Seu Antônio, obrigado pela reunião. Resumo do que vimos:
+
+Pronto (Fase 1): cadastro de ordens, lista com filtro, mudança de status e painel.
+Ainda não pronto (Fase 2): login com dono e atendente, faturamento do mês e backup.
+O que eu preciso de você: dizer se a troca de status deve ser livre ou só avançar, e quando posso passar para a Fase 2.
+
+Até lá, o sistema serve só para teste, com ordens de exemplo.
+```
+
+Repare que a mensagem **diz o que não está pronto**. Surpresa depois de pronto custa confiança. Aviso antes custa uma linha.
+
+</Entrega>
+
+<Saida>
+
+- Sei explicar o que são servidor, banco de dados e API, com um exemplo do dia a dia.
+- Peço o plano antes, respondo às decisões que são minhas e exijo só o que já vem com o Node.
+- Subo o sistema, abro no navegador, uso como o cliente usaria e provo que os dados continuam depois de fechar o servidor.
+- Leio a conferência de 25 verificações e sei dizer o que ela não cobre.
+- Faço a primeira fase da agenda da Lia por conta própria e sei conduzir uma demonstração de 20 minutos.
+- Sei dizer ao cliente, por escrito, o que ainda não está pronto.
+
+</Saida>
+
+**Próxima estação:** [Quem entra e o que o Claude pode ver](../t2b/): o Seu Antônio quer que a Clara **não** veja o faturamento. Você vai descobrir por que esconder na tela não basta, e como o Claude Code deve (ou não deve) lidar com as senhas do sistema.
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): modo plano e como revisar antes de executar.
+- [Best practices](https://code.claude.com/docs/en/best-practices.md): critério de verificação e fases.
+- Execuções locais registradas em `VERIFICATION/t2a.md`. O SQLite embutido (`node:sqlite`) e o servidor (`node:http`) vêm com o Node 24, que é a versão da máquina de teste.
+
+</Fontes>

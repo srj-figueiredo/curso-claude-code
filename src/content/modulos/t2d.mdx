@@ -1,0 +1,453 @@
+---
+id: t2d
+titulo: "Testar, guardar e entregar o sistema"
+parte: p9
+ordem: 204
+minutos: 180
+pre_requisitos: [t2c]
+objetivos:
+  - Pedir um backup e provar, com um ensaio, que a restauração funciona.
+  - Dizer o que a conferência automática cobre e o que só o uso real descobre.
+  - Aplicar os cuidados básicos com dados pessoais do cliente e das pessoas que ele atende.
+  - Preparar a instalação e a operação do sistema no computador do cliente.
+  - Entregar um sistema completo, com manual, acessos, relatório e aceite, e conduzir a reunião.
+tldr:
+  - Backup que nunca foi restaurado não é backup. Ensaie a restauração antes do desastre.
+  - Guarde só o dado necessário, peça consentimento e dê um jeito de apagar a pedido.
+  - Entregar um sistema é entregar um pacote, com o sistema, o manual de operação, os acessos, o relatório e o aceite.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: t2d-e1, titulo: Pedir o backup e a restauração, minutos: 40, custo: gratis }
+  - { id: t2d-e2, titulo: O ensaio de desastre, minutos: 30, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Backup', simples: 'Uma cópia datada dos dados, guardada à parte. Quando algo quebra, você volta para ela.' },
+    { termo: 'Restauração', simples: 'Trazer a cópia de volta. É a parte que quase ninguém testa, e a que vale.' },
+    { termo: 'Retenção (poda)', simples: 'Quantas cópias manter. Guardar todas para sempre enche o disco; guardar uma só é pouco.' },
+    { termo: 'Dado mínimo e LGPD', simples: 'Guardar só o que o sistema precisa, pedir o consentimento de quem fornece o dado e conseguir apagar quando a pessoa pedir.' },
+    { termo: 'Operação no computador do cliente', simples: 'Como o sistema liga, onde ficam os arquivos e o que o cliente precisa saber para usá-lo no dia a dia.' },
+    { termo: 'Manual de operação', simples: 'O guia curto, em linguagem simples, de como ligar, usar, guardar e pedir ajuda.' },
+  ]}
+  depois={[
+    { termo: 'Hospedagem e acesso pela internet', quando: 'colocar o sistema para ser usado de fora do computador da oficina. Entra mais adiante, com custos que variam por fornecedor.', ref: 'm5' },
+    { termo: 'Banco de dados em servidor', quando: 'o passo seguinte ao SQLite, quando vários computadores usam o mesmo banco.', ref: 'm20' },
+    { termo: 'Segurança em equipe', quando: 'regras para quando mais de uma pessoa trabalha no projeto.', ref: 'm19' },
+  ]}
+/>
+
+O Seu Antônio chega numa segunda-feira com a cara fechada: "O computador do balcão não ligou. Eu perdi tudo?"
+
+Se você respondeu "tem backup", ótimo, mas só se **já ensaiou** trazê-lo de volta. Esta estação fecha a Temporada 2 com o que separa um sistema que funciona na sua máquina de um sistema que dá para **entregar e confiar**: testar de verdade, guardar uma cópia, cuidar dos dados das pessoas e conduzir a entrega.
+
+### Testar: o que a conferência cobre e o que ela não cobre
+
+Ao longo da temporada, a conferência cresceu: **25** verificações (cadastro e painel), **61** (com login e papéis), **74** (com backup). Ela é a sua rede de segurança, e vale conhecer seus limites.
+
+| A conferência **cobre** | A conferência **não cobre** |
+|---|---|
+| Cadastro, validação, filtro, status, painel | O visual: se a tela está bonita e legível em letra grande |
+| Login, papéis, bloqueio, cookie, hash | O hábito do cliente: se a Clara entende o painel |
+| Backup, restauração e recusa de arquivo falso | O computador real: se o sistema liga no PC da oficina |
+| O que o Claude **pensou** em testar | O que ninguém pensou |
+
+Por isso o teste tem três camadas: **a conferência automática** (rápida, repetível), **o seu uso à mão** (você é a primeira usuária ou o primeiro usuário) e **o uso do cliente** (a demonstração e o aceite). Uma não substitui a outra.
+
+### Backup: a cópia que salva
+
+Os dados da oficina estão **num arquivo**, o `dados/oficina.db`. Se o computador quebrar, o arquivo vai junto. O backup é uma **cópia datada** desse arquivo, guardada numa pasta à parte. Pedimos ao Claude:
+
+- **`backup.mjs`**: copia o banco para `backups/oficina-AAAA-MM-DD-HHMM.db`, usando o próprio SQLite para que a cópia seja consistente, e **mantém só os 7 mais recentes** (a poda).
+- **`restaurar.mjs`**: traz um backup de volta. Antes de trocar, **guarda uma cópia do banco atual** (`antes-da-restauracao-...`), e **recusa qualquer arquivo que não seja um banco válido**.
+
+Repare nos dois cuidados do `restaurar`. Restaurar é uma operação perigosa: se você restaura o arquivo errado, **perde o que tinha**. Por isso ele guarda o atual antes e se recusa a aceitar lixo.
+
+### O ensaio de desastre
+
+Um backup que nunca foi restaurado é uma esperança, não um backup. Por isso o teste mais importante desta estação é **um ensaio**: fazer o backup, estragar de propósito, restaurar e ver os dados voltarem.
+
+Fizemos, com o banco real de teste (as três ordens de exemplo):
+
+| Passo | Resultado |
+|---|---|
+| `node backup.mjs` | `Backup criado: ...oficina-2026-11-13-2213.db` |
+| Apagar uma ordem do banco | de 3 ordens para 2 |
+| `node restaurar.mjs backups/oficina-...db` | "Banco restaurado". Ordens: **3** de novo |
+| O banco de antes foi guardado? | Sim: `antes-da-restauracao-2026-11-13-2213.db` |
+| Restaurar um arquivo de texto qualquer (`falso.db`) | **Recusado**, saída 1: "o arquivo não começa com o cabeçalho de um banco SQLite. Nada foi alterado" |
+
+E o pior cenário: **apagamos o arquivo do banco inteiro** (`Remove-Item dados\oficina.db`) e restauramos a partir do backup. O banco voltou, com saída 0.
+
+### Os dados das pessoas
+
+O sistema da oficina guarda nome e telefone de clientes. O da Lia guarda nome e telefone de alunas. São **dados pessoais**, e no Brasil há uma lei sobre isso, a LGPD. Aqui não vamos fazer curso de Direito, mas vale levar quatro hábitos que reduzem muito o risco:
+
+1. **Guarde só o necessário.** Se o sistema não precisa de CPF, não pergunte. Foi a primeira regra do briefing da oficina.
+2. **Diga para quê.** Quem fornece o dado deve saber para que ele serve. Num formulário, uma frase curta e uma **caixa de aceite**: "Concordo em usar meu nome e telefone para agendar minha aula experimental."
+3. **Permita apagar.** Se uma pessoa pedir para ter seus dados apagados, o dono do sistema precisa conseguir. Na agenda da Lia pedimos uma função que apaga os pedidos de uma aluna pelo telefone, e funcionou no teste real (`{"ok":true,"apagados":1}`).
+4. **Proteja o que guarda.** Login, hash, `.env` fora do histórico e backup guardado com cuidado, já que o backup **também tem os dados**.
+
+<Nota rotulo="Isto não é aconselhamento jurídico">
+Esta página dá hábitos de bom senso, não parecer jurídico, e as regras de proteção de dados têm detalhes que dependem do caso. Quando o volume de dados, o risco ou o valor do contrato forem relevantes, consulte um profissional. Não verificamos o texto da lei em fonte oficial nesta data.
+</Nota>
+
+### Instalar no computador do cliente
+
+O sistema roda **no computador da oficina**, sem internet. Para instalar, a pessoa precisa de quatro coisas:
+
+1. **O Node.js** instalado no computador (a versão LTS, em nodejs.org).
+2. **A pasta do sistema** copiada para o computador (sem a pasta `dados/` de teste).
+3. **O `.env`**, criado a partir do `.env.example`, **com senhas que o cliente escolhe**.
+4. **Um jeito de ligar.** Abrir o terminal na pasta e rodar `node servidor.mjs`. Para o cliente não técnico, isso é pedir demais, e a solução comum é um **arquivo de atalho** que faz isso com dois cliques.
+
+Esse atalho, no Windows, é um arquivo `iniciar.cmd` com quatro linhas:
+
+```text
+@echo off
+cd /d "%~dp0"
+echo Oficina Boa Estrada: mantenha esta janela aberta enquanto usar o sistema.
+node servidor.mjs
+pause
+```
+
+<Nota rotulo="Não testado">
+Tentamos executar o `iniciar.cmd` na nossa máquina de teste, mas o teste travou o terminal e não o repetimos. O conteúdo é padrão do Windows, mas **não foi verificado aqui**. Teste no computador do cliente antes de entregar, e anote em qual versão do Windows funcionou.
+</Nota>
+
+Duas perguntas que o cliente fará e que você precisa responder antes:
+
+- **"E se eu quiser abrir de casa?"** O sistema atende só neste computador. Acesso pela internet exige hospedagem e outros cuidados, e tem custo que depende do fornecedor: consulte o preço atual no site de cada um antes de prometer.
+- **"E se o computador estragar?"** É o backup. E onde ele fica: **numa pasta que não esteja só nesse computador** (um pendrive ou outro lugar). Combine com o cliente quem copia e com que frequência.
+
+### Como vender isso
+
+- **Venda o pacote completo.** "Sistema, manual, acessos, backup ensaiado e relatório" é um produto com começo e fim. "Faço um sistema" é uma promessa vaga.
+- **Cobre à parte a manutenção.** Backup semanal conferido, troca de senha, ajuste de valores: serviço recorrente, claro e fácil de explicar.
+- **Cuidado com o que prometer sobre dados.** Diga o que você fez (hash, login, backup) e o que depende do cliente (quem fica com o computador, a senha, a cópia).
+- **Seja claro sobre o que não está no escopo.** Acesso pela internet, aplicativo no celular e integração com outros sistemas são outro projeto.
+
+<Camada tipo="capo" titulo="Por baixo do capô: como o backup foi feito">
+
+### Cópia consistente
+
+O Claude usou o comando `VACUUM INTO` do próprio SQLite para gerar a cópia. Copiar o arquivo do banco "no braço" enquanto o sistema escreve pode produzir uma cópia quebrada. O `VACUUM INTO` pede ao banco que ele mesmo faça a cópia, de forma segura.
+
+### A poda e as variáveis
+
+O `backup.mjs` mantém os 7 backups mais recentes. As variáveis opcionais `BANCO` (caminho do banco) e `BACKUPS` (pasta das cópias) existem para o teste não tocar no banco real. Sem elas, os padrões valem (`dados/oficina.db` e `backups/`).
+
+### A restauração por cópia e troca
+
+O `restaurar.mjs` valida o arquivo (cabeçalho de banco SQLite e a tabela `ordens`), guarda o banco atual e só então troca, por cópia e renomeação. Se qualquer passo falha antes, **nada é alterado**.
+
+### O `.gitignore` e o backup
+
+Ele inclui `backups/`, porque o backup tem dados do banco e não deve ir para o histórico.
+
+### O que ele avisou
+
+Na nossa execução, o Claude listou o que decidiu sem o briefing dizer: a variável `BACKUPS`, a recusa de arquivo que não seja SQLite válido com a tabela de ordens e a recusa de sobrescrever um backup do mesmo minuto. São decisões de profissional que ele deixou claras para você revisar.
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Backup na mesma pasta do banco, e só ali
+
+Se o computador quebra, o backup vai junto. Copie para outro lugar, e combine quem faz.
+
+### Nunca ter restaurado
+
+O dia do desastre é o pior momento para descobrir que a restauração não funciona. Faça o ensaio.
+
+### Restaurar o arquivo errado
+
+Restaurar apaga o que tinha. O `restaurar.mjs` guarda o atual antes, mas confira o nome do arquivo.
+
+### Guardar dado que o sistema não usa
+
+CPF "por precaução" vira risco sem benefício. Pergunte só o que usa.
+
+### Entregar com os dados de exemplo
+
+As ordens EXEMPLO vão para o banco real do cliente. Apague antes.
+
+### Prometer acesso de fora sem custo
+
+Acesso pela internet tem custo e cuidados que mudam por fornecedor. Não prometa antes de consultar.
+
+### Entregar o backup sem proteção
+
+Ele tem os mesmos dados do banco. Guarde com o mesmo cuidado.
+
+</Camada>
+
+## Fichas de campo
+
+As fichas usam a oficina com login e travas. Se você fez a estação anterior, siga com a sua pasta. Se não, baixe a nossa:
+
+- [Ponto de partida: `t2c-gabarito.zip`](../lab/t2c-gabarito.zip) (sistema com login, hooks e skill)
+
+<Ficha
+  id="t2d-e1"
+  n={1}
+  titulo="Pedir o backup e a restauração"
+  objetivo="Pedir ao Claude os dois scripts e a conferência do ensaio, e rodar tudo."
+  minutos={40}
+  pre="T2C concluída (ou o ZIP acima)"
+  versao="2.1.325"
+>
+
+1. Entre na pasta da oficina e abra o Claude (numa sessão nova, para os hooks valerem):
+
+   <SO unix="cd ~/Documents/oficina-boa-estrada && claude" win={`cd "$HOME\\Documents\\oficina-boa-estrada"; claude`} />
+
+2. Cole o pedido:
+
+   ```text
+   Crie o backup do sistema. backup.mjs: copia o banco dados/oficina.db para backups/oficina-AAAA-MM-DD-HHMM.db usando o próprio SQLite (VACUUM INTO), e mantém só os 7 backups mais recentes. restaurar.mjs <arquivo>: restaura um backup, depois de guardar uma cópia do banco atual em backups/antes-da-restauracao-... e recusando arquivo que não seja um banco SQLite válido. Os dois scripts leem o caminho do banco de uma variável opcional BANCO (padrão dados/oficina.db) para o teste não tocar no banco real. Acrescente ao conferir.mjs: fazer um backup, apagar uma ordem do banco de teste, restaurar, e conferir que a ordem voltou; e conferir que um arquivo qualquer é recusado. Rode node conferir.mjs.
+   ```
+
+3. Aprove as criações e o comando `node conferir.mjs`. Se o hook de conferência estiver instalado, ele também vai rodar depois de cada edição: é normal.
+4. Saia (`/exit`) e rode a conferência por conta própria:
+
+   ```bash
+   node conferir.mjs
+   ```
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`.
+</Nota>
+
+<Prova>
+
+A conferência termina em `74 de 74 verificações OK` (as 61 anteriores e 13 novas de backup e restauração). Na nossa execução (18 passos, 3 comandos negados, cerca de 2 minutos), o Claude criou `backup.mjs`, `restaurar.mjs` e um arquivo de apoio, `copias.mjs`, e acrescentou ao `.gitignore` a pasta `backups/`. A conferência cobre: fazer o backup, apagar uma ordem, restaurar e a ordem voltar, o banco anterior ser guardado, o arquivo falso ser recusado **sem alterar nada**, e a poda deixar 7 backups.
+
+</Prova>
+
+<Gabarito>
+
+O seu terá nomes parecidos. O que importa: a conferência inclui um ensaio de restauração **e** a recusa do arquivo falso. Nossa versão final está em [`t2d-gabarito.zip`](../lab/t2d-gabarito.zip).
+
+</Gabarito>
+
+<DeuErro>
+
+- **A conferência não tem a parte de backup.** O pedido omitiu a última frase. Peça: "acrescente ao conferir.mjs o ensaio de backup e restauração".
+- **O hook de conferência trava a sessão.** A conferência está lenta. Peça: "deixe o hook rodar só as verificações rápidas".
+- **O Claude escreveu o backup copiando o arquivo no braço.** Peça: "use VACUUM INTO, como pedi".
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "faça o `backup.mjs` avisar quando o último backup tiver mais de 7 dias". Como você testaria esse aviso sem esperar 7 dias?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t2d-e2"
+  n={2}
+  titulo="O ensaio de desastre"
+  objetivo="Fazer backup, apagar o banco inteiro de propósito, restaurar e provar que os dados voltaram."
+  minutos={30}
+  pre="Ficha 1 e o sistema já usado uma vez (o banco existe)"
+  versao="2.1.325"
+>
+
+1. Suba o sistema uma vez para criar o banco (`node servidor.mjs`), espere a mensagem "rodando" e desligue com <kbd>Ctrl</kbd>+<kbd>C</kbd>. Confirme que existe `dados/oficina.db`:
+
+   <SO unix="ls dados" win="Get-ChildItem dados" />
+
+2. Faça o backup e veja o arquivo criado:
+
+   ```bash
+   node backup.mjs
+   ```
+
+   <SO unix="ls backups" win="Get-ChildItem backups" />
+
+3. **O desastre.** Apague o banco inteiro:
+
+   <SO unix="rm dados/oficina.db" win="Remove-Item dados\oficina.db -Force" />
+
+4. **A restauração.** Troque `NOME` pelo nome do arquivo que apareceu em `backups` (começa com `oficina-`):
+
+   ```bash
+   node restaurar.mjs backups/NOME
+   ```
+
+5. Suba o sistema de novo, entre e confirme que as ordens voltaram.
+6. **O arquivo falso.** Crie um arquivo qualquer e tente restaurá-lo:
+
+   <SO unix={`echo "texto qualquer" > falso.db`} win={`Set-Content falso.db "texto qualquer" -Encoding ascii`} />
+
+   ```bash
+   node restaurar.mjs falso.db
+   ```
+
+<Prova>
+
+Os dados voltam e o arquivo falso é recusado. Na nossa execução, no PowerShell 5.1:
+
+| Passo | Resultado |
+|---|---|
+| `node backup.mjs` | `Backup criado: ...\backups\oficina-2026-11-13-2220.db` e "Mantendo os 7 mais recentes" |
+| Apagar `dados\oficina.db` | O arquivo deixou de existir |
+| `node restaurar.mjs backups\oficina-...db` | "Banco restaurado a partir de...", saída 0, e `dados/oficina.db` **existe de novo** |
+| `node restaurar.mjs falso.db` | "Recusado: falso.db o arquivo não começa com o cabeçalho de um banco SQLite. Nada foi alterado.", saída 1 |
+
+Num teste anterior, com o banco ainda no lugar, o fluxo contou as ordens: **3** antes, **2** depois de apagar uma, **3** depois de restaurar, e o banco de antes foi guardado em `antes-da-restauracao-...`. Se o banco foi apagado por inteiro, não há "banco de antes" a guardar, e a restauração só recria.
+
+</Prova>
+
+<Gabarito>
+
+O que esse ensaio prova é uma frase: "se o computador quebrar, eu sei trazer os dados de volta". Anote o tempo que levou. Esse número é uma boa informação para o cliente.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O `node backup.mjs` diz que não encontra o banco.** O sistema nunca rodou. Faça o passo 1.
+- **O `restaurar.mjs` recusa um backup de verdade.** Confira o nome: um erro de digitação vira "arquivo não existe". Copie o nome da lista.
+- **Depois de restaurar, o sistema pede login e não aceita a senha.** O servidor recria os usuários a partir do `.env` ao iniciar. Confira que o `.env` está na pasta.
+
+</DeuErro>
+
+<Desafio>
+
+Faça o backup, **mude o `.env`** (troque a senha da Clara), restaure e suba o sistema. Qual senha vale? O que isso diz sobre onde a senha mora?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Projeto final da Temporada 2: a agenda do Studio Lia, do pedido à entrega">
+
+Este é o teste que fecha a temporada. Você fará **por conta própria**, de ponta a ponta, um sistema completo para a Lia, usando tudo o que viu. O resultado será um **pacote de entrega** que você poderia mostrar a um cliente de verdade.
+
+### A missão
+
+Parta do `t2-dominio-inicio.zip` (o briefing do site e o pedido da agenda). **Sem ficha**:
+
+1. **Dúvidas.** Peça ao Claude as dúvidas e contradições do pedido e escreva uma mensagem curta à Lia.
+2. **Caderno.** Escreva o `CLAUDE.md` da agenda, com a regra "só o que já vem com o Node" e "nunca mostrar senha".
+3. **Plano e construção.** Peça o plano, decida o que for seu e construa: formulário público com **caixa de aceite**, guarda os pedidos, **só terça e quinta com 24 horas de antecedência**, lista **só com login**, confirmar, cancelar e **apagar os dados de uma aluna**.
+4. **Conferência.** Peça um `conferir.mjs` que teste tudo num banco temporário, incluindo uma verificação de "o que não pode acontecer".
+5. **Acessos.** Senha da Lia no `.env` (com hash), `.gitignore`, regra `deny` para o `.env`. Prove o 401 sem login e o vazamento por script.
+6. **Kit.** Instale os hooks (proteção e conferência) e adapte a skill de relatório. **Leia antes de instalar.**
+7. **Backup.** Crie o backup e a restauração e **ensaie o desastre**.
+8. **Histórico.** Faça o git, um commit por fase, e prove que sabe voltar.
+9. **Pacote.** Monte o pacote abaixo.
+10. **Reunião.** Ensaie a entrega, em voz alta, em 20 minutos.
+
+O que a nossa execução mostrou, para os passos 3 e 4: com o pedido completo, o Claude construiu o sistema em Node puro e uma conferência de **29 testes**. A primeira rodada teve 2 falhas, e uma era **um erro de verdade**: um filtro de data aceitava `2026-13-99`, porque só olhava o formato. Ele corrigiu e anotou. Quando usamos o sistema real, o pedido de uma terça foi aceito, a lista sem login deu **401**, o login funcionou e apagar os dados de uma aluna devolveu `{"ok":true,"apagados":1}`.
+
+Não executamos os passos 5 a 8 **na agenda**: foram feitos e verificados na oficina, que é o modelo. O seu teste é fazer na agenda.
+
+### O pacote de entrega do sistema
+
+Confira que o pacote está completo. Cada item é uma pergunta que o cliente faria:
+
+- **O sistema**, instalado e funcionando no computador dele, sem os dados de exemplo.
+- **O manual de operação**: como ligar, usar, guardar e pedir ajuda.
+- **A ficha de acessos**: quem entra, o que pode, como trocar a senha (da estação anterior).
+- **O backup ensaiado**: onde fica, quem faz e com que frequência.
+- **O relatório de entrega**, gerado pela skill e **lido por você**.
+- **O aviso de privacidade** do formulário, curto e em linguagem simples.
+- **O termo de aceite**.
+
+Modelo do **manual de operação**, para adaptar:
+
+```markdown
+# Como usar a agenda do Studio Lia
+
+## Ligar
+1. Dê dois cliques em "iniciar" (ou abra o terminal na pasta e rode `node servidor.mjs`).
+2. Mantenha a janela aberta. Abra o navegador em http://localhost:3000/lia.
+3. Entre com a sua senha.
+
+## No dia a dia
+- Os pedidos de aula experimental aparecem na lista, por data.
+- Marque cada pedido como confirmado ou cancelado.
+- Se uma aluna pedir para apagar os dados dela, use "apagar dados" com o telefone dela.
+
+## Guardar os dados (todo domingo à noite)
+1. Rode `node backup.mjs`.
+2. Copie a pasta `backups` para o pendrive.
+
+## Se algo der errado
+- O computador quebrou: instale o sistema em outro computador, copie o pendrive e rode `node restaurar.mjs backups/<arquivo>`.
+- Esqueci a senha: abra o arquivo `.env`, troque a senha da Lia e reabra o sistema.
+- Falar comigo: (seu contato).
+```
+
+Modelo do **aviso de privacidade**, para colocar no formulário:
+
+```text
+Usamos o seu nome e telefone apenas para agendar a sua aula experimental. Eles ficam guardados só neste sistema, com acesso apenas da Lia. Se quiser que sejam apagados, é só pedir. Concordo em usar meus dados para isso. [ ] 
+```
+
+<Nota rotulo="Isto não é aconselhamento jurídico">
+O aviso e o termo são pontos de partida. Para um cliente real, confira o texto com um profissional.
+</Nota>
+
+### A reunião de entrega do sistema, em 20 minutos
+
+1. **Abertura (2 min).** "Hoje eu te entrego a agenda e te ensino a ligar, usar e guardar."
+2. **Instalação conferida (3 min).** Ligue o sistema **no computador dela**, com a senha que ela escolheu.
+3. **Uso (7 min).** Peça que **ela** envie um pedido pelo formulário e o confirme na lista. Depois, apague os dados dessa aluna de teste.
+4. **Backup (4 min).** Faça um backup na frente dela e **ensaie a restauração**. Deixe que ela veja os dados voltarem.
+5. **O que depende dela (2 min).** Senha, pendrive, quem tem acesso ao computador.
+6. **Aceite (2 min).** Peça a confirmação por escrito, com o modelo da temporada anterior adaptado: a lista do que foi entregue, o que ficou de fora e a manutenção combinada.
+
+### Você domina a Temporada 2 se consegue
+
+Responda **sem olhar a página**, em voz alta, como se explicasse a quem contratou você:
+
+1. A diferença entre a tela, o servidor e o banco de dados.
+2. Por que esconder o faturamento na tela não protege, e onde mora a regra.
+3. O que é hash e por que a senha não fica guardada.
+4. Por que a regra `deny` barra o Claude mas não barra um programa.
+5. A diferença entre o caderno (que pede) e o hook (que garante), e o que cada hook cobre.
+6. Como o backup foi feito, e por que um backup que nunca foi restaurado não vale.
+7. O que você entrega no pacote e o que acontece se o computador do cliente quebrar.
+
+| Resultado | O que fazer |
+|---|---|
+| **7 de 7** | Você domina a Temporada 2. Siga para a próxima. |
+| **4 a 6** | Releia as estações dos itens em que hesitou e refaça o item correspondente na agenda. |
+| **Até 3** | Refaça a Temporada 2 com a Lia do zero, uma estação por dia. É bem mais rápido na segunda vez. |
+
+</Entrega>
+
+<Saida>
+
+- Sei dizer o que a conferência cobre, o que só o uso real descobre e as três camadas de teste.
+- Pedi o backup e a restauração, ensaiei o desastre e vi o arquivo falso ser recusado.
+- Aplico os quatro hábitos com dados pessoais: guardar o necessário, dizer para quê, permitir apagar e proteger.
+- Sei o que o cliente precisa para instalar e operar o sistema, e o que ainda não verifiquei.
+- Fiz o projeto da agenda da Lia e sei conduzir a reunião de entrega de um sistema em 20 minutos.
+- Sei montar o pacote: sistema, manual, acessos, backup, relatório, aviso de privacidade e aceite.
+
+</Saida>
+
+**Próxima estação:** a Temporada 3, em construção: um agente de atendimento no WhatsApp, o projeto mais procurado do radar de demanda do curso. Tudo o que você praticou aqui (dados, login, travas, backup e entrega) volta com mais peso, porque agora o sistema conversa com gente de verdade. Enquanto isso, os guias de referência aprofundam o que você viu: [Configurações, permissões e segurança](../m7/), [Git e GitHub do zero](../m4/) e [MCP](../m10/).
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): como o Claude Code opera e verifica um projeto.
+- [Hooks guide](https://code.claude.com/docs/en/hooks-guide.md): hooks de conferência depois de cada edição.
+- [Data usage](https://code.claude.com/docs/en/data-usage.md): onde as conversas ficam guardadas e por quanto tempo.
+- Execuções locais registradas em `VERIFICATION/t2d.md`. O `VACUUM INTO` e o `node:sqlite` vêm do SQLite e do Node. Não verificamos o texto da LGPD em fonte oficial.
+
+</Fontes>

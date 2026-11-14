@@ -132,3 +132,11 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Feito:** T1A a T1D e o piloto do guia de segurança limpos (0 ocorrências de `M<número>`). `pre_requisitos` da T1A ficou vazio.
 - **Fica para a reorganização do mapa:** os guias antigos ainda aparecem com o código M0 a M10 no mapa do metrô e na navegação lateral; os textos internos deles também. Renomear quando as Temporadas existirem.
 - Todas as regras estão consolidadas em `docs/REGRAS-DO-CURSO.md`.
+
+## D020 · Temporada 2 (Sistema do cliente) (13/11/2026)
+
+- **Stack:** Node puro (`node:http`, `node:sqlite`, `node:crypto`), sem instalar pacote. Motivos: roda sem internet no computador do cliente, reduz risco de código de terceiros e o aluno já tem o Node da T1B. Regra de ouro posta no `CLAUDE.md` do cliente.
+- **Estações:** T2A dados (servidor, banco, API), T2B login e segredos (hash scrypt, cookie, papéis no servidor, `.env`, regra `deny` e seu limite), T2C hooks e skills (Node, não bash; rascunho em `proposta/` porque `.claude/` é protegida em `-p`), T2D backup, ensaio de restauração, LGPD básica e entrega completa.
+- **Clientes:** Oficina Boa Estrada (ordens de serviço) e Studio Lia (agenda de aulas experimentais, teste de domínio e projeto final). Evitado cliente de saúde para não tratar dado sensível num curso de iniciantes.
+- **Honestidade:** o que não deu para executar foi dito na página (`iniciar.cmd`, instalação em outro computador, passos finais na agenda, texto da LGPD). Dois erros do próprio texto foram corrigidos na rechecagem (hooks "só em sessão nova" e comandos que não rodam no PowerShell 5.1).
+- **Cor da linha:** `--linha-9` `#7a4b1e` (contraste 7,36:1 com branco).

@@ -1,0 +1,425 @@
+---
+id: t2c
+titulo: "Receitas e travas automáticas"
+parte: p9
+ordem: 203
+minutos: 130
+pre_requisitos: [t2b]
+objetivos:
+  - Explicar a diferença entre pedir ao Claude e garantir com um hook.
+  - Pedir, ler e instalar um hook que barra uma edição e outro que confere depois de cada mudança.
+  - Criar uma skill que gera o mesmo relatório de entrega em qualquer projeto.
+  - Dizer o que um hook cobre e o que deixa passar.
+tldr:
+  - O CLAUDE.md pede. O hook obriga. Para o que não pode falhar, use hook.
+  - Hook é código que roda sozinho no seu computador. Leia antes de instalar.
+  - Skill é a receita da casa. O que você faria igual em todo projeto vira um comando.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: t2c-e1, titulo: Pedir os três itens e instalar, minutos: 45, custo: gratis }
+  - { id: t2c-e2, titulo: Testar as travas, minutos: 30, custo: gratis }
+  - { id: t2c-e3, titulo: Rodar a skill, minutos: 25, custo: gratis }
+---
+
+## Essencial
+
+<Conceitos
+  aprender={[
+    { termo: 'Hook', simples: 'Uma tranca ou um alarme automático. Um pequeno programa que o Claude Code roda sozinho em momentos fixos, sem depender de o Claude se lembrar.' },
+    { termo: 'Evento (antes e depois)', simples: 'O momento em que o hook dispara: antes de o Claude usar uma ferramenta (pode barrar) ou depois (só avisa).' },
+    { termo: 'Código de saída 2', simples: 'O jeito de o hook dizer "pare". O Claude Code entende e devolve a mensagem para o Claude.' },
+    { termo: 'Skill', simples: 'A receita da casa: um passo a passo escrito uma vez, que o Claude carrega quando precisa ou quando você chama pelo nome.' },
+    { termo: 'Pasta .claude', simples: 'Onde moram os hooks, as skills e as regras do projeto. É protegida: o Claude não escreve nela sem a sua aprovação.' },
+    { termo: 'Pedir x garantir', simples: 'O caderno (CLAUDE.md) pede e o Claude costuma obedecer. O hook garante, mesmo quando ele esquece.' },
+  ]}
+  depois={[
+    { termo: 'Subagentes', quando: 'ajudantes que o Claude chama para trabalhar em paralelo. Entram mais adiante.', ref: 'm12' },
+    { termo: 'Plugins', quando: 'pacotes que reúnem skills e hooks para você usar em vários projetos e compartilhar.', ref: 'm13' },
+    { termo: 'MCP', quando: 'ligar o Claude a programas e serviços de fora. Entra com os projetos que precisam disso.', ref: 'm10' },
+  ]}
+/>
+
+Uma semana depois de instalar, dois problemas na oficina. Primeiro, um dia o Claude, ao "arrumar" o projeto, mexeu no arquivo `.env`. Segundo, você pediu uma mudança pequena e ele a fez sem rodar a conferência, e o sistema ficou meio quebrado até alguém perceber.
+
+Nenhum dos dois é culpa do Antônio. São o tipo de coisa que acontece quando você **pede** e o assistente às vezes esquece. O caderno (`CLAUDE.md`) diz "rode a conferência depois de qualquer mudança", e na maioria das vezes ele roda. Mas "na maioria das vezes" não serve para um sistema de cliente.
+
+### Pedir é uma coisa, garantir é outra
+
+Pense num estacionamento. A placa "não estacione aqui" **pede**. A cancela **garante**. A placa funciona com quem a lê; a cancela funciona sempre.
+
+O `CLAUDE.md` é a placa. O **hook** é a cancela. Um hook é um programa pequeno que o Claude Code roda **sozinho**, em momentos fixos da conversa, sem perguntar ao Claude e sem depender de ele se lembrar.
+
+Os dois momentos que importam para nós:
+
+| Momento | O que o hook pode fazer | Exemplo da oficina |
+|---|---|---|
+| **Antes** de o Claude usar uma ferramenta | **Barrar** a ação | "Você não pode editar o arquivo `.env`" |
+| **Depois** de o Claude usar uma ferramenta | Avisar o que aconteceu | "Você mudou um arquivo e a conferência falhou" |
+
+O jeito de o hook dizer "pare" é terminar com o **código 2**. O Claude Code entende, não executa a ação e devolve a mensagem do hook para o Claude ler e se ajustar.
+
+### As duas travas da oficina
+
+1. **Proteger o que não pode ser editado.** Um hook "antes" que barra qualquer edição do `.env` e do banco `dados/oficina.db`.
+2. **Conferir sempre.** Um hook "depois" que, quando o Claude muda um arquivo do sistema, roda `node conferir.mjs`, e se falhar, **mostra o resultado ao Claude** para ele corrigir.
+
+Pedimos as duas, mais uma skill (veja abaixo), numa conversa só. Veja o hook de proteção que ele escreveu:
+
+<Arquivo estado="t2c-gabarito" nome=".claude/hooks/proteger.mjs" dica="a cancela que protege o .env e o banco" />
+
+Você não precisa entender cada linha. Precisa **ler o que ele faz**: recebe da ferramenta o nome do arquivo, vê se é o `.env` ou o banco e, se for, termina com código 2 e uma mensagem clara. E repare num cuidado: **se não conseguir ler a entrada, barra por precaução**. Falhar fechado é o comportamento certo para uma tranca.
+
+### Um aviso sério: leia antes de instalar
+
+Um hook é **um programa que roda no seu computador sem pedir licença**. Isso o torna poderoso e perigoso. Um hook escrito por outra pessoa (ou copiado de um projeto que você baixou) poderia fazer qualquer coisa que você mesmo poderia fazer.
+
+Por isso, mesmo quando o Claude escreve o hook, **leia antes de instalar**. Peça: "explique cada arquivo em linguagem simples". É o mesmo cuidado que você teria com um arquivo anexado a um e-mail.
+
+E há uma razão prática para isso aparecer na ficha: a pasta `.claude` é **protegida**. Sem a tela interativa, o Claude **não consegue escrever nela**, e na nossa execução as escritas foram recusadas. Na tela interativa, ele pede a sua aprovação. O caminho seguro que usamos: ele escreve a **proposta** numa pasta comum, você lê e copia para `.claude`.
+
+### A skill: a receita da casa
+
+Toda entrega tem um relatório (você viu na T1). Escrever o mesmo relatório, com as mesmas seções, em todo projeto, é trabalho repetido. Uma **skill** resolve: é um passo a passo escrito **uma vez**, num arquivo, que o Claude carrega quando precisa, ou quando você chama pelo nome.
+
+Veja a nossa, `relatorio-de-entrega`:
+
+<Arquivo estado="t2c-gabarito" nome=".claude/skills/relatorio-de-entrega/SKILL.md" dica="a receita do relatório de entrega" />
+
+Repare que ela tem **regras**: "só afirme o que foi conferido", "nada de dado pessoal ou segredo", "não invente". É a sua experiência profissional virando padrão. Daqui para a frente, `/relatorio-de-entrega` gera o `ENTREGA.md` do jeito certo, em qualquer projeto em que ela esteja.
+
+### O que as travas não cobrem
+
+Honestidade é regra. O nosso hook de proteção só vale para as ferramentas **Edit** e **Write**. O próprio Claude avisou: um comando no terminal como `echo "x" >> .env` **não passa** por ele. Para cobrir, seria outro hook (em comandos do terminal), e ainda assim há o ponto cego da estação anterior: um programa que o Claude rode pode mexer no arquivo.
+
+Isso reforça a lição das camadas. **Cada trava cobre uma porta.** Você combina: o caderno pede, o hook barra as ferramentas de edição, a regra `deny` barra a leitura, o `.gitignore` guarda o histórico, e o ideal é o segredo nem estar ali.
+
+### Como vender isso
+
+- **Seu kit é o seu diferencial.** Hooks e skills que você escreveu e refinou são **suas ferramentas**. Cada projeto novo nasce com a proteção e o relatório prontos. Isso é produtividade que você leva de cliente em cliente.
+- **A garantia vira argumento.** "Toda mudança no seu sistema passa por uma conferência automática antes de ir adiante" é uma frase de processo de qualidade que poucos concorrentes dizem.
+- **Decida o que entregar.** O kit (a pasta `.claude`) costuma ficar **com você**. O cliente recebe o sistema, o manual e os acessos. Se você entregar o kit, entregue com a explicação do que ele faz.
+
+<Camada tipo="capo" titulo="Por baixo do capô: como o Claude Code decide e o que o hook recebe">
+
+### O que o hook recebe
+
+Quando o evento dispara, o Claude Code manda para o hook, pela **entrada padrão**, um pequeno texto em formato JSON com o nome da ferramenta e os dados dela (por exemplo, o caminho do arquivo que o Claude quer editar). O hook lê, decide e termina: código `0` deixa passar, código `2` barra.
+
+### Os hooks vivem no settings
+
+Eles são registrados no `.claude/settings.json`, junto com as regras de permissão. O nosso arquivo final tem os dois blocos, o da regra do `.env` (da estação anterior) e o dos hooks:
+
+<Arquivo estado="t2c-gabarito" nome=".claude/settings.json" dica="as regras e os hooks juntos" />
+
+### Por que `node` e não `bash`
+
+A documentação oficial mostra hooks escritos em `bash` com `jq`. No Windows, essas ferramentas nem sempre existem. Escrevemos os hooks **em Node**, que você já tem. E o resultado funcionou no Windows 11, na nossa execução.
+
+### Quando um hook novo passa a valer
+
+A documentação diz que mudanças nos arquivos de hooks costumam ser reconhecidas sozinhas. Se não aparecerem depois de alguns segundos, reinicie a sessão para forçar a leitura. Nos nossos testes, abrimos sessão nova a cada vez, para não haver dúvida.
+
+### O hook roda em qual terminal?
+
+Nos hooks escritos como linha de comando, o Claude Code usa o Git Bash quando ele existe. **Sem o Git para Windows instalado**, a linha roda no PowerShell, e o `$CLAUDE_PROJECT_DIR` do nosso exemplo pode não funcionar. A estação de git já pediu essa instalação. Na nossa máquina, o hook rodou no Windows 11 com o Git Bash.
+
+### O que `PostToolUse` faz de diferente
+
+O hook "depois" não pode desfazer o que o Claude fez (a ferramenta já rodou). Ele só mostra uma mensagem ao Claude. Por isso, na nossa execução, a edição que quebrou o sistema **aconteceu**, e o hook apenas **avisou** o Claude e a conferência falhou. Para barrar de verdade é o hook "antes".
+
+</Camada>
+
+<Camada tipo="armadilhas">
+
+### Instalar um hook sem ler
+
+Ele roda no seu computador sem perguntar. Leia, ou peça ao Claude para explicar em linguagem simples.
+
+### Achar que o hook de proteção cobre tudo
+
+Ele cobre as ferramentas de edição. Comandos do terminal e programas que o Claude rode ficam de fora.
+
+### Instalar o hook e achar que ele já está valendo
+
+Edições costumam ser reconhecidas sozinhas, mas se o hook parecer "mudo", reinicie a sessão e teste de novo.
+
+### Sobrescrever o `settings.json`
+
+Se você já criou a regra do `.env` na estação anterior, copiar o arquivo da proposta por cima a apaga. **Junte** os dois blocos.
+
+### Hook "depois" que demora demais
+
+Se a conferência levar minutos, toda edição vira espera. Mantenha-a rápida.
+
+### Nada de segredo dentro do hook
+
+O hook é um arquivo de código que pode ir para o git. Senha nunca entra nele.
+
+</Camada>
+
+## Fichas de campo
+
+As fichas usam a oficina com login. Se você fez a estação anterior, siga com a sua pasta. Se não, baixe a nossa:
+
+- [Ponto de partida: `t2b-gabarito.zip`](../lab/t2b-gabarito.zip) (sistema com login)
+
+<Ficha
+  id="t2c-e1"
+  n={1}
+  titulo="Pedir os três itens e instalar"
+  objetivo="Pedir ao Claude os dois hooks e a skill numa pasta comum, ler e instalar na pasta .claude."
+  minutos={45}
+  pre="T2B concluída (ou o ZIP acima)"
+  versao="2.1.325"
+>
+
+1. Entre na pasta da oficina e abra o Claude:
+
+   <SO unix="cd ~/Documents/oficina-boa-estrada && claude" win={`cd "$HOME\\Documents\\oficina-boa-estrada"; claude`} />
+
+2. Cole o pedido. Ele manda escrever tudo numa pasta comum, `proposta/`, porque a `.claude` é protegida:
+
+   ```text
+   Crie três coisas, mas escreva todos os arquivos dentro de uma pasta comum chamada proposta/ (a pasta .claude é protegida), com o mesmo desenho que teriam dentro de .claude/. 1) Um hook que impeça qualquer edição ou criação dos arquivos .env e dados/oficina.db: PreToolUse em Edit|Write, script em Node (proposta/hooks/proteger.mjs), que sai com código 2 e uma mensagem clara. 2) Um hook que, depois de qualquer edição de arquivo .mjs ou da pasta publico, rode node conferir.mjs e, se falhar, mostre o resultado para você: PostToolUse, script em Node (proposta/hooks/conferir-depois.mjs), sai com 2 se a conferência falhar. 3) Uma skill chamada relatorio-de-entrega (proposta/skills/relatorio-de-entrega/SKILL.md) que gera ENTREGA.md com as seções: O que foi combinado, O que foi feito, Como conferi (rodando node conferir.mjs e colando o resultado), O que ficou de fora, O que depende do cliente. Use só Node, sem bash nem jq. Escreva também proposta/settings.json com os dois hooks registrados, usando o caminho $CLAUDE_PROJECT_DIR.
+   ```
+
+3. **Leia antes de instalar.** Peça: "Explique, em linguagem simples, o que cada arquivo da pasta proposta faz e o que ele **não** cobre." Se algo parecer estranho, pergunte.
+4. Saia do Claude (`/exit`) e **instale**, copiando para `.claude`:
+
+   <SO unix="mkdir -p .claude && cp -r proposta/hooks proposta/skills .claude/" win={`New-Item -ItemType Directory -Force .claude | Out-Null; Copy-Item proposta\\hooks, proposta\\skills -Destination .claude -Recurse`} />
+
+5. **Junte** os hooks ao `settings.json`. Se você fez a Ficha 3 da estação anterior, o `.claude/settings.json` já existe, com a regra do `.env`. Abra o arquivo e o `proposta/settings.json` e junte os dois blocos num só, como no quadro "Os hooks vivem no settings" acima. Se não existir, copie:
+
+   <SO unix="cp proposta/settings.json .claude/settings.json" win="Copy-Item proposta\settings.json .claude\settings.json" />
+
+6. Confira que ficou tudo no lugar:
+
+   <SO unix="find .claude -type f" win="Get-ChildItem .claude -Recurse -File" />
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente do passo 2: `claude -p "<o pedido>" --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`. Na primeira tentativa, pedimos para escrever direto em `.claude/` e as escritas foram **recusadas** (hooks, `settings.json` e skill). Por isso a pasta `proposta/`.
+</Nota>
+
+<Prova>
+
+Aparecem quatro arquivos dentro de `.claude`: dois hooks, a skill e o `settings.json`. Na nossa execução (22 passos, 10 comandos negados, porque o `-p` não deixa rodar comandos que não foram liberados), o Claude criou `proposta/hooks/proteger.mjs`, `proposta/hooks/conferir-depois.mjs`, `proposta/settings.json` e `proposta/skills/relatorio-de-entrega/SKILL.md`, e a conferência continuou em `61 de 61` antes e depois. Ele **avisou** que não conseguiu testar os hooks, "porque os comandos `node` pediram aprovação, e não contornei isso".
+
+</Prova>
+
+<Gabarito>
+
+Os seus arquivos terão variações. Confira os pontos que importam no `proteger.mjs`: ele deve bloquear `.env` e o banco, **liberar** o `.env.example` e sair com código 2 em caso de dúvida. Nossa versão, já instalada em `.claude`, está em [`t2c-gabarito.zip`](../lab/t2c-gabarito.zip).
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude tentou escrever direto em `.claude/` e foi recusado.** É o esperado. Peça de novo mandando escrever na pasta `proposta/`.
+- **O `Copy-Item` reclama que o destino não existe.** Rode antes o `New-Item -ItemType Directory -Force .claude`.
+- **O `settings.json` ficou só com os hooks e a regra do `.env` sumiu.** Você copiou por cima. Reinclua o bloco `permissions` (veja o quadro acima).
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "agora escreva um terceiro hook que impeça qualquer comando do terminal que contenha `.env` e `>`". O que o hook consegue cobrir? O que ainda passa?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t2c-e2"
+  n={2}
+  titulo="Testar as travas"
+  objetivo="Ver o hook barrar uma edição do .env e o hook de conferência avisar de uma quebra."
+  minutos={30}
+  pre="Ficha 1 (com o .env criado)"
+  versao="2.1.325"
+>
+
+Para não haver dúvida, **abra uma sessão nova** para cada teste (o Claude Code costuma reconhecer hooks novos sozinho, mas a sessão nova elimina a incerteza).
+
+1. **Trava 1: o `.env`.** Peça:
+
+   ```text
+   Acrescente ao arquivo .env uma linha PORTA=3001.
+   ```
+
+2. Confira que o `.env` **não mudou** (veja a data de modificação, ou abra o arquivo).
+3. **Trava 2: a conferência.** Guarde uma cópia do `banco.mjs` e peça uma mudança que quebra o sistema de propósito:
+
+   <SO unix="cp banco.mjs banco.original" win="Copy-Item banco.mjs banco.original" />
+
+   ```text
+   Em banco.mjs, faça toda ordem nova começar com status 'pronta' em vez de 'aberta'. Só isso.
+   ```
+
+4. Leia o que o Claude diz sobre a conferência. Rode você mesmo `node conferir.mjs` e conte quantas verificações falharam.
+5. **Desfaça** o estrago:
+
+   <SO unix="cp banco.original banco.mjs" win="Copy-Item banco.original banco.mjs" />
+
+   E rode `node conferir.mjs` de novo.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`.
+</Nota>
+
+<Prova>
+
+No teste 1, o Claude foi **barrado** e explicou: "o hook `.claude/hooks/proteger.mjs` bloqueia qualquer edição ou criação do `.env`... Não tentei contornar o bloqueio por outro caminho". Ele ainda sugeriu que a pessoa fizesse a alteração à mão. O `.env` ficou intacto. No teste 2, ele fez a mudança pedida e a conferência **falhou**, e o resultado chegou até ele:
+
+| Teste | Resultado |
+|---|---|
+| 1 (editar o `.env`) | Barrado pelo hook (5 passos). `.env` intacto |
+| 2 (mudar o status inicial) | A edição **aconteceu**; `55 de 61 verificações OK`, **6 falharam** ("ordem nova começa como aberta", e as que dependem dela) |
+| 2, o aviso | O Claude contou que "o hook de pós-edição também reportou falha pela mesma saída" e que não mexeu no `conferir.mjs`, porque você pediu só a mudança em `banco.mjs` |
+
+Depois de restaurar a cópia, `node conferir.mjs` voltou a `61 de 61`.
+
+</Prova>
+
+<Gabarito>
+
+Repare na diferença entre as duas travas. A primeira **impediu** a ação, porque era um hook "antes". A segunda **avisou depois**: a mudança já tinha sido feita. É por isso que o hook "depois" não substitui uma boa cópia (o `banco.original`) nem o git. Ele **mostra o estrago na hora**, antes de você entregar um sistema quebrado.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude editou o `.env` mesmo com o hook.** Saia, abra uma sessão nova e repita. Confira que os arquivos estão em `.claude/hooks` e o registro em `.claude/settings.json`.
+- **O hook falha com "node não encontrado" ou com erro de caminho.** Abra um terminal novo e confira `node --version`. No Windows, sem o Git para Windows, o hook roda no PowerShell e o `$CLAUDE_PROJECT_DIR` pode falhar: instale o Git para Windows e abra uma sessão nova.
+- **A conferência dura muito.** O hook "depois" roda a conferência toda a cada edição. Se passar de alguns segundos, peça ao Claude para rodar só as verificações rápidas.
+
+</DeuErro>
+
+<Desafio>
+
+Peça uma mudança que **não** quebra nada (por exemplo, mudar o texto de um botão na tela). O hook dispara? O que você vê?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t2c-e3"
+  n={3}
+  titulo="Rodar a skill"
+  objetivo="Gerar o relatório de entrega com a skill, com a conferência colada de verdade."
+  minutos={25}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+1. Abra o Claude numa sessão nova na pasta da oficina e chame a skill pelo nome:
+
+   ```text
+   /relatorio-de-entrega
+   ```
+
+2. Aprove a licença para rodar `node conferir.mjs`.
+3. Abra o `ENTREGA.md` que ele criou e confira: tem as **cinco seções**? A seção "Como conferi" traz a saída **real** da conferência?
+4. Leia o que o Claude disse no fim: ele listou pontos que dependem do cliente?
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "/relatorio-de-entrega" --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`. No Git Bash, a barra inicial pode virar um caminho: use `MSYS_NO_PATHCONV=1` antes do comando.
+</Nota>
+
+<Prova>
+
+Aparece o `ENTREGA.md`, com as seções O que foi combinado, O que foi feito, Como conferi, O que ficou de fora e O que depende do cliente. Na nossa execução (20 passos, 5 comandos negados):
+
+- **"O que foi combinado"** listou os pedidos do briefing e as regras do que não fazer.
+- **"Como conferi"** trouxe a saída da conferência **colada**, linha por linha, com `61 de 61`.
+- **"O que depende do cliente"** apontou quatro pontos, entre eles: "o servidor só aceita conexão do próprio computador, então a Clara não consegue usar outra máquina" e "não há função para apagar as três ordens EXEMPLO".
+- Fora do relatório, o Claude avisou: "`.env.bak` tem o mesmo conteúdo do `.env`", **uma cópia que nós mesmos tínhamos deixado na pasta**.
+
+</Prova>
+
+<Gabarito>
+
+A skill fez o que uma receita faz: o resultado tem a mesma **forma** em qualquer projeto, e o conteúdo vem da realidade (briefing e conferência), não da imaginação. A última linha da Prova é a melhor parte: sem você pedir, ela achou uma cópia de segredo esquecida. É o tipo de coisa que, num cliente real, vira problema.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude disse que não conhece `/relatorio-de-entrega`.** A skill não foi instalada em `.claude/skills/relatorio-de-entrega/SKILL.md`, ou a sessão foi aberta antes. Confira o caminho e abra uma sessão nova.
+- **A seção "Como conferi" está só resumida.** A regra manda colar a saída completa. Peça: "refaça a seção Como conferi com a saída completa, sem resumir".
+- **O `ENTREGA.md` afirma algo que o sistema não faz.** Conferir é o seu trabalho. Compare com o que você viu rodando.
+
+</DeuErro>
+
+<Desafio>
+
+Edite o `SKILL.md` à mão e acrescente uma regra: "Escreva o relatório em no máximo uma página". Rode a skill de novo. O que mudou?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que dominou e monte o seu kit de entrega">
+
+O que você construiu nesta estação não é só para a oficina. É o começo do **seu kit profissional**, o que você leva de cliente em cliente.
+
+### Teste de domínio: o kit da agenda da Lia
+
+Aplique as mesmas travas ao sistema da Lia, **sem ver a ficha**.
+
+**Sua missão:**
+
+1. Peça os hooks para a agenda: um que **barra edições** do `.env` e do banco da agenda, e outro que **confere depois de cada edição**. Escreva a proposta numa pasta comum, **leia**, e instale.
+2. Prove cada trava: peça a edição do `.env` (deve ser barrada) e uma mudança que **quebre** uma regra da agenda (por exemplo, aceitar um pedido numa quarta) e veja a conferência falhar.
+3. Adapte a skill `relatorio-de-entrega` para a agenda da Lia e rode-a.
+4. Encontre **uma coisa que o seu hook de proteção não cobre** e escreva em uma frase.
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar com um exemplo a diferença entre o `CLAUDE.md` e um hook;
+- dizer por que um hook "antes" barra e um "depois" só avisa;
+- explicar por que se lê um hook antes de instalar;
+- mostrar um ponto que o hook de proteção deixa passar;
+- dizer o que um cliente recebe de um kit e o que fica com você.
+
+### Entregue o relatório com o kit de qualidade
+
+Você já tem a skill que gera o `ENTREGA.md`. Agora transforme-a em parte da sua entrega:
+
+- **Rode a skill no fim de cada fase** e **leia** o resultado antes de enviar. A skill escreve, você assina. Ela pode errar um detalhe, e é você quem responde ao cliente.
+- **Mande o relatório junto com o sistema.** Ele responde, antes de o cliente perguntar: o que foi combinado, o que foi feito, como foi conferido, o que ficou de fora e o que depende dele.
+- **Guarde o kit para você.** Os hooks e as skills da pasta `.claude` são **suas ferramentas**. O cliente recebe o sistema, o manual e os acessos. Se ele pedir o kit, entregue com a explicação do que cada arquivo faz.
+
+Uma frase para o cliente que resume o seu processo:
+
+```text
+Todo o desenvolvimento do seu sistema passa por uma conferência automática a cada mudança, e há travas que impedem que arquivos sensíveis sejam alterados por engano. No fim de cada fase, eu te entrego um relatório com o que foi feito, como foi conferido e o que ainda depende de você.
+```
+
+</Entrega>
+
+<Saida>
+
+- Sei a diferença entre o caderno que pede e o hook que garante.
+- Pedi, li e instalei um hook que barra o `.env` e o banco, e outro que confere depois de cada edição.
+- Provei as duas travas e vi a diferença entre barrar antes e avisar depois.
+- Criei uma skill que gera o relatório de entrega com a conferência colada de verdade.
+- Sei dizer o que o hook de proteção não cobre e por que se lê um hook antes de instalar.
+- Aplico o kit à agenda da Lia e sei o que entrego ao cliente e o que fica comigo.
+
+</Saida>
+
+**Próxima estação:** [Testar, guardar e entregar o sistema](../t2d/): o computador da oficina pode quebrar amanhã. Você vai criar o backup, ensaiar a restauração e fechar o projeto da Temporada 2 com a entrega completa.
+
+<Fontes>
+
+- [Hooks guide](https://code.claude.com/docs/en/hooks-guide.md): o que são hooks, eventos e como bloquear edições em arquivos protegidos.
+- [Hooks reference](https://code.claude.com/docs/en/hooks.md): código de saída 2 em cada evento e a entrada que o hook recebe.
+- [Skills](https://code.claude.com/docs/en/skills.md): onde moram as skills e o formato do `SKILL.md`.
+- [Settings](https://code.claude.com/docs/en/settings.md): onde os hooks são registrados.
+- Execuções locais registradas em `VERIFICATION/t2c.md`.
+
+</Fontes>

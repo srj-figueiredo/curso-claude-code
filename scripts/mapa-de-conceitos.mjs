@@ -58,6 +58,18 @@ const FEITO = {
     ['Publicar no GitHub Pages', 'T1D (parcial)'],
     ['O que vai para o navegador é público', 'T1D'],
   ],
+  m7: [
+    ['Quem decide', 'T2B (parcial)'],
+    ['Como escrever uma regra', 'T2B (parcial)'],
+    ['O .env: a regra que parece cofre', 'T2B'],
+    ['O sandbox', 'T2B (parcial)'],
+    ['Resumo: as camadas', 'T2B (parcial)'],
+  ],
+  m8: [
+    ['O que é uma skill', 'T2C (parcial)'],
+    ['Skill, CLAUDE.md, hook', 'T2C (parcial)'],
+    ['Anatomia de uma skill', 'T2C (parcial)'],
+  ],
   m6: [
     ['Duas memórias, dois autores', 'T1C (parcial)'],
     ['Onde o CLAUDE.md mora', 'T1C (parcial)'],
@@ -93,7 +105,7 @@ Regra do curso: todo conceito dos módulos de referência (M0 a M8 e M10, os já
 No início de cada estação nova, o componente \`<Conceitos>\` avisa o que a pessoa vai aprender e aponta a referência dos conceitos que só virão depois.
 Ao final do curso, nenhuma linha pode ficar em "Planejado".
 
-**Progresso:** ${feitos} de ${total} conceitos já ensinados nas estações escritas (T1A a T1D).
+**Progresso:** ${feitos} de ${total} conceitos já ensinados nas estações escritas (T1A a T2D).
 
 Os módulos ainda não escritos (M9 Hooks, M11 Planejar e verificar, M12 a M19, M20 a M22, R1 a R8, C0 a C6 e o projeto final) entram na ordem do roteiro v2 (\`docs/ROTEIRO-V2.md\`). Os conceitos deles serão acrescentados aqui quando as páginas existirem.
 ${linhas.join('\n')}

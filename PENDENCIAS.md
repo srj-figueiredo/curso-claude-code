@@ -130,3 +130,7 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
 - **7.7** O M7 piloto e a T1 aguardam a leitura do autor (tom, tamanho, lacunas).
 - **7.8** O projeto final da T1 pede publicar a Lia no GitHub Pages; não testado (conta do aluno). Os modelos de relatório, manual e termo de aceite não foram validados com cliente real nem com profissional jurídico.
 - **7.9** A regra das 24 horas do formulário da Lia só aparece no dia certo (terça ou quinta próxima); não foi exercitada no navegador.
+- **7.10** T2D: o `iniciar.cmd` (atalho de dois cliques no Windows) não foi verificado; o teste travou o terminal. Testar em máquina limpa.
+- **7.11** T2: instalação do sistema em outro computador (Node do zero) e hook sem Git para Windows não foram testados.
+- **7.12** T2: texto da LGPD não conferido em fonte oficial; modelos de aviso de privacidade, manual, ficha de acessos e termo de aceite não validados com cliente real nem profissional jurídico.
+- **7.13** Teste axe local: a primeira rodada depois de um build novo às vezes falha em uma página (baralho, m7, t1d) e passa na repetição; o CI ficou verde. Investigar a causa (provável corrida no servidor de pré-visualização).

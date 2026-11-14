@@ -22,7 +22,8 @@ Roteiro aprovado em `docs/ROTEIRO-V2.md`; o mapa de conceitos dos módulos antig
 - **Domínio e entrega (D018):** cada estação termina com teste de domínio (cliente Studio Lia), rubrica e material de entrega; a T1D fecha com o projeto final da Lia. `<Arquivo>` mostra a receita (briefing, conferir.mjs) e a T1A tem a ficha "Mexa na receita".
 - **Módulos antigos (M0 a M8, M10) continuam no ar como Referência.** M9 e M11 (Planejar e verificar) entram reescritos dentro das
   Temporadas (M11 em T1 e T5; M9 em T2). O estado `lab/estados/m11-inicio/` fica guardado para quando chegar a hora.
-- **Próximo:** aguardar o retorno do autor sobre a T1; depois a **Temporada 2 (Sistema do cliente)**, na ordem do roteiro.
+- **Temporada 2 (Sistema do cliente), escrita e verificada:** T2A (dados de verdade), T2B (login, papéis e segredos), T2C (hooks e skills), T2D (backup, LGPD básica e entrega). Cliente Oficina Boa Estrada; projeto final: agenda do Studio Lia. Verificação em `VERIFICATION/t2.md`. Labs `lab/estados/t2*`.
+- **Próximo:** Temporada 3 (agente de atendimento no WhatsApp), a mais procurada no radar. Antes, aguardar o retorno do autor sobre a T1 e a T2.
 
 Pausa anterior (limite do plano): M0 a M8 e M10 estão escritos e verificados; a Publicação saiu em 13/11/2026.
 

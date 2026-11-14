@@ -1,12 +1,12 @@
 # Mapa de conceitos
 
-Gerado por `node scripts/mapa-de-conceitos.mjs` em 2026-11-13. **Não edite à mão**: ajuste as tabelas `FEITO` e `DESTINO` do script.
+Gerado por `node scripts/mapa-de-conceitos.mjs` em 2026-11-14. **Não edite à mão**: ajuste as tabelas `FEITO` e `DESTINO` do script.
 
 Regra do curso: todo conceito dos módulos de referência (M0 a M8 e M10, os já escritos) precisa de um destino nas Temporadas.
 No início de cada estação nova, o componente `<Conceitos>` avisa o que a pessoa vai aprender e aponta a referência dos conceitos que só virão depois.
 Ao final do curso, nenhuma linha pode ficar em "Planejado".
 
-**Progresso:** 22 de 146 conceitos já ensinados nas estações escritas (T1A a T1D).
+**Progresso:** 30 de 146 conceitos já ensinados nas estações escritas (T1A a T2D).
 
 Os módulos ainda não escritos (M9 Hooks, M11 Planejar e verificar, M12 a M19, M20 a M22, R1 a R8, C0 a C6 e o projeto final) entram na ordem do roteiro v2 (`docs/ROTEIRO-V2.md`). Os conceitos deles serão acrescentados aqui quando as páginas existirem.
 
@@ -146,14 +146,14 @@ Os módulos ainda não escritos (M9 Hooks, M11 Planejar e verificar, M12 a M19, 
 
 | Conceito | Onde é ensinado |
 |---|---|
-| Quem decide: o Claude ou o Claude Code? | Planejado: T2 |
+| Quem decide: o Claude ou o Claude Code? | **T2B (parcial)** (escrito) |
 | Onde guardar as listas | Planejado: T2 |
-| Como escrever uma regra que realmente pega | Planejado: T2 |
-| O .env: a regra que parece cofre e não é | Planejado: T2 |
+| Como escrever uma regra que realmente pega | **T2B (parcial)** (escrito) |
+| O .env: a regra que parece cofre e não é | **T2B** (escrito) |
 | Modos de permissão: quanto você confia hoje | Planejado: T2 |
 | Prompt injection: o bilhete escondido no livro | Planejado: T2 |
-| O sandbox: a cerca de verdade | Planejado: T2 |
-| Resumo: as camadas, do mais fraco ao mais forte | Planejado: T2 |
+| O sandbox: a cerca de verdade | **T2B (parcial)** (escrito) |
+| Resumo: as camadas, do mais fraco ao mais forte | **T2B (parcial)** (escrito) |
 | Regras de Bash em detalhe | Planejado: T2 |
 | Regras de Read e Edit | Planejado: T2 |
 | Modos: travas e caminhos protegidos | Planejado: T2 |
@@ -172,9 +172,9 @@ Os módulos ainda não escritos (M9 Hooks, M11 Planejar e verificar, M12 a M19, 
 
 | Conceito | Onde é ensinado |
 |---|---|
-| O que é uma skill | Planejado: T2 |
-| Skill, CLAUDE.md, hook, MCP ou subagente? | Planejado: T2 |
-| Anatomia de uma skill | Planejado: T2 |
+| O que é uma skill | **T2C (parcial)** (escrito) |
+| Skill, CLAUDE.md, hook, MCP ou subagente? | **T2C (parcial)** (escrito) |
+| Anatomia de uma skill | **T2C (parcial)** (escrito) |
 | Os campos do cabeçalho que mais importam | Planejado: T2 |
 | Argumentos | Planejado: T2 |
 | Contexto vivo: ! e um comando | Planejado: T2 |

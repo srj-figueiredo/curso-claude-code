@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oficina Boa Estrada - Ordens de serviço</title>
+  <link rel="stylesheet" href="/estilo.css">
+</head>
+<body>
+  <header>
+    <h1>Oficina Boa Estrada</h1>
+    <button type="button" id="sair" class="sair" hidden>Sair</button>
+  </header>
+
+  <main>
+    <section id="entrar" aria-labelledby="entrar-titulo">
+      <h2 id="entrar-titulo">Entrar</h2>
+      <form id="form-entrar" novalidate>
+        <label>Usuário
+          <input name="usuario" required maxlength="30" autocomplete="username" autocapitalize="off">
+        </label>
+        <label>Senha
+          <input name="senha" type="password" required maxlength="200" autocomplete="current-password">
+        </label>
+        <p id="entrar-erro" class="erro" role="alert"></p>
+        <button type="submit" class="botao-grande">Entrar</button>
+      </form>
+    </section>
+
+    <div id="app" hidden>
+      <section class="painel" aria-label="Painel">
+        <div class="cartao">
+          <span class="rotulo">Ordens abertas</span>
+          <strong id="p-abertas">-</strong>
+        </div>
+        <div class="cartao">
+          <span class="rotulo">Prontas para retirar</span>
+          <strong id="p-prontas">-</strong>
+        </div>
+      </section>
+
+      <section>
+        <h2>Nova ordem de serviço</h2>
+        <form id="form-ordem" novalidate>
+          <label>Nome do cliente
+            <input name="cliente" required maxlength="100" autocomplete="off">
+          </label>
+          <label>Telefone (com DDD)
+            <input name="telefone" required inputmode="tel" maxlength="20" autocomplete="off">
+          </label>
+          <label>Placa
+            <input name="placa" required maxlength="10" placeholder="ABC1234 ou ABC1D23" autocomplete="off">
+          </label>
+          <label>Modelo do carro
+            <input name="modelo" required maxlength="60" autocomplete="off">
+          </label>
+          <label>Descrição do serviço
+            <textarea name="descricao" required rows="3" maxlength="500"></textarea>
+          </label>
+          <label>Valor (R$)
+            <input name="valor" required inputmode="decimal" placeholder="350,00" maxlength="12" autocomplete="off">
+          </label>
+          <p id="form-erro" class="erro" role="alert"></p>
+          <button type="submit" class="botao-grande">Cadastrar ordem</button>
+        </form>
+      </section>
+
+      <section>
+        <h2>Ordens</h2>
+        <label class="filtro">Mostrar
+          <select id="filtro">
+            <option value="todas">Todas</option>
+            <option value="aberta">Abertas</option>
+            <option value="em_andamento">Em andamento</option>
+            <option value="pronta">Prontas</option>
+            <option value="entregue">Entregues</option>
+          </select>
+        </label>
+        <div id="lista" class="lista"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
