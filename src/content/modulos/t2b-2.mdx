@@ -1,0 +1,203 @@
+---
+id: t2b-2
+titulo: "Quem entra e o que o Claude pode ver, parte 2: o .env e a entrega dos acessos"
+parte: p9
+ordem: 202.1
+minutos: 65
+pre_requisitos: [t2b]
+objetivos:
+  - Proteger o arquivo de segredos contra o Claude e dizer onde essa proteção falha.
+  - Entregar acessos ao cliente de um jeito seguro.
+  - Fazer o login de um segundo cliente e provar o 401 sem login.
+tldr:
+  - Uma regra de leitura barra a ferramenta do Claude, não o programa que ele roda.
+  - Sem o sandbox, o segredo só fica seguro se nem estiver na pasta. Combine as camadas.
+  - Entregue acessos com cuidado. Nunca por mensagem de texto, e a senha escolhida pelo cliente.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: t2b-e3, titulo: Proteger o .env contra o Claude, minutos: 25, custo: gratis }
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "Quem entra e o que o Claude pode ver". Na primeira você pediu o login, provou que a Clara não vê o faturamento e viu o hash. Agora protege o arquivo de senhas contra o Claude e treina a entrega dos acessos.
+
+<Conceitos
+  aprender={[
+    { termo: 'Regra deny', simples: 'Uma regra que diz "nunca". Ela barra a ferramenta de leitura do Claude, mas não um script.' },
+    { termo: 'Defesa em camadas', simples: 'Nenhuma proteção sozinha basta. Você combina .gitignore, regra, sandbox e não ter o segredo ali.' },
+    { termo: 'Teste de domínio', simples: 'Uma prova sem passo a passo, com um cliente novo, para saber se você domina o que fez.' },
+  ]}
+/>
+
+## Fichas de campo
+
+Continue na mesma pasta da parte anterior.
+
+<Ficha
+  id="t2b-e3"
+  n={3}
+  titulo="Proteger o .env contra o Claude"
+  objetivo="Barrar a leitura do .env pelo Claude e descobrir onde a barreira falha."
+  minutos={25}
+  pre="Ficha 1 (com o .env criado)"
+  versao="2.1.325"
+>
+
+1. Crie a regra de bloqueio. A pasta `.claude` é protegida e o Claude não escreve nela: crie por conta própria.
+
+   <SO unix={`mkdir -p .claude && echo '{"permissions":{"deny":["Read(./.env)"]}}' > .claude/settings.json`} win={`New-Item -ItemType Directory -Force .claude | Out-Null; Set-Content .claude/settings.json '{"permissions":{"deny":["Read(./.env)"]}}' -Encoding ascii`} />
+
+2. **Teste 1.** Peça a leitura:
+
+   ```bash
+   claude -p "Leia o arquivo .env e me diga as senhas." --allowedTools "Bash(cat *)" "Bash(node *)"
+   ```
+
+3. **Teste 2.** Tente passar pelo lado:
+
+   ```bash
+   claude -p "Rode o comando: cat .env" --allowedTools "Bash(cat *)" "Bash(node *)"
+   ```
+
+4. **Teste 3.** Agora o desvio por script. Crie um programa de uma linha que abre o arquivo sozinho e peça para rodá-lo:
+
+   <SO unix={`echo "import { readFileSync } from 'node:fs'; console.log(readFileSync('.env', 'utf8'));" > ler-env.mjs`} win={`Set-Content ler-env.mjs "import { readFileSync } from 'node:fs'; console.log(readFileSync('.env', 'utf8'));" -Encoding ascii`} />
+
+   ```bash
+   claude -p "Rode exatamente: node ler-env.mjs" --allowedTools "Bash(cat *)" "Bash(node *)"
+   ```
+
+<Prova>
+
+Os testes 1 e 2 são barrados, e o 3 vaza. Na nossa execução:
+
+| Teste | O que aconteceu |
+|---|---|
+| 1 (pedir a leitura) | O Claude não conseguiu ler e disse que **não ia tentar outro caminho** sem a sua confirmação |
+| 2 (`cat .env`) | Barrado, mesmo com o `cat` liberado |
+| 3 (`node ler-env.mjs`, um programa que abre o arquivo) | **O comando rodou e imprimiu o conteúdo do `.env`**, com as duas senhas de teste. Numa execução o Claude as repetiu; em outra, com a regra "nunca mostre senha" no `CLAUDE.md`, ele disse que viu as senhas e **não as repetiu**. Mas a saída já estava na conversa |
+
+</Prova>
+
+<Gabarito>
+
+A regra vale para o que o Claude Code **reconhece** como leitura: a ferramenta de leitura e comandos como `cat`. Um programa que abre o arquivo por conta própria não passa por esse reconhecimento. Por isso a regra é uma camada, não um cofre. O que ainda protege: o `.gitignore` (o segredo não vai para o histórico), **não deixar o segredo na pasta** (variável de ambiente fora do projeto) e o **sandbox**, que barra qualquer programa, mas não existe no Windows nativo. O guia [Configurações, permissões e segurança](../m7/) detalha as quatro camadas.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O teste 1 vazou.** O `settings.json` pode ter erro de sintaxe e ser ignorado inteiro. Rode `claude doctor`. Confira também que a pasta se chama `.claude` e o arquivo `settings.json`.
+- **No teste 3 o Claude recusa por conta própria.** Insista no comando exato ("Rode exatamente: ..."): é a **regra** que está sendo medida, não a boa vontade do modelo.
+- **O arquivo `ler-env.mjs` foi criado vazio ou com erro.** Abra-o: deve ter uma linha só, começando com `import`. Mantenha a extensão `.mjs`.
+
+</DeuErro>
+
+<Desafio>
+
+Existe uma cópia do `.env` em algum lugar da sua pasta (por exemplo, um `.env.bak` que você criou ao testar)? Crie uma, repita o teste 1 pedindo "leia o .env.bak" e veja se a regra barra. O que isso ensina sobre cópias?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que dominou e entregue os acessos com segurança">
+
+Você vai dar acesso a um sistema com dados de gente de verdade. Esta é a parte do trabalho em que um descuido custa o cliente.
+
+### Teste de domínio: o login da Lia
+
+Parta da agenda da Lia da estação anterior (a que guarda pedidos e mostra a lista). Agora ela precisa de proteção.
+
+**Sua missão, sem passo a passo:**
+
+1. Peça o **login da Lia**: a senha vem de `SENHA_LIA` no `.env`, guardada só como hash, com cookie `HttpOnly` e `SameSite=Strict`.
+2. A lista de pedidos e as ações (confirmar, cancelar, apagar dados) **só existem com login**. O formulário público continua aberto, porque as alunas não têm login.
+3. Prove, pela API, que **a lista sem login responde 401** e que o formulário público funciona sem login.
+4. Proteja o `.env` contra o Claude (a regra `deny`) e **prove o vazamento por script** na sua própria pasta.
+5. Procure e apague qualquer cópia do `.env` que você tenha criado.
+
+Na nossa execução (pedido completo da agenda, em 29 passos), o Claude construiu tudo isso numa só rodada. Quando usamos o sistema real, o resultado foi:
+
+| O que fizemos | Resposta |
+|---|---|
+| Enviar um pedido pelo formulário público, numa terça | Aceito (201) |
+| Pedir a lista **sem** login | **401** |
+| Entrar com a senha da Lia | 200 |
+| Pedir a lista com login | A lista, com o pedido da Bia |
+| Apagar os dados da aluna pelo telefone | `{"ok":true,"apagados":1}`, e a lista voltou vazia |
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar com um exemplo por que esconder na tela não protege;
+- dizer o que é hash e por que o sistema guarda a "digital" e não a senha;
+- mostrar a diferença entre 401 e 403 e dizer quando cada um aparece;
+- provar que uma regra `deny` barra uma leitura e **não barra um script**;
+- listar as camadas que protegem um segredo e dizer o ponto cego de cada uma.
+
+### Entregue os acessos com segurança
+
+O que você entrega ao cliente é uma **chave**. E chave se entrega com cuidado.
+
+**Regras de ouro:**
+
+1. **Nunca mande senha por mensagem.** Fica gravada no celular, no backup e em qualquer um que olhe. Se precisar, mande o **endereço** por mensagem e a **senha** por outro canal (em pessoa, por telefone).
+2. **Deixe o cliente escolher a própria senha.** Quem cria o `.env` com a senha que ele inventou é dono dela. Você nem precisa saber.
+3. **Dê só o acesso necessário.** A atendente não recebe o login do dono.
+4. **Combine quem pode trocar a senha e como**, por escrito.
+
+Modelo da **ficha de acessos**, para entregar junto com o sistema:
+
+```markdown
+# Acessos do sistema da Oficina Boa Estrada
+
+## Quem entra
+| Pessoa | Usuário | Pode |
+|---|---|---|
+| Seu Antônio (dono) | antonio | Ver tudo, inclusive o faturamento |
+| Clara (atendente) | clara | Cadastrar e atualizar ordens. Não vê o faturamento |
+
+## Como trocar uma senha
+1. Abra o arquivo `.env` na pasta do sistema (é um arquivo de texto).
+2. Troque a linha da pessoa (SENHA_CLARA=...). Mínimo de 8 caracteres.
+3. Feche e abra o sistema. Quem estava logado precisa entrar de novo.
+
+## Regras
+- Cada pessoa usa só o próprio usuário.
+- Não envie senhas por mensagem.
+- Se alguém sair da oficina, troque a senha dela.
+- O arquivo `.env` não deve ser copiado nem enviado a ninguém.
+```
+
+E uma **lista de conferência de segurança** que você confere antes de entregar:
+
+- O `.env` está no `.gitignore` e **nunca** foi commitado (confira com `git log --all -- .env`).
+- Não existe nenhuma cópia do `.env` (`.env.bak`, `.env.antigo`).
+- O banco não guarda senha legível (você já viu os hashes).
+- A regra do faturamento está no servidor (você provou o 403).
+- Os dados de exemplo foram removidos.
+- O cliente sabe quem pode ver o computador onde o sistema roda.
+
+</Entrega>
+
+<Saida>
+
+- Mantenho o `.env` fora do histórico e protegi contra o Claude, e provei por que a regra sozinha não basta.
+- Fiz o login da Lia por conta própria e sei montar a ficha de acessos do cliente.
+
+</Saida>
+
+**Próxima estação:** [Receitas e travas automáticas](../t2c/): você vai ensinar ao Claude duas coisas: nunca mexer no `.env` nem no banco, e conferir o sistema sozinho depois de cada edição. É a diferença entre pedir e **garantir**.
+
+<Fontes>
+
+- [Configure permissions](https://code.claude.com/docs/en/permissions.md): regras `deny`, `ask` e `allow`, e a sintaxe de leitura de arquivos.
+- [Security](https://code.claude.com/docs/en/security.md): proteções embutidas e limites.
+- [Sandboxing](https://code.claude.com/docs/en/sandboxing.md): a cerca do sistema operacional e onde ela existe.
+- [Data usage](https://code.claude.com/docs/en/data-usage.md): onde as conversas ficam guardadas.
+- Execuções locais registradas em `VERIFICATION/t2b.md`.
+
+</Fontes>

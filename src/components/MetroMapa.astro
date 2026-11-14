@@ -27,7 +27,8 @@ type No = Ponto & { id: string; parte: number; cor: number; titulo: string; curt
 
 const nos: No[] = [];
 FILEIRAS.forEach((partes, f) => {
-  const daFileira = ESTACOES.filter((s) => partes.includes(s.parte));
+  // Partes seguintes de uma estação (t1a-2...) não viram ponto no mapa: o ponto leva à parte 1.
+  const daFileira = ESTACOES.filter((s) => partes.includes(s.parte) && !/-\d+$/.test(s.id));
   const n = daFileira.length;
   const paraDireita = f % 2 === 0;
   daFileira.forEach((s, i) => {

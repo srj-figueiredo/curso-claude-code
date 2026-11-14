@@ -26,17 +26,35 @@ const e = (id: string, parte: string, titulo: string, curto = titulo): Estacao =
 export const ESTACOES: Estacao[] = [
   e('m0', 'p0', 'Mapa do Claude Code e regras do jogo', 'Mapa e regras'),
   e('t1a', 'p8', 'Seu primeiro cliente: o site no navegador', 'Primeiro site'),
+  e('t1a-2', 'p8', 'Seu primeiro cliente, parte 2: mexer na receita e provar', 'Receita'),
   e('t1b', 'p8', 'Conduzir o trabalho: planejar, pedir e conferir', 'Conduzir'),
+  e('t1b-2', 'p8', 'Conduzir o trabalho, parte 2: provar e entregar o relatório', 'Relatório'),
   e('t1c', 'p8', 'A memória do cliente: o CLAUDE.md', 'Memória'),
+  e('t1c-2', 'p8', 'A memória do cliente, parte 2: provar e entregar o manual', 'Manual'),
   e('t1d', 'p8', 'Guardar e publicar: histórico e site no ar', 'No ar'),
+  e('t1d-2', 'p8', 'Guardar e publicar, parte 2: publicar e fazer o projeto final', 'Projeto'),
+  e('t1d-3', 'p8', 'Guardar e publicar, parte 3: o pacote e a reunião de entrega', 'Entrega'),
   e('t2a', 'p9', 'O sistema da oficina: dados de verdade', 'Dados'),
+  e('t2a-2', 'p9', 'O sistema da oficina, parte 2: provar e mostrar ao cliente', 'Mostrar'),
   e('t2b', 'p9', 'Quem entra e o que o Claude pode ver', 'Acesso'),
+  e('t2b-2', 'p9', 'Quem entra e o que o Claude pode ver, parte 2: o .env e a entrega dos acessos', 'Acessos'),
   e('t2c', 'p9', 'Receitas e travas automáticas', 'Travas'),
+  e('t2c-2', 'p9', 'Receitas e travas automáticas, parte 2: a skill e o kit de entrega', 'Kit'),
   e('t2d', 'p9', 'Testar, guardar e entregar o sistema', 'Entrega'),
+  e('t2d-2', 'p9', 'Testar, guardar e entregar o sistema, parte 2: o projeto final', 'Projeto'),
+  e('t2d-3', 'p9', 'Testar, guardar e entregar o sistema, parte 3: o pacote e a reunião', 'Entrega'),
   e('t3a', 'p10', 'O atendente do pet shop: base, simulador e primeiro atendimento', 'Atendente'),
+  e('t3a-2', 'p10', 'O atendente do pet shop, parte 2: construir e conversar', 'Conversar'),
+  e('t3a-3', 'p10', 'O atendente do pet shop, parte 3: provar e entregar as regras', 'Regras'),
   e('t3b', 'p10', 'Regras de proteção: guardrails, limite e privacidade', 'Proteção'),
+  e('t3b-2', 'p10', 'Regras de proteção, parte 2: provar com o provedor ruim e o limite', 'Provar'),
+  e('t3b-3', 'p10', 'Regras de proteção, parte 3: provar e entregar a política', 'Política'),
   e('t3c', 'p10', 'Trocar o simulador pela IA: o provedor da API paga', 'IA paga'),
+  e('t3c-2', 'p10', 'Trocar o simulador pela IA, parte 2: o custo, a prova e a proposta', 'Custo'),
   e('t3d', 'p10', 'Medir, entregar e manter o atendente', 'Medir'),
+  e('t3d-2', 'p10', 'Medir, entregar e manter, parte 2: corrigir e ler o relatório', 'Corrigir'),
+  e('t3d-3', 'p10', 'Medir, entregar e manter, parte 3: o projeto final', 'Projeto'),
+  e('t3d-4', 'p10', 'Medir, entregar e manter, parte 4: o pacote e a reunião', 'Entrega'),
   e('m1', 'p1', 'Instalação e primeiro contato', 'Instalação'),
   e('m2', 'p1', 'Como o Claude Code pensa', 'Como pensa'),
   e('m3', 'p1', 'Conduzindo no dia a dia', 'Dia a dia'),
@@ -92,11 +110,14 @@ export const APENDICES = [
 const faixa = (prefixo: string, de: number, ate: number) =>
   Array.from({ length: ate - de + 1 }, (_, i) => `${prefixo}${de + i}`);
 
+// Uma estação nova pode ter partes (t1a, t1a-2...). Nas trilhas, a estação traz as suas partes.
+const comPartes = (ids: string[]) => ids.flatMap((id) => [id, ...ESTACOES.filter((s) => s.id.startsWith(`${id}-`)).map((s) => s.id)]);
+
 export const TRILHAS: Record<TrilhaId, { titulo: string; resumo: string; ids: string[] }> = {
   rapida: {
     titulo: 'Rápida para Cases',
     resumo: 'O mínimo para entregar um projeto de cliente.',
-    ids: [...faixa('m', 0, 3), 't1a', 't1b', 't1c', 't1d', 't2a', 't2b', 't2c', 't2d', 't3a', 't3b', 't3c', 't3d', 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)],
+    ids: comPartes([...faixa('m', 0, 3), 't1a', 't1b', 't1c', 't1d', 't2a', 't2b', 't2c', 't2d', 't3a', 't3b', 't3c', 't3d', 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)]),
   },
   completa: {
     titulo: 'Completa',

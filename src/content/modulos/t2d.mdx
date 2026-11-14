@@ -3,14 +3,13 @@ id: t2d
 titulo: "Testar, guardar e entregar o sistema"
 parte: p9
 ordem: 204
-minutos: 175
-pre_requisitos: [t2c]
+minutos: 76
+pre_requisitos: [t2c-2]
 objetivos:
-  - Pedir um backup e provar, com um ensaio, que a restauração funciona.
+  - dir um backup e provar, com um ensaio, que a restauração funciona.
   - Dizer o que a conferência automática cobre e o que só o uso real descobre.
   - Aplicar os cuidados básicos com dados pessoais do cliente e das pessoas que ele atende.
   - Preparar a instalação e a operação do sistema no computador do cliente.
-  - Entregar um sistema completo, com manual, acessos, relatório e aceite, e conduzir a reunião.
 tldr:
   - Backup que nunca foi restaurado não é backup. Ensaie a restauração antes do desastre.
   - Guarde só o dado necessário, peça consentimento e dê um jeito de apagar a pedido.
@@ -331,117 +330,16 @@ Faça o backup, **mude o `.env`** (troque a senha da Clara), restaure e suba o s
 
 </Ficha>
 
-<Entrega titulo="Projeto final da Temporada 2: a agenda do Studio Lia, do pedido à entrega">
-
-Este é o teste que fecha a temporada. Você fará **por conta própria**, de ponta a ponta, um sistema completo para a Lia, usando tudo o que viu. O resultado será um **pacote de entrega** que você poderia mostrar a um cliente de verdade.
-
-### A missão
-
-Parta do `t2-dominio-inicio.zip` (o briefing do site e o pedido da agenda). **Sem ficha**:
-
-1. **Dúvidas.** Peça ao Claude as dúvidas e contradições do pedido e escreva uma mensagem curta à Lia.
-2. **Caderno.** Escreva o `CLAUDE.md` da agenda, com a regra "só o que já vem com o Node" e "nunca mostrar senha".
-3. **Plano e construção.** Peça o plano, decida o que for seu e construa: formulário público com **caixa de aceite**, guarda os pedidos, **só terça e quinta com 24 horas de antecedência**, lista **só com login**, confirmar, cancelar e **apagar os dados de uma aluna**.
-4. **Conferência.** Peça um `conferir.mjs` que teste tudo num banco temporário, incluindo uma verificação de "o que não pode acontecer".
-5. **Acessos.** Senha da Lia no `.env` (com hash), `.gitignore`, regra `deny` para o `.env`. Prove o 401 sem login e o vazamento por script.
-6. **Kit.** Instale os hooks (proteção e conferência) e adapte a skill de relatório. **Leia antes de instalar.**
-7. **Backup.** Crie o backup e a restauração e **ensaie o desastre**.
-8. **Histórico.** Faça o git, um commit por fase, e prove que sabe voltar.
-9. **Pacote.** Monte o pacote abaixo.
-10. **Reunião.** Ensaie a entrega, em voz alta, em 20 minutos.
-
-O que a nossa execução mostrou, para os passos 3 e 4: com o pedido completo, o Claude construiu o sistema em Node puro e uma conferência de **29 testes**. A primeira rodada teve 2 falhas, e uma era **um erro de verdade**: um filtro de data aceitava `2026-13-99`, porque só olhava o formato. Ele corrigiu e anotou. Quando usamos o sistema real, o pedido de uma terça foi aceito, a lista sem login deu **401**, o login funcionou e apagar os dados de uma aluna devolveu `{"ok":true,"apagados":1}`.
-
-Não executamos os passos 5 a 8 **na agenda**: foram feitos e verificados na oficina, que é o modelo. O seu teste é fazer na agenda.
-
-### O pacote de entrega do sistema
-
-Confira que o pacote está completo. Cada item é uma pergunta que o cliente faria:
-
-- **O sistema**, instalado e funcionando no computador dele, sem os dados de exemplo.
-- **O manual de operação**: como ligar, usar, guardar e pedir ajuda.
-- **A ficha de acessos**: quem entra, o que pode, como trocar a senha (da estação anterior).
-- **O backup ensaiado**: onde fica, quem faz e com que frequência.
-- **O relatório de entrega**, gerado pela skill e **lido por você**.
-- **O aviso de privacidade** do formulário, curto e em linguagem simples.
-- **O termo de aceite**.
-
-Modelo do **manual de operação**, para adaptar:
-
-```markdown
-# Como usar a agenda do Studio Lia
-
-## Ligar
-1. Dê dois cliques em "iniciar" (ou abra o terminal na pasta e rode `node servidor.mjs`).
-2. Mantenha a janela aberta. Abra o navegador em http://localhost:3000/lia.
-3. Entre com a sua senha.
-
-## No dia a dia
-- Os pedidos de aula experimental aparecem na lista, por data.
-- Marque cada pedido como confirmado ou cancelado.
-- Se uma aluna pedir para apagar os dados dela, use "apagar dados" com o telefone dela.
-
-## Guardar os dados (todo domingo à noite)
-1. Rode `node backup.mjs`.
-2. Copie a pasta `backups` para o pendrive.
-
-## Se algo der errado
-- O computador quebrou: instale o sistema em outro computador, copie o pendrive e rode `node restaurar.mjs backups/<arquivo>`.
-- Esqueci a senha: abra o arquivo `.env`, troque a senha da Lia e reabra o sistema.
-- Falar comigo: (seu contato).
-```
-
-Modelo do **aviso de privacidade**, para colocar no formulário:
-
-```text
-Usamos o seu nome e telefone apenas para agendar a sua aula experimental. Eles ficam guardados só neste sistema, com acesso apenas da Lia. Se quiser que sejam apagados, é só pedir. Concordo em usar meus dados para isso. [ ] 
-```
-
-<Nota rotulo="Isto não é aconselhamento jurídico">
-O aviso e o termo são pontos de partida. Para um cliente real, confira o texto com um profissional.
-</Nota>
-
-### A reunião de entrega do sistema, em 20 minutos
-
-1. **Abertura (2 min).** "Hoje eu te entrego a agenda e te ensino a ligar, usar e guardar."
-2. **Instalação conferida (3 min).** Ligue o sistema **no computador dela**, com a senha que ela escolheu.
-3. **Uso (7 min).** Peça que **ela** envie um pedido pelo formulário e o confirme na lista. Depois, apague os dados dessa aluna de teste.
-4. **Backup (4 min).** Faça um backup na frente dela e **ensaie a restauração**. Deixe que ela veja os dados voltarem.
-5. **O que depende dela (2 min).** Senha, pendrive, quem tem acesso ao computador.
-6. **Aceite (2 min).** Peça a confirmação por escrito, com o modelo da temporada anterior adaptado: a lista do que foi entregue, o que ficou de fora e a manutenção combinada.
-
-### Você domina a Temporada 2 se consegue
-
-Responda **sem olhar a página**, em voz alta, como se explicasse a quem contratou você:
-
-1. A diferença entre a tela, o servidor e o banco de dados.
-2. Por que esconder o faturamento na tela não protege, e onde mora a regra.
-3. O que é hash e por que a senha não fica guardada.
-4. Por que a regra `deny` barra o Claude mas não barra um programa.
-5. A diferença entre o caderno (que pede) e o hook (que garante), e o que cada hook cobre.
-6. Como o backup foi feito, e por que um backup que nunca foi restaurado não vale.
-7. O que você entrega no pacote e o que acontece se o computador do cliente quebrar.
-
-| Resultado | O que fazer |
-|---|---|
-| **7 de 7** | Você domina a Temporada 2. Siga para a próxima. |
-| **4 a 6** | Releia as estações dos itens em que hesitou e refaça o item correspondente na agenda. |
-| **Até 3** | Refaça a Temporada 2 com a Lia do zero, uma estação por dia. É bem mais rápido na segunda vez. |
-
-</Entrega>
-
 <Saida>
 
 - Sei dizer o que a conferência cobre, o que só o uso real descobre e as três camadas de teste.
 - Pedi o backup e a restauração, ensaiei o desastre e vi o arquivo falso ser recusado.
 - Aplico os quatro hábitos com dados pessoais: guardar o necessário, dizer para quê, permitir apagar e proteger.
 - Sei o que o cliente precisa para instalar e operar o sistema, e o que ainda não verifiquei.
-- Fiz o projeto da agenda da Lia e sei conduzir a reunião de entrega de um sistema em 20 minutos.
-- Sei montar o pacote: sistema, manual, acessos, backup, relatório, aviso de privacidade e aceite.
 
 </Saida>
 
-**Próxima estação:** [O atendente do pet shop: base, simulador e primeiro atendimento](../t3a/), o começo da Temporada 3: um atendente de WhatsApp, o projeto mais procurado do radar de demanda do curso. Tudo o que você praticou aqui (dados, login, travas, backup e entrega) volta com mais peso, porque agora o sistema conversa com gente de verdade. Enquanto isso, os guias de referência aprofundam o que você viu: o guia [Configurações, permissões e segurança](../m7/), o guia [Git e GitHub do zero](../m4/) e o guia [MCP](../m10/).
+**Próxima parte:** [Testar, guardar e entregar o sistema, parte 2: o projeto final](../t2d-2/): o projeto final da Temporada 2.
 
 <Fontes>
 

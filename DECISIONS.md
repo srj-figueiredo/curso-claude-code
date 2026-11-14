@@ -151,3 +151,12 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Método:** a avaliação manda parar na falha e mostrar a nota **antes** de corrigir (85%), depois corrigir (100%) e rodar a conferência anterior. Sem essa frase, o Claude corrige sozinho e a prova do "antes" se perde.
 - **Dois clientes:** Pet Shop Patas Felizes (modelo) e Studio Lia (teste de domínio e projeto final); evitado dado de saúde humana.
 - **Cor da linha:** `--linha-10` `#5f6f00` (contraste 5,58:1 com branco).
+
+## D022 · Estações em partes menores (14/11/2026, pedido do autor)
+
+- **Pedido:** dividir as estações em partes menores. Meta: **cada parte entre 40 e 80 minutos**, com começo, meio e fim.
+- **Como:** as 12 estações (T1A a T3D) viraram **30 páginas**. Ids `t1a`, `t1a-2`, `t1a-3`. Parte 1: Essencial, `<Conceitos>` e primeiras fichas. Partes seguintes: `## Nesta parte` com `<Conceitos>` curto, demais fichas e `<Entrega>`. Nas últimas estações de cada temporada o projeto final e a entrega são partes separadas (T1D, T2D e T3D em 3 a 4 partes).
+- **Preservado:** textos, provas, fichas e ids de ficha (o progresso do aluno não muda). Pré-requisito da parte 1 de cada estação passou a ser a última parte da anterior.
+- **Navegação:** o mapa mostra só o ponto da parte 1 (`MetroMapa` ignora ids terminados em `-N`); o menu lateral lista todas; as trilhas trazem as partes (`comPartes`).
+- **Tempo:** soma dos 30 cabeçalhos = 1.772 minutos (29 h 32 min), com nenhuma parte acima de 80.
+- **Feito com um script único** (não mantido); a regra 43 e a seção 10 do guia explicam como escrever já em partes.

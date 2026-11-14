@@ -1,0 +1,130 @@
+---
+id: t1d-2
+titulo: "Guardar e publicar, parte 2: publicar e fazer o projeto final"
+parte: p8
+ordem: 104.1
+minutos: 80
+pre_requisitos: [t1d]
+objetivos:
+  - Publicar o site de graça no GitHub Pages e abrir o endereço público.
+  - Fazer o projeto de um segundo cliente do briefing à entrega, por conta própria.
+  - Juntar as evidências do projeto, conferência, histórico e relatório.
+tldr:
+  - Publicar é a última etapa do site. Antes dela, separe o que vai ao ar do que não vai.
+  - O projeto final junta tudo da temporada num segundo cliente, sem passo a passo.
+  - Cada etapa do projeto deixa uma evidência que você pode mostrar.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t1d-e4, titulo: Colocar no ar, minutos: 20, custo: gratis }
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "Guardar e publicar". Na primeira você guardou versões, desfez um erro e separou o site do briefing. Agora publica e faz o projeto final da Temporada 1.
+
+<Conceitos
+  aprender={[
+    { termo: 'Projeto final da temporada', simples: 'Um trabalho completo, do briefing à entrega, com um cliente novo e sem passo a passo.' },
+    { termo: 'Evidência', simples: 'Algo que você mostra para provar uma etapa: a saída da conferência, o histórico do git, o relatório.' },
+  ]}
+/>
+
+## Fichas de campo
+
+Continue na mesma pasta da parte anterior.
+
+<Ficha
+  id="t1d-e4"
+  n={4}
+  titulo="Colocar no ar"
+  objetivo="Enviar o projeto ao GitHub, ligar o Pages e abrir o endereço público."
+  minutos={20}
+  pre={'Ficha 3, conta no GitHub e o gh instalado e conectado (veja o guia "Git e GitHub do zero")'}
+  verificacao="nao-testado"
+>
+
+Esta ficha **não foi executada aqui**: ela exige criar um repositório e publicar na conta de quem faz, o que o nosso ambiente de teste não faz. Os passos seguem a documentação do GitHub e o [guia "Do computador para a internet"](../m5/).
+
+1. No Claude, na pasta do projeto, peça:
+
+   ```text
+   Crie um repositório público no meu GitHub chamado doce-esquina e envie este projeto para lá.
+   ```
+
+   Aprove os comandos do `gh` e do git.
+
+2. No navegador, abra o repositório no GitHub: **Settings**, **Pages**. Em **Build and deployment**, escolha **Deploy from a branch**; em **Branch**, `main` e a pasta `/docs`; clique em **Save**.
+3. Espere de um a três minutos e abra:
+
+   ```text
+   https://SEU-USUARIO.github.io/doce-esquina/
+   ```
+
+4. Abra no celular e faça os quatro testes do formulário da T1B.
+
+<Prova>
+
+A página da Doce Esquina abre no endereço do GitHub, igual à que você via no seu computador. Depois, peça a um amigo para abrir no celular dele: se ele vê, está no ar para todo mundo. (Não executado: segundo a documentação.)
+
+</Prova>
+
+<Gabarito>
+
+O que prova a publicação é um terceiro conseguir abrir o endereço. Se só você abre, pode ser cache do navegador.
+
+</Gabarito>
+
+<DeuErro>
+
+- **Erro 404 ao abrir o endereço.** O Pages ainda está publicando ou apontou para a pasta errada. Confira em Settings, Pages: branch `main`, pasta `/docs`.
+- **A página abriu sem estilo.** O arquivo `index.html` na pasta `docs` está incompleto. Confira com `conferir.mjs`.
+- **O `gh` pede login.** Rode `gh auth login` e siga a tela, como no [guia "Git e GitHub do zero"](../m4/).
+
+</DeuErro>
+
+<Desafio>
+
+Mude o horário de sábado no `index.html` (peça ao Claude), faça o commit, envie ao GitHub e veja quanto tempo leva para o site mudar.
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Projeto final da Temporada 1: a missão">
+
+Este é o teste que fecha a Temporada 1. Você fará **por conta própria**, de ponta a ponta, o que viu nas quatro estações, com um cliente novo: o Studio Lia. Ao final, você terá um pacote que pode mostrar a um cliente de verdade e, mais importante, **saberá explicar cada peça dele**.
+
+### A missão
+
+Parta do `t1-dominio-inicio.zip` (o briefing da Lia). Faça, **sem ficha**:
+
+1. **Dúvidas.** Peça ao Claude a lista de dúvidas e contradições e escolha as três mais graves. Escreva a mensagem à Lia. (Use as respostas da T1B.)
+2. **Caderno.** Escreva o `CLAUDE.md` do Studio Lia, com no máximo 20 linhas.
+3. **Plano e site.** Peça o plano, decida o que for seu e construa, com o formulário de aula experimental.
+4. **Conferência.** Crie o `conferir.mjs` com pelo menos 5 verificações, uma de "o que não pode aparecer". Plante um erro e mostre o `FALHOU`.
+5. **Histórico.** Comece o git e faça o primeiro commit. Estrague algo e **volte atrás**.
+6. **Separação.** Mova o site para `docs/` e confirme que o briefing fica fora da publicação.
+7. **No ar.** Publique no GitHub Pages (ou, se preferir não publicar, simule: mostre que o site funciona abrindo `docs/index.html`).
+8. **Entrega.** Monte o pacote abaixo e faça o ensaio da reunião de entrega.
+
+O que a nossa execução mostrou para os passos 2 a 4: com o `CLAUDE.md` pronto, o Claude construiu o site da Lia com a turma das 21h removida, o trimestral em "Consulte", o texto sem promessa de saúde e um formulário só para terças e quintas, e a conferência de 5 verificações deu `5 de 5`. Recusou ainda o pedido de "cura dor nas costas", citando a regra do `CLAUDE.md`. As negações de comando (2) vieram do `-p`, que não deixa rodar o que não foi liberado.
+
+</Entrega>
+
+<Saida>
+
+- Sei como publicar no GitHub Pages e quais cuidados tomar com cliente real.
+- Fiz o projeto do segundo cliente, do briefing à entrega, por conta própria.
+
+</Saida>
+
+**Próxima parte:** [Guardar e publicar, parte 3: o pacote e a reunião de entrega](../t1d-3/): o pacote, a reunião de entrega e a autoavaliação.
+
+<Fontes>
+
+- As fontes desta estação estão na [parte 1](../t1d/).
+- Execuções locais registradas em `VERIFICATION/t1d.md`.
+
+</Fontes>

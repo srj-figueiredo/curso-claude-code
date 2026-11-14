@@ -1,0 +1,191 @@
+---
+id: t1a-2
+titulo: "Seu primeiro cliente, parte 2: mexer na receita e provar"
+parte: p8
+ordem: 101.1
+minutos: 65
+pre_requisitos: [t1a]
+objetivos:
+  - Alterar o briefing e ver o site mudar, entendendo que o briefing é a receita do site.
+  - Fazer o teste de domínio com o briefing de um segundo cliente e achar as armadilhas.
+  - Montar a mensagem de prévia que conduz a conversa com quem contratou.
+tldr:
+  - O briefing é a receita e o site é o prato. Mude a receita e peça ao Claude para refazer.
+  - Cores, horários e preços o Claude aplica com precisão. O tom de voz só muda se você pedir.
+  - Antes de entregar, mostre uma prévia e peça respostas curtas a quem contratou.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t1a-e3, titulo: Mexa na receita, minutos: 20, custo: gratis }
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "Seu primeiro cliente". Na primeira você instalou o Claude Code e fez o site da Marta. Agora você mexe no arquivo que gerou o site e prova que dominou o que fez.
+
+<Conceitos
+  aprender={[
+    { termo: 'Receita e prato', simples: 'O briefing é a receita e o site é o prato. Quem muda a receita muda o prato.' },
+    { termo: 'Teste de domínio', simples: 'Uma prova sem passo a passo, com um cliente novo, para saber se você domina o que fez.' },
+    { termo: 'Rubrica', simples: 'A lista "você domina se consegue, sem olhar a página". Se falhar em um item, você volta e refaz.' },
+  ]}
+/>
+
+## Fichas de campo
+
+Continue na mesma pasta da parte anterior. Se não tem a pasta da parte anterior, baixe [`t1a-gabarito.zip`](../lab/t1a-gabarito.zip).
+
+<Ficha
+  id="t1a-e3"
+  n={3}
+  titulo="Mexa na receita"
+  objetivo="Alterar três linhas do briefing e pedir ao Claude que atualize o site, para ver que o briefing é a fonte do site."
+  minutos={20}
+  pre="Ficha 2"
+  versao="2.1.325"
+>
+
+1. Na pasta da Doce Esquina, guarde uma cópia do site de agora, para comparar depois:
+
+   <SO unix="cp index.html index-antes.html" win="Copy-Item index.html index-antes.html" />
+
+2. Abra o `briefing.md` num editor de texto (o Bloco de Notas serve) e mude **três linhas**: a cor caramelo `#B4682B` para `#8A3B5A` (um vinho), o horário de sábado para `8h às 16h` e o tom de voz para `divertido e leve, com um toque de humor`. Salve.
+3. Abra o Claude e peça:
+
+   ```text
+   O briefing.md foi atualizado. Compare com o index.html e atualize o site para refletir exatamente o que mudou no briefing. Diga o que você mudou.
+   ```
+
+4. Compare o antes e o depois:
+
+   <SO unix="diff index-antes.html index.html" win="Compare-Object (Get-Content index-antes.html) (Get-Content index.html)" />
+
+5. Abra o `index.html` no navegador e confira as cores e o horário de sábado.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido do passo 3>" --permission-mode acceptEdits`, dentro da pasta.
+</Nota>
+
+<Prova>
+
+O Claude atualiza o que mudou e **diz o que mudou**. Na nossa execução (12 passos, 0 negações), a comparação mostrou:
+
+| Linha do briefing | O que mudou no `index.html` |
+|---|---|
+| Cor caramelo `#8A3B5A` | A cor dos títulos, preços e botões, e o tom do botão ao passar o mouse (o Claude escolheu um vinho mais escuro e avisou que o briefing não definia esse) |
+| Sábado `8h às 16h` | A tabela de horários **e** o script que diz "Estamos abertos agora", que usava 14h |
+| Tom de voz | **Nada.** O Claude não reescreveu os textos e não comentou isso |
+
+Ele ainda ajustou uma frase ("caixas de brigadeiro" virou "caixas") para bater com o briefing, e avisou o que deixou de fora.
+
+</Prova>
+
+<Gabarito>
+
+A lição está na terceira linha da tabela. **Cores, horários e preços** o Claude aplica com precisão, porque são dados. **Tom de voz** é estilo: ele só muda se você pedir de forma explícita ("reescreva as frases do site no novo tom, mantendo os preços"). Quando o resultado não vem, a pergunta certa é: "eu pedi isso, ou só escrevi na receita e esperei?"
+
+</Gabarito>
+
+<DeuErro>
+
+- **Nada mudou no site.** Você pode ter editado e esquecido de salvar o `briefing.md`. Reabra o arquivo e confira.
+- **O Claude mudou mais do que eu queria.** Releia o pedido: "refletir exatamente o que mudou" é o que limita. Se ele mexeu em outra coisa, peça "desfaça tudo, exceto a cor".
+- **O `Compare-Object` não mostra nada.** Os arquivos são idênticos: o Claude não alterou o site, ou você copiou o `index.html` depois da mudança.
+
+</DeuErro>
+
+<Desafio>
+
+Escreva no briefing uma regra nova ("nunca usar a palavra barato") e peça ao Claude para conferir o site contra ela. Depois peça: "reescreva as frases do site no tom divertido, mantendo os preços e as regras". O que muda e o que fica?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que dominou e faça a primeira entrega">
+
+Chegou a hora de saber se você dominou o que fez, não só se abriu o site. Esta prova **não tem passo a passo**: você já viu o caminho, agora é com você.
+
+### Teste de domínio: o briefing da Lia
+
+Um segundo cliente chegou: a **Lia**, instrutora de pilates. Baixe o briefing dela e leia antes de abrir o Claude.
+
+- [Cliente novo: `t1-dominio-inicio.zip`](../lab/t1-dominio-inicio.zip) (só o briefing)
+
+<Arquivo estado="t1-dominio-inicio" nome="briefing.md" dica="o briefing do segundo cliente" />
+
+**Sua missão, antes de construir qualquer coisa:**
+
+1. Peça ao Claude a lista de **dúvidas e contradições** do briefing, sem alterar arquivo nenhum.
+2. Escolha as **três mais graves** e escreva uma mensagem curta para a Lia pedindo uma decisão em cada uma.
+
+Boa parte do trabalho profissional é isto: descobrir o que o cliente ainda não decidiu **antes** de gastar tempo construindo. O Claude é bom nisso se você pedir.
+
+Na nossa execução (3 passos, nenhum arquivo alterado), ele devolveu 17 pontos. Os mais graves:
+
+| Ponto que ele achou | Por que importa |
+|---|---|
+| A turma "Noite tardia" é às 21h, mas o studio fecha às 20h | O site mostraria um horário impossível |
+| A Lia quer escrever que o pilates "cura dor nas costas" | É promessa de saúde: risco para ela, e contradiz o tom "nada de promessa exagerada" |
+| A aula experimental é só terça e quinta, e só a turma do Almoço cai nesses dias | O formulário precisa oferecer só combinações possíveis |
+| O verde-sálvia sobre a areia tem contraste de cerca de 4,1:1, abaixo do mínimo de 4,5:1 para texto | Dificulta a leitura. Calculamos e confere: **4,12:1**; o texto branco sobre o sálvia dá 4,56:1 |
+| O plano trimestral está "[a definir]" | O site não pode inventar preço |
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar o que é a pasta de trabalho e por que o Claude precisa estar nela;
+- dizer por que entregou o briefing em vez de descrevê-lo no pedido;
+- apontar no briefing da Marta de qual linha saiu cada parte do site;
+- listar as três decisões que o Claude tomou sozinho no site da Marta;
+- achar pelo menos a turma das 21h e a "cura" no briefing da Lia.
+
+Se falhou em algum item, volte à parte correspondente e refaça com a Lia. Errar aqui custa 10 minutos; errar com um cliente real custa o cliente.
+
+### Entregue à cliente: a primeira prévia
+
+Não adianta saber fazer o site se você não sabe **mostrá-lo**. A primeira entrega não é o site no ar: é uma **prévia** para quem contratou aprovar. Duas formas simples:
+
+- **Gravação de tela do celular** (30 a 60 segundos), mostrando a página e rolando até o botão do WhatsApp. Quem recebe abre sem instalar nada.
+- **O arquivo `index.html`**, para quem abre no computador.
+
+E uma mensagem que conduz a conversa. Adapte:
+
+```text
+Oi, Marta! Aqui está a primeira versão do site da Doce Esquina (vídeo anexo). Ainda não está no ar: quero que você veja antes.
+
+Me responda só três coisas:
+1. As cores e o jeito de falar estão com a sua cara?
+2. O cardápio e os preços estão certos?
+3. Falta alguma informação que seus clientes sempre perguntam?
+
+Uma observação: coloquei um aviso de "aberto agora" que você não pediu. Se não gostar, eu tiro.
+
+Com as suas respostas eu ajusto e publico.
+```
+
+Repare em três escolhas dessa mensagem:
+
+1. **Diz que ainda não está no ar.** Evita que quem recebe leia a prévia como entrega final.
+2. **Faz poucas perguntas, com resposta curta.** Quem responde "ok" a uma lista de dez itens não revisou nada.
+3. **Conta o que o Claude decidiu sozinho.** Surpresa depois de pronto custa confiança. Aviso antes custa uma linha.
+
+</Entrega>
+
+<Saida>
+
+- Mudo uma linha do briefing, peço ao Claude para atualizar o site e vejo a diferença.
+- Fiz o teste com o briefing da Lia e sei mandar uma prévia que conduz a conversa com quem contratou.
+
+</Saida>
+
+**Próxima estação:** [T1B, Conduzir o trabalho](../t1b/): o cliente pediu um formulário de encomenda. Você vai aprender a planejar antes de construir e a conferir de forma que não dependa da sua boa vontade.
+
+<Fontes>
+
+- [Quickstart](https://code.claude.com/docs/en/quickstart.md): instalar, entrar na conta e iniciar a primeira sessão.
+- [Setup](https://code.claude.com/docs/en/setup.md): instalação, requisitos e métodos de login.
+- [Overview](https://code.claude.com/docs/en/overview.md): o que o Claude Code faz e onde roda.
+- Execuções locais registradas em `VERIFICATION/t1a.md`.
+
+</Fontes>

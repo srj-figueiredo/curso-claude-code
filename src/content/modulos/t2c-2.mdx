@@ -1,0 +1,153 @@
+---
+id: t2c-2
+titulo: "Receitas e travas automáticas, parte 2: a skill e o kit de entrega"
+parte: p9
+ordem: 203.1
+minutos: 65
+pre_requisitos: [t2c]
+objetivos:
+  - Criar uma skill que gera o mesmo relatório de entrega em qualquer projeto.
+  - Dizer o que um hook cobre e o que deixa passar.
+  - Montar o seu kit profissional e dizer o que se entrega ao cliente.
+tldr:
+  - Uma skill transforma o que você faz igual em todo projeto num comando.
+  - O relatório da skill nasce da conferência real, não da imaginação.
+  - O kit de hooks e skills é seu. O cliente recebe o sistema, o manual e os acessos.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: t2c-e3, titulo: Rodar a skill, minutos: 25, custo: gratis }
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "Receitas e travas automáticas". Na primeira você instalou e provou duas travas. Agora cria a skill do relatório de entrega e monta o seu kit.
+
+<Conceitos
+  aprender={[
+    { termo: 'Skill', simples: 'A receita da casa. Um passo a passo escrito uma vez que o Claude carrega quando precisa.' },
+    { termo: 'Kit profissional', simples: 'O conjunto de hooks e skills que você leva de cliente em cliente.' },
+    { termo: 'Teste de domínio', simples: 'Uma prova sem passo a passo, com um cliente novo, para saber se você domina o que fez.' },
+  ]}
+/>
+
+## Fichas de campo
+
+Continue na mesma pasta da parte anterior.
+
+<Ficha
+  id="t2c-e3"
+  n={3}
+  titulo="Rodar a skill"
+  objetivo="Gerar o relatório de entrega com a skill, com a conferência colada de verdade."
+  minutos={25}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+1. Abra o Claude numa sessão nova na pasta da oficina e chame a skill pelo nome:
+
+   ```text
+   /relatorio-de-entrega
+   ```
+
+2. Aprove a licença para rodar `node conferir.mjs`.
+3. Abra o `ENTREGA.md` que ele criou e confira: tem as **cinco seções**? A seção "Como conferi" traz a saída **real** da conferência?
+4. Leia o que o Claude disse no fim: ele listou pontos que dependem do cliente?
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "/relatorio-de-entrega" --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`. No Git Bash, a barra inicial pode virar um caminho: use `MSYS_NO_PATHCONV=1` antes do comando.
+</Nota>
+
+<Prova>
+
+Aparece o `ENTREGA.md`, com as seções O que foi combinado, O que foi feito, Como conferi, O que ficou de fora e O que depende do cliente. Na nossa execução (20 passos, 5 comandos negados):
+
+- **"O que foi combinado"** listou os pedidos do briefing e as regras do que não fazer.
+- **"Como conferi"** trouxe a saída da conferência **colada**, linha por linha, com `61 de 61`.
+- **"O que depende do cliente"** apontou quatro pontos, entre eles: "o servidor só aceita conexão do próprio computador, então a Clara não consegue usar outra máquina" e "não há função para apagar as três ordens EXEMPLO".
+- Fora do relatório, o Claude avisou: "`.env.bak` tem o mesmo conteúdo do `.env`", **uma cópia que nós mesmos tínhamos deixado na pasta**.
+
+</Prova>
+
+<Gabarito>
+
+A skill fez o que uma receita faz: o resultado tem a mesma **forma** em qualquer projeto, e o conteúdo vem da realidade (briefing e conferência), não da imaginação. A última linha da Prova é a melhor parte: sem você pedir, ela achou uma cópia de segredo esquecida. É o tipo de coisa que, num cliente real, vira problema.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O Claude disse que não conhece `/relatorio-de-entrega`.** A skill não foi instalada em `.claude/skills/relatorio-de-entrega/SKILL.md`, ou a sessão foi aberta antes. Confira o caminho e abra uma sessão nova.
+- **A seção "Como conferi" está só resumida.** A regra manda colar a saída completa. Peça: "refaça a seção Como conferi com a saída completa, sem resumir".
+- **O `ENTREGA.md` afirma algo que o sistema não faz.** Conferir é o seu trabalho. Compare com o que você viu rodando.
+
+</DeuErro>
+
+<Desafio>
+
+Edite o `SKILL.md` à mão e acrescente uma regra: "Escreva o relatório em no máximo uma página". Rode a skill de novo. O que mudou?
+
+</Desafio>
+
+</Ficha>
+
+<Entrega titulo="Prove que dominou e monte o seu kit de entrega">
+
+O que você construiu nesta estação não é só para a oficina. É o começo do **seu kit profissional**, o que você leva de cliente em cliente.
+
+### Teste de domínio: o kit da agenda da Lia
+
+Aplique as mesmas travas ao sistema da Lia, **sem ver a ficha**.
+
+**Sua missão:**
+
+1. Peça os hooks para a agenda: um que **barra edições** do `.env` e do banco da agenda, e outro que **confere depois de cada edição**. Escreva a proposta numa pasta comum, **leia**, e instale.
+2. Prove cada trava: peça a edição do `.env` (deve ser barrada) e uma mudança que **quebre** uma regra da agenda (por exemplo, aceitar um pedido numa quarta) e veja a conferência falhar.
+3. Adapte a skill `relatorio-de-entrega` para a agenda da Lia e rode-a.
+4. Encontre **uma coisa que o seu hook de proteção não cobre** e escreva em uma frase.
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar com um exemplo a diferença entre o `CLAUDE.md` e um hook;
+- dizer por que um hook "antes" barra e um "depois" só avisa;
+- explicar por que se lê um hook antes de instalar;
+- mostrar um ponto que o hook de proteção deixa passar;
+- dizer o que um cliente recebe de um kit e o que fica com você.
+
+### Entregue o relatório com o kit de qualidade
+
+Você já tem a skill que gera o `ENTREGA.md`. Agora transforme-a em parte da sua entrega:
+
+- **Rode a skill no fim de cada fase** e **leia** o resultado antes de enviar. A skill escreve, você assina. Ela pode errar um detalhe, e é você quem responde ao cliente.
+- **Mande o relatório junto com o sistema.** Ele responde, antes de o cliente perguntar: o que foi combinado, o que foi feito, como foi conferido, o que ficou de fora e o que depende dele.
+- **Guarde o kit para você.** Os hooks e as skills da pasta `.claude` são **suas ferramentas**. O cliente recebe o sistema, o manual e os acessos. Se ele pedir o kit, entregue com a explicação do que cada arquivo faz.
+
+Uma frase para o cliente que resume o seu processo:
+
+```text
+Todo o desenvolvimento do seu sistema passa por uma conferência automática a cada mudança, e há travas que impedem que arquivos sensíveis sejam alterados por engano. No fim de cada fase, eu te entrego um relatório com o que foi feito, como foi conferido e o que ainda depende de você.
+```
+
+</Entrega>
+
+<Saida>
+
+- Criei uma skill que gera o relatório de entrega com a conferência colada de verdade.
+- Sei dizer o que o hook de proteção não cobre e por que se lê um hook antes de instalar.
+- Aplico o kit à agenda da Lia e sei o que entrego ao cliente e o que fica comigo.
+
+</Saida>
+
+**Próxima estação:** [Testar, guardar e entregar o sistema](../t2d/): o computador da oficina pode quebrar amanhã. Você vai criar o backup, ensaiar a restauração e fechar o projeto da Temporada 2 com a entrega completa.
+
+<Fontes>
+
+- [Hooks guide](https://code.claude.com/docs/en/hooks-guide.md): o que são hooks, eventos e como bloquear edições em arquivos protegidos.
+- [Hooks reference](https://code.claude.com/docs/en/hooks.md): código de saída 2 em cada evento e a entrada que o hook recebe.
+- [Skills](https://code.claude.com/docs/en/skills.md): onde moram as skills e o formato do `SKILL.md`.
+- [Settings](https://code.claude.com/docs/en/settings.md): onde os hooks são registrados.
+- Execuções locais registradas em `VERIFICATION/t2c.md`.
+
+</Fontes>

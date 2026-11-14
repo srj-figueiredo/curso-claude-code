@@ -3,13 +3,12 @@ id: t1d
 titulo: "Guardar e publicar: histórico e site no ar"
 parte: p8
 ordem: 104
-minutos: 175
-pre_requisitos: [t1c]
+minutos: 55
+pre_requisitos: [t1c-2]
 objetivos:
-  - Guardar versões do trabalho com o git e desfazer um erro voltando ao último ponto salvo.
+  - ardar versões do trabalho com o git e desfazer um erro voltando ao último ponto salvo.
   - Separar o que vai para a internet do que é só seu e do cliente.
-  - Publicar o site de graça no GitHub Pages e abrir o endereço público.
-  - Montar o pacote de entrega da Temporada 1 e dizer o que ele inclui.
+  - Explicar por que o briefing do cliente não deve ficar num repositório público.
 tldr:
   - O git guarda o histórico em pontos de salvamento. Com ele, errar deixa de ser perigoso.
   - Tudo o que vai para a internet é público. Publique só a pasta do site, nunca o briefing do cliente.
@@ -22,7 +21,6 @@ exercicios:
   - { id: t1d-e1, titulo: Pontos de salvamento com o git, minutos: 20, custo: gratis }
   - { id: t1d-e2, titulo: Estragar e desfazer, minutos: 15, custo: gratis }
   - { id: t1d-e3, titulo: Separar o que vai ao ar, minutos: 15, custo: gratis }
-  - { id: t1d-e4, titulo: Colocar no ar, minutos: 20, custo: gratis }
 ---
 
 ## Essencial
@@ -386,164 +384,15 @@ Peça ao Claude um `.gitignore` que mantenha o `briefing.md` **fora** do reposit
 
 </Ficha>
 
-<Ficha
-  id="t1d-e4"
-  n={4}
-  titulo="Colocar no ar"
-  objetivo="Enviar o projeto ao GitHub, ligar o Pages e abrir o endereço público."
-  minutos={20}
-  pre={'Ficha 3, conta no GitHub e o gh instalado e conectado (veja o guia "Git e GitHub do zero")'}
-  verificacao="nao-testado"
->
-
-Esta ficha **não foi executada aqui**: ela exige criar um repositório e publicar na conta de quem faz, o que o nosso ambiente de teste não faz. Os passos seguem a documentação do GitHub e o [guia "Do computador para a internet"](../m5/).
-
-1. No Claude, na pasta do projeto, peça:
-
-   ```text
-   Crie um repositório público no meu GitHub chamado doce-esquina e envie este projeto para lá.
-   ```
-
-   Aprove os comandos do `gh` e do git.
-
-2. No navegador, abra o repositório no GitHub: **Settings**, **Pages**. Em **Build and deployment**, escolha **Deploy from a branch**; em **Branch**, `main` e a pasta `/docs`; clique em **Save**.
-3. Espere de um a três minutos e abra:
-
-   ```text
-   https://SEU-USUARIO.github.io/doce-esquina/
-   ```
-
-4. Abra no celular e faça os quatro testes do formulário da T1B.
-
-<Prova>
-
-A página da Doce Esquina abre no endereço do GitHub, igual à que você via no seu computador. Depois, peça a um amigo para abrir no celular dele: se ele vê, está no ar para todo mundo. (Não executado: segundo a documentação.)
-
-</Prova>
-
-<Gabarito>
-
-O que prova a publicação é um terceiro conseguir abrir o endereço. Se só você abre, pode ser cache do navegador.
-
-</Gabarito>
-
-<DeuErro>
-
-- **Erro 404 ao abrir o endereço.** O Pages ainda está publicando ou apontou para a pasta errada. Confira em Settings, Pages: branch `main`, pasta `/docs`.
-- **A página abriu sem estilo.** O arquivo `index.html` na pasta `docs` está incompleto. Confira com `conferir.mjs`.
-- **O `gh` pede login.** Rode `gh auth login` e siga a tela, como no [guia "Git e GitHub do zero"](../m4/).
-
-</DeuErro>
-
-<Desafio>
-
-Mude o horário de sábado no `index.html` (peça ao Claude), faça o commit, envie ao GitHub e veja quanto tempo leva para o site mudar.
-
-</Desafio>
-
-</Ficha>
-
-<Entrega titulo="Projeto final da Temporada 1: o Studio Lia, do briefing à entrega">
-
-Este é o teste que fecha a Temporada 1. Você fará **por conta própria**, de ponta a ponta, o que viu nas quatro estações, com um cliente novo: o Studio Lia. Ao final, você terá um pacote que pode mostrar a um cliente de verdade e, mais importante, **saberá explicar cada peça dele**.
-
-### A missão
-
-Parta do `t1-dominio-inicio.zip` (o briefing da Lia). Faça, **sem ficha**:
-
-1. **Dúvidas.** Peça ao Claude a lista de dúvidas e contradições e escolha as três mais graves. Escreva a mensagem à Lia. (Use as respostas da T1B.)
-2. **Caderno.** Escreva o `CLAUDE.md` do Studio Lia, com no máximo 20 linhas.
-3. **Plano e site.** Peça o plano, decida o que for seu e construa, com o formulário de aula experimental.
-4. **Conferência.** Crie o `conferir.mjs` com pelo menos 5 verificações, uma de "o que não pode aparecer". Plante um erro e mostre o `FALHOU`.
-5. **Histórico.** Comece o git e faça o primeiro commit. Estrague algo e **volte atrás**.
-6. **Separação.** Mova o site para `docs/` e confirme que o briefing fica fora da publicação.
-7. **No ar.** Publique no GitHub Pages (ou, se preferir não publicar, simule: mostre que o site funciona abrindo `docs/index.html`).
-8. **Entrega.** Monte o pacote abaixo e faça o ensaio da reunião de entrega.
-
-O que a nossa execução mostrou para os passos 2 a 4: com o `CLAUDE.md` pronto, o Claude construiu o site da Lia com a turma das 21h removida, o trimestral em "Consulte", o texto sem promessa de saúde e um formulário só para terças e quintas, e a conferência de 5 verificações deu `5 de 5`. Recusou ainda o pedido de "cura dor nas costas", citando a regra do `CLAUDE.md`. As negações de comando (2) vieram do `-p`, que não deixa rodar o que não foi liberado.
-
-### O pacote de entrega
-
-Antes da reunião, confira que o pacote está completo. Confirme cada item:
-
-- **Endereço do site** no ar, aberto no celular de outra pessoa.
-- **Repositório** com o histórico (quem contratou é dono do que pagou).
-- **`CLAUDE.md`**, o caderno de regras.
-- **`conferir.mjs`**, com o resultado da última rodada.
-- **Relatório de entrega** (da T1B), preenchido.
-- **Manual do site** (da T1C), em linguagem simples.
-- **Termo de aceite**, modelo abaixo.
-
-### A reunião de entrega, em 15 minutos
-
-Entregar é uma conversa curta e planejada, não um "está aí o link". Roteiro:
-
-1. **Abertura (1 min).** "Hoje eu te mostro o site no ar e combino o que vem depois."
-2. **Demonstração (5 min).** Abra o site no celular **dela**, não no seu. Peça que ela mesma teste o botão do WhatsApp e o formulário. Quem usa se convence mais que quem assiste.
-3. **O que foi feito e como conferi (3 min).** Leia o relatório de entrega, incluindo o que ficou de fora.
-4. **Como pedir mudanças (2 min).** Mostre o manual do site e o prazo combinado.
-5. **Aceite (2 min).** Peça que ela confirme por escrito (modelo abaixo).
-6. **Fechamento (2 min).** Combine um contato de acompanhamento para uma semana depois.
-
-Modelo de **termo de aceite**, curto e em linguagem simples:
-
-```text
-Eu, Lia, aceito a entrega do site do Studio Lia, versão 1, no endereço (cole o endereço).
-Conferi o formulário de aula experimental e o botão do WhatsApp no meu celular.
-Pendências combinadas: valor do plano trimestral (a Lia informa) e texto de boas-vindas (a aprovar).
-A manutenção combinada é: (descreva o que está incluído e o prazo).
-
-Data: ___/___/_____        Assinatura ou resposta "aceito" por mensagem: ____________
-```
-
-<Nota rotulo="Isto não é aconselhamento jurídico">
-Os modelos desta página são pontos de partida. Contrato, termos de uso, proteção de dados do cliente e dos clientes dele (LGPD) e propriedade do domínio merecem a orientação de um profissional quando o valor ou o risco forem relevantes.
-</Nota>
-
-### Quem é dono do quê
-
-Combine, antes de publicar, quem é dono de cada peça. É o ponto que mais gera conflito depois:
-
-| Peça | Recomendação |
-|---|---|
-| **O domínio** (`studiolia.com.br`) | Registrado no **nome e e-mail de quem contratou**. Você acessa se houver autorização. |
-| **O repositório e a publicação** | Na conta de quem contratou, ou transferido para ela ou ele na entrega. |
-| **Senhas e acessos** | Nunca por mensagem de texto. Use o gerenciador de senhas ou peça que a própria pessoa crie as contas. |
-| **O código e o conteúdo** | Combinados por escrito: ela pode usar, e você pode (ou não) usar no portfólio. |
-
-### Você domina a Temporada 1 se consegue
-
-Responda **sem olhar a página**, em voz alta, como se explicasse a quem contratou você:
-
-1. O que o Claude Code faz que o chat não faz?
-2. Por que o briefing é a "receita" e como você a altera?
-3. O que você faz antes de construir, e por quê?
-4. Como prova que o trabalho está pronto? O que a sua conferência não pega?
-5. O que é o `CLAUDE.md` e o que ele não garante?
-6. Como desfaz um erro? Por que o briefing não vai para a internet?
-7. O que quem contratou recebe no pacote e o que acontece se pedir uma mudança em seis meses?
-
-| Resultado | O que fazer |
-|---|---|
-| **7 de 7** | Você domina a Temporada 1. Siga para a próxima. |
-| **4 a 6** | Releia as estações dos itens em que hesitou e refaça o item correspondente com a Lia. |
-| **Até 3** | Refaça a Temporada 1 com a Lia do zero, uma estação por dia. É mais rápido na segunda vez. |
-
-</Entrega>
-
 <Saida>
 
 - Guardei versões do trabalho com o git e sei como pedir ao Claude para fazer isso.
 - Desfiz um erro voltando ao último ponto salvo, e vi a conferência avisar do estrago.
 - Separei o que vai à internet (a pasta `docs`) do que é só meu e do cliente.
-- Sei como publicar no GitHub Pages e quais cuidados tomar com cliente real.
-- Sei montar o pacote de entrega: endereço, histórico, CLAUDE.md, conferência, relatório, manual e termo de aceite.
-- Fiz o projeto da Lia do briefing à entrega e sei conduzir uma reunião de entrega em 15 minutos.
-- Sei quem é dono de cada peça (domínio, repositório, acessos) e combino isso antes de publicar.
 
 </Saida>
 
-**Próxima estação:** [O sistema da oficina: dados de verdade](../t2a/), o começo da Temporada 2. O site da Marta só mostra informação. Agora o cliente é uma oficina mecânica que precisa **guardar** dados (ordens de serviço) e responder "o que está aberto e quanto faturei?". Você vai construir um sistema com tela, servidor e banco. Enquanto isso, os guias de referência aprofundam o que você viu: o guia [Git e GitHub do zero](../m4/), o guia [Do computador para a internet](../m5/) e o guia [Memória e CLAUDE.md](../m6/).
+**Próxima parte:** [Guardar e publicar, parte 2: publicar e fazer o projeto final](../t1d-2/): publicar o site e fazer o projeto final da temporada.
 
 <Fontes>
 

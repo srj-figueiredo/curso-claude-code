@@ -1,0 +1,71 @@
+---
+id: t2d-2
+titulo: "Testar, guardar e entregar o sistema, parte 2: o projeto final"
+parte: p9
+ordem: 204.1
+minutos: 60
+pre_requisitos: [t2d]
+objetivos:
+  - Fazer o projeto final da temporada, a agenda de um segundo cliente.
+  - Juntar as evidências, conferência, backup ensaiado e acessos.
+  - Dizer o que foi e o que não foi verificado.
+tldr:
+  - O projeto final junta dados, login, travas, backup e dados pessoais num cliente novo.
+  - Cada etapa deixa uma evidência. Junte todas antes de pensar na entrega.
+  - Diga o que não foi testado. Isso faz o resto ser crível.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios: []
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "Testar, guardar e entregar". Na primeira você fez o backup e ensaiou o desastre. Agora faz o projeto final da Temporada 2.
+
+<Conceitos
+  aprender={[
+    { termo: 'Projeto final da temporada', simples: 'Um trabalho completo com um cliente novo e sem passo a passo.' },
+    { termo: 'Evidência', simples: 'Algo que você mostra para provar uma etapa: a conferência, o backup ensaiado, o acesso protegido.' },
+  ]}
+/>
+
+<Entrega titulo="Projeto final da Temporada 2: a missão">
+
+Este é o teste que fecha a temporada. Você fará **por conta própria**, de ponta a ponta, um sistema completo para a Lia, usando tudo o que viu. O resultado será um **pacote de entrega** que você poderia mostrar a um cliente de verdade.
+
+### A missão
+
+Parta do `t2-dominio-inicio.zip` (o briefing do site e o pedido da agenda). **Sem ficha**:
+
+1. **Dúvidas.** Peça ao Claude as dúvidas e contradições do pedido e escreva uma mensagem curta à Lia.
+2. **Caderno.** Escreva o `CLAUDE.md` da agenda, com a regra "só o que já vem com o Node" e "nunca mostrar senha".
+3. **Plano e construção.** Peça o plano, decida o que for seu e construa: formulário público com **caixa de aceite**, guarda os pedidos, **só terça e quinta com 24 horas de antecedência**, lista **só com login**, confirmar, cancelar e **apagar os dados de uma aluna**.
+4. **Conferência.** Peça um `conferir.mjs` que teste tudo num banco temporário, incluindo uma verificação de "o que não pode acontecer".
+5. **Acessos.** Senha da Lia no `.env` (com hash), `.gitignore`, regra `deny` para o `.env`. Prove o 401 sem login e o vazamento por script.
+6. **Kit.** Instale os hooks (proteção e conferência) e adapte a skill de relatório. **Leia antes de instalar.**
+7. **Backup.** Crie o backup e a restauração e **ensaie o desastre**.
+8. **Histórico.** Faça o git, um commit por fase, e prove que sabe voltar.
+9. **Pacote.** Monte o pacote abaixo.
+10. **Reunião.** Ensaie a entrega, em voz alta, em 20 minutos.
+
+O que a nossa execução mostrou, para os passos 3 e 4: com o pedido completo, o Claude construiu o sistema em Node puro e uma conferência de **29 testes**. A primeira rodada teve 2 falhas, e uma era **um erro de verdade**: um filtro de data aceitava `2026-13-99`, porque só olhava o formato. Ele corrigiu e anotou. Quando usamos o sistema real, o pedido de uma terça foi aceito, a lista sem login deu **401**, o login funcionou e apagar os dados de uma aluna devolveu `{"ok":true,"apagados":1}`.
+
+Não executamos os passos 5 a 8 **na agenda**: foram feitos e verificados na oficina, que é o modelo. O seu teste é fazer na agenda.
+
+</Entrega>
+
+<Saida>
+
+- Fiz o projeto da agenda do segundo cliente por conta própria.
+
+</Saida>
+
+**Próxima parte:** [Testar, guardar e entregar o sistema, parte 3: o pacote e a reunião](../t2d-3/): o pacote e a reunião de entrega do sistema.
+
+<Fontes>
+
+- As fontes desta estação estão na [parte 1](../t2d/).
+- Execuções locais registradas em `VERIFICATION/t2.md`.
+
+</Fontes>

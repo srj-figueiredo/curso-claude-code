@@ -3,14 +3,12 @@ id: t3c
 titulo: "Trocar o simulador pela IA: o provedor da API paga"
 parte: p10
 ordem: 303
-minutos: 135
-pre_requisitos: [t3b]
+minutos: 67
+pre_requisitos: [t3b-3]
 objetivos:
-  - Explicar o que muda quando o atendente passa de regras para uma IA.
+  - plicar o que muda quando o atendente passa de regras para uma IA.
   - Pedir o provedor da IA e testá-lo sem gastar nada, com um servidor falso.
   - Dizer o que o provedor faz quando a IA falha, demora ou devolve algo inválido.
-  - Estimar o custo de mil conversas a partir de tokens medidos e de preços que você consulta.
-  - Seguir o passo a passo para trocar pela API paga com segurança.
 tldr:
   - O provedor é uma peça trocável. A IA entra mudando uma variável, e as proteções continuam valendo.
   - Teste o provedor com um servidor falso. Só depois de tudo conferido você gasta com uma chave de verdade.
@@ -21,7 +19,6 @@ status: depende-de-plano
 trilhas: [rapida, completa]
 exercicios:
   - { id: t3c-e1, titulo: Pedir o provedor da IA e o servidor falso, minutos: 60, custo: gratis }
-  - { id: t3c-e2, titulo: Estimar o custo de mil conversas, minutos: 30, custo: gratis }
 ---
 
 ## Essencial
@@ -281,138 +278,16 @@ Peça ao Claude: "se a IA responder passar_para_pessoa true, mostre isso no rela
 
 </Ficha>
 
-<Ficha
-  id="t3c-e2"
-  n={2}
-  titulo="Estimar o custo de mil conversas"
-  objetivo="Calcular o custo de mil respostas a partir de tokens medidos e de preços que você consulta."
-  minutos={30}
-  pre="Ficha 1"
-  versao="2.1.325"
->
-
-1. Abra a página oficial de preços da Anthropic e anote, para o **modelo que você pensa em usar**, o preço por milhão de tokens de **entrada** e de **saída**. Anote também a data de hoje.
-2. Meça os tokens de **uma** resposta real. Com uma chave de verdade (ou com o servidor falso, que devolve números de exemplo), olhe as colunas `tokens_entrada` e `tokens_saida` da mensagem no banco, ou o relatório.
-3. Faça a conta:
-
-   ```text
-   custo de uma resposta = (tokens_entrada x preco_entrada + tokens_saida x preco_saida) / 1.000.000
-   custo de mil respostas = custo de uma resposta x 1.000
-   ```
-
-4. Rode o relatório com os seus preços, que ele faz a conta:
-
-   <SO unix="PRECO_ENTRADA=1 PRECO_SAIDA=5 node relatorio.mjs" win={`$env:PRECO_ENTRADA='1'; $env:PRECO_SAIDA='5'; node relatorio.mjs`} />
-
-   (Troque 1 e 5 pelos preços que você anotou.)
-5. **Teste a sensibilidade.** O que acontece com o custo se a base de conhecimento dobrar de tamanho? E se você mandar só as últimas 3 mensagens em vez de 6?
-
-<Nota rotulo="O relatório vem na próxima estação">
-O `relatorio.mjs` é criado na última estação da temporada. Se você ainda não o tem, faça a conta de cabeça (passo 3) e volte aqui depois.
-</Nota>
-
-<Prova>
-
-Com os valores de exemplo da página (1.500 tokens de entrada, 120 de saída, preços 1,00 e 5,00 inventados), uma resposta custa 0,0021 e mil respostas custam **2,10**. O ponto da ficha é outro: você deve ver que a **entrada** domina a conta (1.500 contra 120 tokens). Cortar o tamanho da base ou o histórico enviado reduz o custo mais do que qualquer outro ajuste.
-
-</Prova>
-
-<Gabarito>
-
-O seu número será outro, com os seus preços e os seus tokens. O que importa é você ter feito a conta **com uma data** ("preço consultado em ...") e saber qual parte pesa mais. Esse é o texto que vai na proposta ao cliente.
-
-</Gabarito>
-
-<DeuErro>
-
-- **O relatório não mostra custo.** As variáveis `PRECO_ENTRADA` e `PRECO_SAIDA` não foram definidas na mesma janela do terminal.
-- **O custo parece alto demais.** Confira se o preço é **por milhão** de tokens, e não por mil.
-- **Os tokens estão vazios.** Só as respostas do provedor da IA gravam tokens. As do provedor local ficam vazias.
-
-</DeuErro>
-
-<Desafio>
-
-Peça um orçamento ao cliente: "se o atendente receber 40 conversas por dia, com uma média de 4 respostas da IA por conversa, quanto custa por mês?" Faça a conta e diga qual é o teto mensal que você sugeriria combinar.
-
-</Desafio>
-
-</Ficha>
-
-<Entrega titulo="Prove que dominou e entregue a proposta de custo">
-
-### Teste de domínio: o provedor da Lia
-
-Parta do atendente do **Studio Lia** da estação anterior (com as proteções).
-
-**Sua missão, sem passo a passo:**
-
-1. Peça o **provedor da IA para a Lia**, com a instrução adaptada às regras dela (saúde e dor para a Lia, nada de promessa de resultado, não confirmar vaga) e **sem pacote**.
-2. Peça o **servidor falso** e a conferência. Prove que **cada falha** (401, 429, 500, resposta inválida, resposta cortada) vira repasse.
-3. Prove que a **grade barra** uma resposta da IA que prometa curar dor nas costas, usando o servidor falso para dar essa resposta.
-4. Estime o **custo de mil conversas** da Lia, com um modelo e preços que **você consulta hoje**, e escreva a data.
-5. Encontre **uma coisa que o servidor falso não prova** e diga como a testaria de verdade.
-
-Na nossa adaptação para a Lia, o Claude ajustou o prompt do provedor às regras do Studio Lia e a conferência continuou passando em 192 verificações. Ele **não** testou a API real, e avisou isso.
-
-**Você domina esta estação se consegue, sem olhar a página:**
-
-- explicar o que a IA ganha e o que cobra em relação ao bot de regras;
-- dizer por que o servidor falso existe e o que ele **não** prova;
-- listar o que o provedor faz quando a IA falha e por que nunca "tapa o buraco";
-- calcular o custo de mil respostas a partir de tokens e preços, e dizer qual parte pesa mais;
-- dizer por que a conta e a chave ficam no nome do cliente.
-
-### Entregue a proposta de custo e o plano de troca
-
-O cliente decide a IA com o dinheiro dele. Entregue uma folha que mostra **o quê, quanto e como se limita**. Modelo:
-
-```markdown
-# Atendente com IA: custo e plano de troca (Studio Lia)
-
-## O que muda
-Hoje o atendente responde por regras, sem custo de IA. Com a IA, ele entende perguntas escritas de vários jeitos. Quando errar ou falhar, a conversa vai para a Lia.
-
-## Quanto custa
-- A cobrança é por uso (tokens). Modelo escolhido: (nome do modelo).
-- Preços consultados em (data): entrada (valor) e saída (valor) por milhão de tokens.
-- Estimativa: cerca de (valor) por mil respostas. Com 40 conversas por dia e 4 respostas por conversa, cerca de (valor) por mês.
-- O valor real depende do uso. Você acompanha pelo relatório do atendente e pelo painel da conta.
-
-## Como se limita o gasto
-- Teto mensal combinado: (valor). Alerta quando chegar a 80%.
-- Máximo de 8 mensagens por minuto por cliente.
-- Se a IA falhar ou demorar, a conversa vai para a Lia (nada de resposta inventada).
-
-## Quem paga e quem controla
-- A conta e a chave da IA ficam no nome da Lia. A cobrança vai direto para ela.
-- A chave fica num arquivo no computador do studio, fora do histórico. Não envie a chave por mensagem.
-
-## Como se volta atrás
-- Para parar de usar a IA, troque `PROVEDOR=claude` por `PROVEDOR=local` e reinicie. O atendente volta a responder por regras.
-```
-
-Três cuidados:
-
-- **A data do preço é obrigatória.** Preço sem data vira promessa que você não pode manter.
-- **Escreva "como se volta atrás".** Saber que dá para desligar a IA com uma variável tranquiliza o cliente.
-- **Não prometa precisão.** A frase "quando errar ou falhar, a conversa vai para a Lia" é a que protege os dois.
-
-</Entrega>
-
 <Saida>
 
 - Sei o que a IA ganha e o que cobra em relação ao bot de regras.
 - Pedi o provedor da IA sem pacote e li o código antes de confiar nele.
 - Testei sem gastar, com um servidor falso, e sei o que ele não prova.
 - Sei que qualquer falha da IA vira repasse para uma pessoa, e nunca uma resposta inventada.
-- Estimo o custo de mil conversas com tokens medidos e preços que consulto, e escrevo a data.
-- Sei o passo a passo da troca e quem paga e controla a chave.
-- Fiz o provedor e a proposta de custo da Lia por conta própria.
 
 </Saida>
 
-**Próxima estação:** [Medir, entregar e manter o atendente](../t3d/): como saber se o atendente está **bom**? Você vai montar uma avaliação de 20 casos, ver a nota subir de 80% para 100% e fechar a temporada com o projeto completo do Studio Lia.
+**Próxima parte:** [Trocar o simulador pela IA, parte 2: o custo, a prova e a proposta](../t3c-2/): o custo, a prova de domínio e a proposta.
 
 <Fontes>
 

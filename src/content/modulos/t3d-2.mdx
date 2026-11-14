@@ -1,0 +1,163 @@
+---
+id: t3d-2
+titulo: "Medir, entregar e manter, parte 2: corrigir e ler o relatório"
+parte: p10
+ordem: 304.1
+minutos: 60
+pre_requisitos: [t3d]
+objetivos:
+  - Corrigir uma falha, provar a melhora e saber o que uma nota de 100% não prova.
+  - Ler o relatório do atendente e dizer o que o dono deve fazer com cada número.
+  - Aplicar a correção e provar que a conferência anterior continua passando.
+tldr:
+  - Depois de medir, corrija, meça de novo e rode a conferência anterior para provar que nada quebrou.
+  - Nota 100% diz que nada quebrou. A qualidade vem das conversas reais.
+  - O relatório mostra ao dono o que o atendente resolveu e o que ele não soube.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios:
+  - { id: t3d-e2, titulo: Corrigir e provar a melhora, minutos: 30, custo: gratis }
+  - { id: t3d-e3, titulo: Ler o relatório, minutos: 30, custo: gratis }
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "Medir, entregar e manter". Na primeira você pediu a avaliação e viu a nota antes de corrigir. Agora corrige, prova a melhora e lê o relatório.
+
+<Conceitos
+  aprender={[
+    { termo: 'Regressão', simples: 'Quebrar o que já funcionava ao mudar outra coisa. A avaliação roda a cada mudança.' },
+    { termo: 'Relatório de desempenho', simples: 'O resumo para o dono: conversas, resolvidas, repasses, assuntos e custo.' },
+  ]}
+/>
+
+## Fichas de campo
+
+Continue na mesma pasta da parte anterior.
+
+<Ficha
+  id="t3d-e2"
+  n={2}
+  titulo="Corrigir e provar a melhora"
+  objetivo="Aplicar a correção proposta e provar, com a avaliação e a conferência, que a nota subiu e nada quebrou."
+  minutos={30}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+1. Abra uma sessão nova (ou continue a anterior) e peça:
+
+   ```text
+   Aplique a correção que você propôs para os casos de porte. Depois rode node avaliar.mjs e node conferir.mjs e mostre as duas notas.
+   ```
+
+2. Aprove. Depois rode, por conta própria, nesta ordem:
+
+   ```bash
+   node avaliar.mjs
+   node conferir.mjs
+   ```
+
+3. Compare a nota com a do passo 4 da ficha anterior.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido>" --continue --permission-mode acceptEdits --allowedTools "Bash(node avaliar.mjs)" "Bash(node conferir.mjs)"`.
+</Nota>
+
+<Prova>
+
+A nota sobe e a conferência anterior continua passando. Na nossa execução (6 passos, 0 comandos negados, cerca de 1 minuto): **100,0% (20 de 20), antes era 85,0%**, e `144 de 144 verificações passaram`. O Claude mudou **só** o `provedores/local.mjs` (uma função que escolhe a linha do porte na base) e avisou um limite que a avaliação não cobre: "cão de 5 kg" não é reconhecido como porte.
+
+</Prova>
+
+<Gabarito>
+
+Tão importante quanto a nota é a segunda linha: a conferência de 144 verificações **continuou passando**. É a prova de que a correção não quebrou nada. A sequência "medir, corrigir, medir de novo, conferir o resto" é o hábito que você leva para qualquer projeto.
+
+</Gabarito>
+
+<DeuErro>
+
+- **A nota subiu, mas a conferência falhou.** A correção quebrou outra regra. Peça: "a conferência falhou em X; corrija sem desfazer a melhora da avaliação".
+- **A nota não mudou.** O Claude pode ter alterado o arquivo errado. Peça: "mostre o diff do `provedores/local.mjs`".
+- **O Claude criou preços novos.** Ele deve **recortar** a linha da base, não escrever valores. Confira na base.
+
+</DeuErro>
+
+<Desafio>
+
+Peça ao Claude: "faça o atendente reconhecer peso em kg e convertê-lo em porte pelas faixas da base". Acrescente o caso do cão de 5 kg à prova e rode. O que subiu e o que mais você precisa testar?
+
+</Desafio>
+
+</Ficha>
+
+<Ficha
+  id="t3d-e3"
+  n={3}
+  titulo="Ler o relatório"
+  objetivo="Conversar com o atendente, rodar o relatório e dizer o que o dono deve fazer com cada número."
+  minutos={30}
+  pre="Ficha 2"
+  versao="2.1.325"
+>
+
+1. Suba o atendente e converse com ele no simulador por uns minutos, com **perguntas variadas**: horário, preço, hotelzinho, "aceita gato?", "faz adestramento?", "quero agendar", "meu cachorro está vomitando", e uma tentativa de manipulação.
+
+   ```bash
+   node servidor.mjs
+   ```
+
+2. Desligue (<kbd>Ctrl</kbd>+<kbd>C</kbd>) e rode o relatório:
+
+   ```bash
+   node relatorio.mjs
+   ```
+
+3. Responda por escrito: qual número mais chama a atenção? O que a dona deve fazer com as perguntas `fora_da_base`?
+
+<Prova>
+
+O relatório mostra o total de conversas, a porcentagem resolvida sem pessoa, os repasses por motivo, os assuntos mais perguntados, as mensagens suspeitas e os avisos de limite. Na nossa execução, com 16 conversas de teste, foram **9 resolvidas (56,3%) e 7 passadas para uma pessoa (43,8%)**, e o motivo mais frequente foi `fora_da_base` (3: "aceita gato?", "faz adestramento?" e a tentativa de manipulação). A tentativa de manipulação apareceu como mensagem suspeita, **sem o texto**, só com a hora e os 4 últimos dígitos.
+
+</Prova>
+
+<Gabarito>
+
+O número que mais ensina é `fora_da_base`: é a **lista de tarefas** de melhoria do atendente. Cada pergunta que se repete ali vira uma linha na base (e um caso na prova) ou um repasse que a dona aceita. Um relatório que só mostra o que deu certo não ajuda a melhorar.
+
+</Gabarito>
+
+<DeuErro>
+
+- **O relatório diz "banco não encontrado".** O atendente ainda não rodou (o banco é criado na primeira conversa) ou você está em outra pasta.
+- **Os assuntos mais perguntados estão vazios.** Com o provedor da IA a contagem fica vazia (ela depende do texto exato das seções).
+- **O custo não aparece.** Só aparece se houver tokens gravados (provedor da IA) e se `PRECO_ENTRADA` e `PRECO_SAIDA` estiverem definidos.
+
+</DeuErro>
+
+<Desafio>
+
+Escreva, em três linhas, o que você diria à Rita depois de ler o seu relatório: o que está bom, o que fazer primeiro e o que ela precisa decidir.
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Corrijo, provo a melhora e confirmo que a conferência anterior continua passando.
+- Sei o que uma nota de 100% não prova e como as conversas reais tornam a prova melhor.
+- Leio o relatório e digo ao dono o que fazer com cada número.
+
+</Saida>
+
+**Próxima parte:** [Medir, entregar e manter, parte 3: o projeto final](../t3d-3/): o projeto final da Temporada 3.
+
+<Fontes>
+
+- As fontes desta estação estão na [parte 1](../t3d/).
+- Execuções locais registradas em `VERIFICATION/t3.md`.
+
+</Fontes>

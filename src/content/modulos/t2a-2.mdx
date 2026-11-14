@@ -1,0 +1,107 @@
+---
+id: t2a-2
+titulo: "O sistema da oficina, parte 2: provar e mostrar ao cliente"
+parte: p9
+ordem: 201.1
+minutos: 45
+pre_requisitos: [t2a]
+objetivos:
+  - Fazer a primeira fase da agenda de um segundo cliente, sem passo a passo.
+  - Conduzir uma demonstração de 20 minutos.
+  - Dizer ao cliente, por escrito, o que ainda não está pronto.
+tldr:
+  - Um sistema se mostra funcionando. Peça que o cliente cadastre uma ordem de verdade.
+  - Na demonstração, diga o que ainda não existe. Surpresa depois de pronto custa confiança.
+  - Venda em fases e mostre o que cada fase entrega.
+verificado_em_versao: 2.1.325
+verificado_em_data: 13/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios: []
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "O sistema da oficina". Na primeira você pediu o plano, construiu o sistema e o usou. Agora prova que dominou e treina a demonstração.
+
+<Conceitos
+  aprender={[
+    { termo: 'Teste de domínio', simples: 'Uma prova sem passo a passo, com um cliente novo, para saber se você domina o que fez.' },
+    { termo: 'Rubrica', simples: 'A lista "você domina se consegue, sem olhar a página". Se falhar em um item, você volta e refaz.' },
+    { termo: 'Demonstração', simples: 'Uma reunião curta em que o cliente usa o sistema com dados de teste.' },
+  ]}
+/>
+
+<Entrega titulo="Prove que dominou e mostre o sistema ao cliente">
+
+O Seu Antônio é seu cliente. Agora é a hora de ver se você entendeu o que construiu, usando outro cliente: a **Lia**, do Studio Lia, que gostou do site e quer o próximo passo.
+
+### Teste de domínio: a agenda da Lia, primeira fase
+
+Baixe o material. Ele traz o briefing do site e um pedido novo.
+
+- [Cliente: `t2-dominio-inicio.zip`](../lab/t2-dominio-inicio.zip) (briefing do site e pedido da agenda)
+
+<Arquivo estado="t2-dominio-inicio" nome="agenda.md" dica="o pedido novo da Lia" />
+
+**Sua missão, sem passo a passo:**
+
+1. Escreva o `CLAUDE.md` da agenda (uma estação atrás você já sabe como, e o da oficina é um modelo). Inclua a regra "só o que já vem com o Node".
+2. Peça o **plano** da primeira fase: o formulário **guarda** o pedido de aula experimental e a Lia **vê a lista por data**, com as regras da terça e da quinta e das 24 horas. **Sem login ainda.**
+3. Decida o que o plano deixar para você e construa.
+4. Peça um `conferir.mjs` que teste as regras num banco temporário.
+5. Suba o sistema e use: envie um pedido numa terça, depois numa quarta, e veja a diferença.
+
+Na nossa execução (do pedido completo, com login e outras partes), o Claude construiu o sistema em 29 passos e uma conferência de 29 testes. **Ele achou um erro de verdade sozinho**: um filtro de data aceitava `2026-13-99` porque só olhava o formato. Corrigiu e anotou. Repare nisto: um bom roteiro de conferência não serve só para você, serve para o próprio Claude se corrigir.
+
+Quando usamos o sistema real, o pedido de uma terça foi aceito, e o de uma quarta foi recusado com a mensagem "A aula experimental é só às terças e quintas".
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar a diferença entre a tela, o servidor e o banco, com um exemplo do dia a dia;
+- dizer por que o plano é pedido **antes** e o que você decidiu a partir dele;
+- mostrar o que a sua conferência cobre e uma coisa que **não** cobre;
+- usar o sistema no navegador e provar que os dados continuam depois de fechar o servidor;
+- dizer por que o sistema ainda **não** está pronto para entregar (o que falta).
+
+### Mostre o sistema ao cliente
+
+Entregar um sistema não é mandar um arquivo. É **sentar com o cliente e mostrá-lo funcionando**. Roteiro de uma demonstração de 20 minutos, para a Fase 1:
+
+1. **Contexto (2 min).** "Hoje eu te mostro como as ordens vão sair do caderno e ir para o computador."
+2. **Cadastro (5 min).** Peça que **ele** cadastre uma ordem de verdade (com dados de teste). Quem usa se convence mais do que quem assiste.
+3. **Lista e status (5 min).** Mude o status de uma ordem e mostre o painel mudando.
+4. **O que não está pronto (3 min).** "Ainda não tem login nem backup. Isso é a Fase 2. Até lá, usem só para teste."
+5. **Perguntas dele (5 min).** Anote tudo.
+
+E mande, depois, uma mensagem curta:
+
+```text
+Seu Antônio, obrigado pela reunião. Resumo do que vimos:
+
+Pronto (Fase 1): cadastro de ordens, lista com filtro, mudança de status e painel.
+Ainda não pronto (Fase 2): login com dono e atendente, faturamento do mês e backup.
+O que eu preciso de você: dizer se a troca de status deve ser livre ou só avançar, e quando posso passar para a Fase 2.
+
+Até lá, o sistema serve só para teste, com ordens de exemplo.
+```
+
+Repare que a mensagem **diz o que não está pronto**. Surpresa depois de pronto custa confiança. Aviso antes custa uma linha.
+
+</Entrega>
+
+<Saida>
+
+- Faço a primeira fase da agenda da Lia por conta própria e sei conduzir uma demonstração de 20 minutos.
+- Sei dizer ao cliente, por escrito, o que ainda não está pronto.
+
+</Saida>
+
+**Próxima estação:** [Quem entra e o que o Claude pode ver](../t2b/): o Seu Antônio quer que a Clara **não** veja o faturamento. Você vai descobrir por que esconder na tela não basta, e como o Claude Code deve (ou não deve) lidar com as senhas do sistema.
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): modo plano e como revisar antes de executar.
+- [Best practices](https://code.claude.com/docs/en/best-practices.md): critério de verificação e fases.
+- Execuções locais registradas em `VERIFICATION/t2a.md`. O SQLite embutido (`node:sqlite`) e o servidor (`node:http`) vêm com o Node 24, que é a versão da máquina de teste.
+
+</Fontes>

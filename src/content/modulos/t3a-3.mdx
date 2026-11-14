@@ -1,0 +1,115 @@
+---
+id: t3a-3
+titulo: "O atendente do pet shop, parte 3: provar e entregar as regras"
+parte: p10
+ordem: 301.2
+minutos: 40
+pre_requisitos: [t3a-2]
+objetivos:
+  - Montar a base de conhecimento de um segundo cliente e classificar perguntas.
+  - Achar o que a base não responde.
+  - Entregar à cliente o documento de regras do atendente para aprovação.
+tldr:
+  - O atendente é tão bom quanto a base. Escreva 15 perguntas e veja o que ela não cobre.
+  - Parte das regras não é da base. É do comportamento, como passar saúde para uma pessoa.
+  - A dona aprova por escrito o que o atendente diz antes de qualquer cliente falar com ele.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios: []
+---
+## Nesta parte
+
+Esta é a terceira parte da estação "O atendente do pet shop". Você já construiu e testou o atendente. Agora prova que dominou com outro cliente e prepara o documento que a dona aprova.
+
+<Conceitos
+  aprender={[
+    { termo: 'Teste de domínio', simples: 'Uma prova sem passo a passo, com um cliente novo, para saber se você domina o que fez.' },
+    { termo: 'Rubrica', simples: 'A lista "você domina se consegue, sem olhar a página". Se falhar em um item, você volta e refaz.' },
+    { termo: 'Folha de regras', simples: 'Um documento de uma página com o que o atendente responde, quando chama a equipe e o que nunca faz.' },
+  ]}
+/>
+
+<Entrega titulo="Prove que dominou e mostre o atendente à cliente">
+
+### Teste de domínio: a base de conhecimento da Lia
+
+A Lia, do Studio Lia, quer um atendente como o da Rita. Baixe o material e leia **antes** de abrir o Claude.
+
+- [Cliente: `t3-dominio-inicio.zip`](../lab/t3-dominio-inicio.zip) (briefing, base e caderno do atendimento da Lia)
+
+<Arquivo estado="t3-dominio-inicio" nome="briefing.md" dica="o briefing do atendimento da Lia" />
+
+<Arquivo estado="t3-dominio-inicio" nome="conhecimento.md" dica="a base de conhecimento da Lia" />
+
+**Sua missão, sem passo a passo:**
+
+1. Escreva **15 perguntas** que as alunas da Lia fariam no WhatsApp.
+2. Para cada uma, decida: o atendente **responde pela base** ou **passa para a Lia**? Escreva o porquê.
+3. Encontre **três perguntas** que a base atual **não** responde e diga o que a Lia precisa acrescentar.
+4. Encontre **uma regra do briefing que a base não consegue cumprir sozinha** (dica: pense no plano trimestral e em saúde).
+
+O que mostra que você domina: você percebeu que **o atendente é tão bom quanto a base** e que parte das regras (passar saúde para a Lia, não confirmar vaga) **não** são da base, e sim do comportamento. Na nossa adaptação para a Lia, o Claude acertou essas regras e ainda avisou **duas limitações do bot de regras**: "quanto tempo dura a aula?" cai na seção de turmas (porque a palavra "aula" casa), e o preço da aula avulsa traz a tabela de planos inteira.
+
+**Você domina esta estação se consegue, sem olhar a página:**
+
+- explicar a diferença entre um bot de regras e um atendente com IA, com um exemplo;
+- dizer por que o atendente só afirma o que está na base;
+- listar cinco situações em que ele deve passar para uma pessoa;
+- explicar o que é um webhook e por que o simulador substitui o real na construção;
+- mostrar um limite do bot de regras que você descobriu conversando.
+
+### Entregue as regras do atendente para a cliente aprovar
+
+Antes de qualquer cliente falar com o atendente, **a dona precisa aprovar o que ele diz**. É a sua proteção e a dela. Mande uma folha única, em linguagem simples, com três blocos:
+
+```markdown
+# O que o atendente do Patas Felizes faz
+
+## Ele responde sozinho
+- Horário, endereço, preços de banho e tosa por porte, tempo de cada serviço, hotelzinho, táxi dog, formas de pagamento e ração.
+
+## Ele chama a sua equipe quando
+- O cliente quer agendar, remarcar ou cancelar.
+- Há reclamação ou o cliente pede uma pessoa.
+- Fala de saúde do animal (ele sugere procurar um veterinário e não opina).
+- A pergunta não está na base (por exemplo, "aceita gato?").
+- Manda áudio ou imagem.
+
+## Ele nunca faz
+- Inventar preço, prazo ou promoção.
+- Prometer horário.
+- Pedir CPF, endereço ou dado de cartão.
+- Continuar falando depois que o cliente escreve "parar".
+
+## Frases fixas (aprove ou corrija)
+- Saudação: "Oi! Tudo bem? Sou o assistente virtual do Patas Felizes..."
+- Repasse: "Vou passar para a equipe, que vai te responder."
+- Saúde: "Não consigo avaliar a saúde do animal por aqui... procure um veterinário."
+```
+
+Três cuidados:
+
+1. **Peça aprovação por escrito.** Uma resposta "pode ser" no WhatsApp já serve, mas guarde.
+2. **Mostre as frases.** Elas são a voz da marca, e uma frase fora do tom soa estranha para quem conhece a Rita.
+3. **Atualize o documento junto com a base.** Se a Rita muda o preço, a folha e o `conhecimento.md` precisam andar juntos.
+
+</Entrega>
+
+<Saida>
+
+- Fiz a base e a lista de repasses da Lia por conta própria.
+- Sei montar o documento que a cliente aprova antes de o atendente falar com alguém.
+
+</Saida>
+
+**Próxima estação:** [Regras de proteção: guardrails, limite e privacidade](../t3b/): o atendente do pet shop só vai a público se o que ele **não** pode dizer for barrado por uma regra, e não por boa vontade. Você vai provar que o atendente barra o próprio provedor quando ele erra.
+
+<Fontes>
+
+- [Common workflows](https://code.claude.com/docs/en/common-workflows.md): modo plano e verificação.
+- [Best practices](https://code.claude.com/docs/en/best-practices.md): critério de pronto e fases.
+- Execuções locais registradas em `VERIFICATION/t3.md`. O formato do pacote do WhatsApp e as políticas da plataforma oficial **não** foram verificados na documentação da Meta.
+
+</Fontes>

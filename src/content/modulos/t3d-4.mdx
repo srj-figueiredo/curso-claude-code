@@ -1,0 +1,123 @@
+---
+id: t3d-4
+titulo: "Medir, entregar e manter, parte 4: o pacote e a reunião"
+parte: p10
+ordem: 304.3
+minutos: 45
+pre_requisitos: [t3d-3]
+objetivos:
+  - Montar a rotina de manutenção e o plano para quando o atendente falhar.
+  - Entregar um atendente completo, com política, manual, relatório, custo e aceite.
+  - Conduzir a reunião de entrega em 20 minutos.
+tldr:
+  - Um atendente não é entregue e esquecido. Alguém o mantém toda semana.
+  - Combine quem responde quando o atendente passa a conversa, e em quanto tempo.
+  - Diga ao cliente os limites, como computador ligado e WhatsApp real fora do teste.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [rapida, completa, empresa]
+exercicios: []
+---
+## Nesta parte
+
+Esta é a quarta parte da estação "Medir, entregar e manter" e fecha a Temporada 3. Você já fez o projeto. Agora monta o que entrega e treina a reunião.
+
+<Conceitos
+  aprender={[
+    { termo: 'Rotina de manutenção', simples: 'O que alguém faz toda semana: ler o relatório, atualizar a base, rodar a avaliação e guardar uma cópia.' },
+    { termo: 'Plano de contingência', simples: 'O que fazer quando o atendente falha: quem assume, como desligar e como voltar.' },
+  ]}
+/>
+
+<Entrega titulo="Projeto final da Temporada 3: o pacote e a reunião de entrega">
+### O pacote de entrega do atendente
+
+Confira que o pacote está completo:
+
+- **O atendente**, com a base e as frases aprovadas pela cliente.
+- **A política do atendente** (primeira mensagem e folha de segurança), da segunda estação.
+- **A proposta de custo e o plano de troca**, da terceira estação, com **data** nos preços.
+- **A prova**: `casos.json` e a última nota.
+- **O relatório** e como lê-lo.
+- **A rotina de manutenção** e o **plano de contingência**, abaixo.
+- **O termo de aceite**.
+
+Modelo da **rotina de manutenção e do plano de contingência**:
+
+```markdown
+# Manutenção do atendente do Studio Lia
+
+## Toda semana (15 minutos)
+1. Rode `node relatorio.mjs` e leia os repasses por motivo.
+2. Veja as perguntas "fora da base": quais se repetem? Decida se entram na base ou continuam repasse.
+3. Acrescente um caso à prova para cada pergunta nova ou erro.
+4. Rode `node avaliar.mjs`. A nota não pode cair abaixo de 90.
+5. Faça um backup do banco e guarde a cópia fora do computador.
+
+## Quem responde quando o atendente passa a conversa
+- Quem assume: a Lia (ou (nome)). Em quanto tempo: até (prazo combinado) em horário comercial.
+- Fora do horário: o atendente já avisa o horário de funcionamento e que a equipe responde depois.
+
+## Se o atendente falhar
+- Respondeu algo errado: anote a mensagem, avise (contato), e a pessoa **desliga a IA** trocando `PROVEDOR=claude` por `PROVEDOR=local` e reiniciando.
+- Parou de responder: veja se o computador está ligado e o sistema aberto. Se não resolver, o WhatsApp da Lia segue funcionando normalmente.
+- Cliente reclamou ou pediu para parar: a equipe assume e, se for o caso, reativa com `node reativar.mjs (telefone)`.
+- Pediu para apagar os dados: (procedimento a combinar; o atendente desta versão ainda não tem a função pronta).
+```
+
+Duas observações:
+
+- **O plano de contingência é uma promessa.** "Se algo der errado, o WhatsApp da Lia segue funcionando" é verdade e tranquiliza.
+- **Deixe em aberto o que ainda não existe.** A função de apagar dados **não** está pronta neste atendente: escreva isso, não finja.
+
+### A reunião de entrega, em 20 minutos
+
+1. **Abertura (2 min).** "Hoje eu te entrego o atendente e te mostro como acompanhá-lo."
+2. **Demonstração (6 min).** Converse com o atendente **na frente da Lia**: horário, plano trimestral, "o pilates cura dor?", agendar. Peça que **ela** escreva perguntas.
+3. **O que ele não faz (3 min).** A lista de repasses e as proteções.
+4. **Relatório e rotina (4 min).** Mostre o relatório e a rotina semanal.
+5. **Custo e plano de troca (3 min).** A proposta, com a data dos preços.
+6. **Aceite (2 min).** Peça a confirmação por escrito, com a lista do que foi entregue, do que ficou de fora (WhatsApp real, 24 horas, apagar dados) e a manutenção combinada.
+
+### Você domina a Temporada 3 se consegue
+
+Responda **sem olhar a página**, em voz alta, como se explicasse a quem contratou você:
+
+1. A diferença entre um bot de regras e um atendente com IA, e por que o desenho profissional combina os dois com uma pessoa.
+2. Por que o atendente só afirma o que está na base, e o que acontece com o que não está.
+3. Por que uma grade na saída protege mais que um pedido, e o que prova um provedor ruim de propósito.
+4. O que o provedor faz quando a IA falha, e por que nunca responde por conta própria.
+5. Como estimar o custo de mil conversas, e por que o preço vem com data.
+6. Por que se mede a nota **antes** de corrigir, e o que 100% não prova.
+7. O que a dona faz com o relatório, e o que acontece se ninguém responder ao repasse.
+
+| Resultado | O que fazer |
+|---|---|
+| **7 de 7** | Você domina a Temporada 3. Siga para a próxima. |
+| **4 a 6** | Releia as estações dos itens em que hesitou e refaça o item correspondente no atendente da Lia. |
+| **Até 3** | Refaça a Temporada 3 com a Lia do zero, uma estação por dia. |
+
+<Nota rotulo="Isto não é aconselhamento jurídico">
+Atendimento automático lida com dados pessoais e com regras de plataforma. Os modelos desta página são pontos de partida: para um cliente real, confira o texto da política e do termo com um profissional e consulte as regras atuais da plataforma oficial do WhatsApp.
+</Nota>
+
+</Entrega>
+
+<Saida>
+
+- Monto a rotina de manutenção e o plano de contingência, e deixo claro quem responde ao repasse.
+- Sei conduzir a reunião de entrega em 20 minutos.
+- Digo à cliente os limites: computador ligado, WhatsApp real fora do teste e a função de apagar dados a combinar.
+
+</Saida>
+
+**Próxima estação:** a Temporada 4, em construção: automação com IA e relatórios, em que o sistema passa a **agir** (ler documentos, gerar planilhas, enviar resultados), e não só responder. Tudo o que você praticou aqui (provedor trocável, proteções, avaliação, custo e entrega) volta com mais peso. Enquanto isso, os guias de referência aprofundam o que você viu: [Configurações, permissões e segurança](../m7/), [Claude API dentro do seu produto](../m21/) e [MCP](../m10/).
+
+<Fontes>
+
+- [Create a Message](https://platform.claude.com/docs/en/api/messages/create.md): o formato do pedido e da resposta da API, que o provedor usa.
+- [Best practices](https://code.claude.com/docs/en/best-practices.md): critério de verificação e fases.
+- Execuções locais registradas em `VERIFICATION/t3.md`. A avaliação, o relatório e a adaptação para o Studio Lia foram executados; o WhatsApp real, a hospedagem 24 horas e a API paga **não** foram.
+
+</Fontes>

@@ -1,0 +1,117 @@
+---
+id: t3a-2
+titulo: "O atendente do pet shop, parte 2: construir e conversar"
+parte: p10
+ordem: 301.1
+minutos: 60
+pre_requisitos: [t3a]
+objetivos:
+  - Subir um simulador de WhatsApp e conversar com o atendente como um cliente faria.
+  - Dizer quando o atendente deve passar a conversa para uma pessoa.
+  - Descrever os limites de um atendente que só consulta uma base.
+tldr:
+  - Com as decisões respondidas, o Claude constrói o atendente e a conferência prova cada regra.
+  - Suba o simulador e converse como um cliente. É assim que se acham os limites.
+  - O bot de regras responde certo o que conhece e tropeça no que exige entender a frase.
+verificado_em_versao: 2.1.325
+verificado_em_data: 14/11/2026
+status: estável
+trilhas: [rapida, completa]
+exercicios:
+  - { id: t3a-e2, titulo: Construir e conversar, minutos: 60, custo: gratis }
+---
+## Nesta parte
+
+Esta é a segunda parte da estação "O atendente do pet shop". Na primeira você leu o briefing e a base e pediu o plano. Agora manda construir e conversa com o atendente.
+
+<Conceitos
+  aprender={[
+    { termo: 'Simulador', simples: 'Uma tela parecida com o WhatsApp que roda no seu computador.' },
+    { termo: 'Webhook', simples: 'A campainha do seu sistema: o pacote de dados que chega a cada mensagem.' },
+    { termo: 'Limite do bot de regras', simples: 'Ele acha palavras e não entende frases. É o motivo de existir a IA.' },
+  ]}
+/>
+
+## Fichas de campo
+
+Continue na mesma pasta da parte anterior.
+
+<Ficha
+  id="t3a-e2"
+  n={2}
+  titulo="Construir e conversar"
+  objetivo="Mandar construir, rodar a conferência, subir o simulador e conversar como um cliente."
+  minutos={60}
+  pre="Ficha 1"
+  versao="2.1.325"
+>
+
+1. Na mesma sessão, responda às decisões e mande construir:
+
+   ```text
+   Minhas decisões: 1) depois do repasse o atendente se cala; 2) 'parar' ou 'pare' sozinhos, e só a equipe reativa; 3) fora do expediente o repasse cita o horário da loja da base, sem prometer prazo; 4) pergunta fora da base (como aceita gato) é repasse; 5) na fase 1 só marcamos o repasse; 6) sem criptografia, mas marque no código e no resumo que telefone e nome são dados pessoais; 7) deixe a verificação do webhook para depois; 8) áudio e imagem: avise que só lemos texto e repasse; 9) liste as frases de saudação, repasse e saúde no resumo final para eu aprovar. Pode implementar o plano e o conferir.mjs. O provedor deve ser escolhido pela variável de ambiente PROVEDOR (padrão local), para trocarmos depois sem mexer no resto. Rode node conferir.mjs e mostre o resultado.
+   ```
+
+2. Aprove as criações e o `node conferir.mjs`. Saia (`/exit`) e rode a conferência por conta própria:
+
+   ```bash
+   node conferir.mjs
+   ```
+
+3. Suba o atendente (deixe o terminal aberto) e abra o simulador:
+
+   ```bash
+   node servidor.mjs
+   ```
+
+   <SO mac="open http://localhost:3100" linux="xdg-open http://localhost:3100" win="start http://localhost:3100" />
+
+4. **Converse.** Escreva como um cliente: "oi", "vocês abrem domingo?", "quanto é o banho?", "quero agendar", "meu cachorro está vomitando", "aceitam gato?", "parar". Anote o que **não** funcionou como você esperava.
+5. Para desligar, volte ao terminal e aperte <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+
+<Nota rotulo="Sem a tela interativa">
+Equivalente: `claude -p "<o pedido do passo 1>" --continue --permission-mode acceptEdits --allowedTools "Bash(node conferir.mjs)"`. Sem tela, o Claude não pôde subir o servidor (comando negado): por isso os passos 3 e 4 são seus.
+</Nota>
+
+<Prova>
+
+A conferência termina em `50 de 50 verificações passaram` e o simulador mostra as respostas da tabela acima. Na nossa execução (22 passos, 4 comandos negados, cerca de 5 minutos): o atendente respondeu pela base os casos de horário, endereço, preço, tempo, hotelzinho, táxi dog, pagamento e ração, e **passou para a equipe** o agendamento, a saúde, a pergunta fora da base e o áudio. Depois de "parar", nada mais foi respondido. O Claude ainda avisou de três desvios dele: o "parar" não recebe nem confirmação (silêncio total), o horário aparece em todo repasse e não só fora do expediente, e "quero parar de receber" cai no repasse com uma frase estranha.
+
+</Prova>
+
+<Gabarito>
+
+O seu resultado será parecido. O que prova: a conferência passa **e** o atendente respondeu bem a pergunta de horário, passou o agendamento e a saúde, e silenciou depois de "parar". Nossa versão está em [`t3a-gabarito.zip`](../lab/t3a-gabarito.zip).
+
+</Gabarito>
+
+<DeuErro>
+
+- **A porta 3100 está em uso.** Outro programa (ou o próprio atendente em outro terminal) a usa. Feche o antigo.
+- **O simulador abre, mas não responde.** O servidor caiu. Olhe a mensagem no terminal.
+- **Ele passou para a equipe uma pergunta que a base responde.** A palavra da pergunta não casou com a base. É o limite do bot de regras: peça ao Claude para incluir sinônimos na base e conferir.
+
+</DeuErro>
+
+<Desafio>
+
+Pergunte "qual o preço do banho e tosa para um cachorro médio?". O que o atendente responde? É o que a Rita quer? O que faltaria para ele entender o "médio"?
+
+</Desafio>
+
+</Ficha>
+
+<Saida>
+
+- Conversei como cliente e achei um limite real do bot de regras.
+
+</Saida>
+
+**Próxima parte:** [O atendente do pet shop, parte 3: provar e entregar as regras](../t3a-3/): provar que você dominou e entregar as regras do atendente.
+
+<Fontes>
+
+- As fontes desta estação estão na [parte 1](../t3a/).
+- Execuções locais registradas em `VERIFICATION/t3.md`.
+
+</Fontes>

@@ -25,6 +25,7 @@ Roteiro aprovado em `docs/ROTEIRO-V2.md`; o mapa de conceitos dos módulos antig
 - **Temporada 2 (Sistema do cliente), escrita e verificada:** T2A (dados de verdade), T2B (login, papéis e segredos), T2C (hooks e skills), T2D (backup, LGPD básica e entrega). Cliente Oficina Boa Estrada; projeto final: agenda do Studio Lia. Verificação em `VERIFICATION/t2.md`. Labs `lab/estados/t2*`.
 - **Temporada 3 (Atendimento com IA), escrita e verificada:** T3A (base, simulador, provedor local), T3B (guardrails, limite, privacidade), T3C (provedor da API paga, testado só contra servidor falso; fita "Troca por pago"), T3D (avaliação com nota antes de corrigir, relatório, manutenção e entrega). Cliente Pet Shop Patas Felizes; projeto final: atendente do Studio Lia. Verificação em `VERIFICATION/t3.md`. Labs `lab/estados/t3*`.
 - **Guias antigos renomeados (D019):** sem códigos M, R, C no mapa, na navegação e no texto.
+- **Estações divididas em partes (D022):** as 12 estações viraram 30 páginas de 40 a 80 minutos (t1a, t1a-2...). O mapa mostra um ponto por estação.
 - **Próximo:** Temporada 4 (automação com IA e relatórios). A API real, o WhatsApp oficial e a hospedagem 24 horas seguem não testados (PENDENCIAS 7.14 a 7.17).
 
 Pausa anterior (limite do plano): M0 a M8 e M10 estão escritos e verificados; a Publicação saiu em 13/11/2026.

@@ -37,3 +37,8 @@ Escopo: as 12 estações novas (T1A a T3D), o piloto do guia de segurança, os g
 - **Duração:** as últimas estações de cada temporada passam de 3 horas. Avaliar dividir.
 - **Termos definidos só no "Conceitos" e não no corpo** em algumas estações (por exemplo "hash" na T2B). É intencional, mas vale reler com uma pessoa não técnica.
 - **Não testado** (reunido em `VERIFICATION/t2.md` e `t3.md`): API real, WhatsApp oficial, hospedagem 24 horas, `iniciar.cmd`, instalação em outro computador, textos jurídicos.
+
+## Adendo (14/11/2026): divisão em partes menores
+
+As 12 estações foram divididas em 30 partes (D022). Conferido depois da divisão: 46 páginas construídas, 2.642 links internos e 0 quebrados; fichas do corpo iguais às do cabeçalho em todas as partes; 3 objetivos ou mais e 3 itens de resumo em cada parte; duas referências a fichas que ficaram em outra parte foram corrigidas ("Ficha 3, na parte 2"); nenhuma rolagem lateral nem erro de console no celular e no desktop nas 13 páginas novas testadas; o mapa mostra um ponto por estação. Maior parte: 80 minutos; menor: 40.
+
