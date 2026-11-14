@@ -10,7 +10,7 @@ objetivos:
   - Escolher a superfície certa (terminal, editor, app, web, celular) para uma tarefa.
   - Dizer qual acesso pago você vai usar e onde conferir o preço vigente.
   - Usar as camadas, as fichas de campo, a busca e o progresso deste curso.
-  - Provar, com dois comandos, que seu computador está pronto para o M1.
+  - Provar, com dois comandos, que seu computador está pronto para o guia “Instalação e primeiro contato”.
 tldr:
   - O Claude Code é um agente. Ele lê seu projeto, edita arquivos, roda comandos e confere o próprio resultado.
   - O mesmo motor roda no terminal, no editor, no app, na web e no celular. O curso usa o terminal como base.
@@ -41,10 +41,10 @@ Cada tarefa passa por um ciclo de três fases, repetido até acabar:
 Esse ciclo é o **laço agêntico**. Quem raciocina é o modelo (o Claude). Quem dá mãos ao modelo é o Claude Code: as **ferramentas** para ler, editar, buscar, executar e consultar a web, mais o controle do que ele pode fazer sem perguntar.
 
 <Nota rotulo="Não é só para código">
-Serve para qualquer coisa que se faça pela linha de comando: organizar pastas, escrever documentos, tratar dados, pesquisar. O [M22](../m22/) é inteiro sobre isso.
+Serve para qualquer coisa que se faça pela linha de comando: organizar pastas, escrever documentos, tratar dados, pesquisar. O [guia “Claude Code além do código”](../m22/) é inteiro sobre isso.
 </Nota>
 
-Você continua no comando. Dá para interromper a qualquer momento, corrigir o rumo e desfazer edições. O [M2](../m2/) abre o motor; o [M3](../m3/) ensina a conduzir.
+Você continua no comando. Dá para interromper a qualquer momento, corrigir o rumo e desfazer edições. O [guia “Como o Claude Code pensa”](../m2/) abre o motor; o [guia “Conduzindo no dia a dia”](../m3/) ensina a conduzir.
 
 ### Onde roda: um motor, várias portas
 
@@ -65,16 +65,16 @@ O motor é o mesmo em todo lugar. Muda **onde o código executa** e **como você
 
 | Porta | Boa para | Onde o curso usa |
 |---|---|---|
-| **Terminal (CLI)** | Tudo. É a mais completa: scripts e automação só existem aqui. | Base do curso, a partir do [M1](../m1/) |
-| **VS Code** | Ver os diffs dentro do editor, sem trocar de janela. | [M15](../m15/) |
-| **JetBrains** | O mesmo, em IntelliJ, PyCharm, WebStorm e parentes. O plugin exige a CLI instalada. | [M15](../m15/) |
-| **App desktop** | Quem prefere interface gráfica: revisão visual e sessões lado a lado. Já inclui o Claude Code. | [M15](../m15/) |
-| **Web** (`claude.ai/code`) | Tarefa longa que deve seguir sem você, ou repositório que não está no seu disco. | [M15](../m15/) |
-| **Celular** (app Claude) | Começar e acompanhar tarefas longe do computador. | [M15](../m15/) |
-| **Chrome** | Testar e depurar uma página no navegador de verdade. | [M15](../m15/) e C4 |
-| **Slack** | Mencionar o Claude no canal do time e receber um pull request. | [M15](../m15/) |
-| **CI/CD** | Revisão automática de PR e triagem de issues. | [M16](../m16/) |
-| **Agent SDK** | Embutir o motor num programa seu. | [M17](../m17/) |
+| **Terminal (CLI)** | Tudo. É a mais completa: scripts e automação só existem aqui. | Base do curso, a partir do [guia “Instalação e primeiro contato”](../m1/) |
+| **VS Code** | Ver os diffs dentro do editor, sem trocar de janela. | [guia “Claude Code em todo lugar”](../m15/) |
+| **JetBrains** | O mesmo, em IntelliJ, PyCharm, WebStorm e parentes. O plugin exige a CLI instalada. | [guia “Claude Code em todo lugar”](../m15/) |
+| **App desktop** | Quem prefere interface gráfica: revisão visual e sessões lado a lado. Já inclui o Claude Code. | [guia “Claude Code em todo lugar”](../m15/) |
+| **Web** (`claude.ai/code`) | Tarefa longa que deve seguir sem você, ou repositório que não está no seu disco. | [guia “Claude Code em todo lugar”](../m15/) |
+| **Celular** (app Claude) | Começar e acompanhar tarefas longe do computador. | [guia “Claude Code em todo lugar”](../m15/) |
+| **Chrome** | Testar e depurar uma página no navegador de verdade. | [guia “Claude Code em todo lugar”](../m15/) e guia “Landing page de conversão” |
+| **Slack** | Mencionar o Claude no canal do time e receber um pull request. | [guia “Claude Code em todo lugar”](../m15/) |
+| **CI/CD** | Revisão automática de PR e triagem de issues. | [guia “Revisão e segurança de código”](../m16/) |
+| **Agent SDK** | Embutir o motor num programa seu. | [guia “Agent SDK”](../m17/) |
 
 Na dúvida, comece pelo terminal. É onde tudo funciona, e o que você aprende nele vale nas outras portas. Terminal causa alergia? O app desktop entrega o mesmo motor com janelas e botões.
 
@@ -115,7 +115,7 @@ A documentação de custos publica uma média de uso **cobrado por consumo** em 
 
 São desenvolvedores em tempo integral, pagando por token. Para seguir o curso, o caminho previsível é a assinatura: você sabe a conta antes de começar. Quando o limite do plano acaba, você espera a renovação ou liga os créditos de uso, que são cobrados à parte.
 
-Dentro de uma sessão, `/usage` mostra quanto do plano você já gastou. O [M18](../m18/) ensina a medir e a economizar.
+Dentro de uma sessão, `/usage` mostra quanto do plano você já gastou. O [guia “Custos e uso”](../m18/) ensina a medir e a economizar.
 
 **E o resto?** Grátis. Hospedagem, banco, automação, canal de atendimento: cada exercício tem um caminho de custo zero. Onde o pago faz sentido, uma fita amarela **TROCA POR PAGO** diz o que trocar, quando e por quanto, com data.
 
@@ -164,9 +164,9 @@ Nada é trancado. A trilha só apaga do mapa o que você pode deixar para depois
 
 | Trilha | Estações | Para quem | Percurso |
 |---|---|---|---|
-| **Rápida para Cases** | 22 | Quer entregar projeto de cliente logo | M0 a M3, R3, M4 a M8, M10, M11, M20 a M22, C0 a C6 |
+| **Rápida para Cases** | 22 | Quer entregar projeto de cliente logo | guias “Mapa do Claude Code e regras do jogo” a “Conduzindo no dia a dia”, guia “Conduzir a sessão”, guias “Git e GitHub do zero” a “Skills”, guia “MCP”, guia “Planejar e verificar”, guias “Backend, banco, webhooks e hospedagem” a “Claude Code além do código”, guias “Do briefing à entrega” a “Edição de vídeo com Claude Code” |
 | **Completa** | 39 | Quer maestria | Tudo, na ordem |
-| **Empresa** | 10 | Vai adotar o Claude Code num time | M0 a M3, M6, M7, M12, M16, M18, M19 |
+| **Empresa** | 10 | Vai adotar o Claude Code num time | guias “Mapa do Claude Code e regras do jogo” a “Conduzindo no dia a dia”, guia “Memória e CLAUDE.md”, guia “Configurações, permissões e segurança”, guia “Subagentes e trabalho paralelo”, guia “Revisão e segurança de código”, guia “Custos e uso”, guia “Claude Code na empresa” |
 
 Em dúvida entre duas? Comece pela Rápida. Dá para mudar a qualquer momento, e o progresso feito continua contando.
 
@@ -227,7 +227,7 @@ A extensão do Chrome pede ainda um plano direto da Anthropic e funciona em Chro
 
 ### Por que sua versão anda na frente do selo
 
-A instalação nativa se atualiza sozinha, em segundo plano. Instalações por Homebrew e WinGet não: esperam você rodar o comando de atualização. O [M1](../m1/) mostra os dois casos.
+A instalação nativa se atualiza sozinha, em segundo plano. Instalações por Homebrew e WinGet não: esperam você rodar o comando de atualização. O [guia “Instalação e primeiro contato”](../m1/) mostra os dois casos.
 
 </Camada>
 
@@ -235,7 +235,7 @@ A instalação nativa se atualiza sozinha, em segundo plano. Instalações por H
 
 ### Assinar achando que o plano gratuito serve
 
-A lista de contas aceitas começa no Pro. Confira o nome do plano antes de reservar a tarde para o [M1](../m1/).
+A lista de contas aceitas começa no Pro. Confira o nome do plano antes de reservar a tarde para o [guia “Instalação e primeiro contato”](../m1/).
 
 ### Uma chave de API esquecida no ambiente
 
@@ -261,7 +261,7 @@ O selo diz o que era verdade em uma versão e uma data. Um menu pode ter mudado 
 
 ## Fichas de campo
 
-Duas fichas. Nenhuma usa o Claude Code ainda: a instalação é assunto do [M1](../m1/). Aqui você deixa a bancada pronta.
+Duas fichas. Nenhuma usa o Claude Code ainda: a instalação é assunto do [guia “Instalação e primeiro contato”](../m1/). Aqui você deixa a bancada pronta.
 
 <Ficha
   id="m0-e1"
@@ -272,7 +272,7 @@ Duas fichas. Nenhuma usa o Claude Code ainda: a instalação é assunto do [M1](
   pre="nenhum"
 >
 
-1. **Conta e plano.** Decida qual dos três acessos você vai usar. Para assinatura, compare os planos em [claude.com/pricing](https://claude.com/pricing) e confirme que o seu é Pro ou superior. Anote o nome do plano: você vai precisar dele no M1.
+1. **Conta e plano.** Decida qual dos três acessos você vai usar. Para assinatura, compare os planos em [claude.com/pricing](https://claude.com/pricing) e confirme que o seu é Pro ou superior. Anote o nome do plano: você vai precisar dele no guia “Instalação e primeiro contato”.
 2. **Terminal.** Abra um. O atalho do seu sistema está no Essencial, na parte sobre o seletor. No Windows, use o PowerShell: o prompt dele começa com `PS C:\`. Se começar só com `C:\`, você abriu o CMD.
 
 3. **Git.** Rode:
@@ -418,7 +418,7 @@ A Ficha 2 leva o selo **ilustrativo** porque acontece no navegador, com o site c
 
 </Saida>
 
-**Próxima estação:** [M1, Instalação e primeiro contato](../m1/). Você instala a CLI, faz login e pede a primeira tarefa de verdade.
+**Próxima estação:** [guia “Instalação e primeiro contato”](../m1/). Você instala a CLI, faz login e pede a primeira tarefa de verdade.
 
 <Fontes>
 

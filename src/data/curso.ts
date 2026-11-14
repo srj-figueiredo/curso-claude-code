@@ -8,16 +8,16 @@ export type Estacao = { id: string; parte: string; titulo: string; curto: string
 export type TrilhaId = 'rapida' | 'completa' | 'empresa';
 
 export const PARTES: Parte[] = [
-  { id: 'p0', rotulo: 'Parte 0', titulo: 'Antes de começar' },
+  { id: 'p0', rotulo: 'Guias', titulo: 'Antes de começar' },
   { id: 'p8', rotulo: 'Temporada 1', titulo: 'Primeiro cliente' },
   { id: 'p9', rotulo: 'Temporada 2', titulo: 'Sistema do cliente' },
-  { id: 'p1', rotulo: 'Parte I', titulo: 'Fundamentos' },
-  { id: 'p2', rotulo: 'Parte II', titulo: 'O menu / dissecado' },
-  { id: 'p3', rotulo: 'Parte III', titulo: 'Do zero ao ar' },
-  { id: 'p4', rotulo: 'Parte IV', titulo: 'Personalizar' },
-  { id: 'p5', rotulo: 'Parte V', titulo: 'Escalar' },
-  { id: 'p6', rotulo: 'Parte VI', titulo: 'Construir produtos de verdade' },
-  { id: 'p7', rotulo: 'Parte VII', titulo: 'Cases de mercado' },
+  { id: 'p1', rotulo: 'Guias', titulo: 'Fundamentos' },
+  { id: 'p2', rotulo: 'Guias', titulo: 'O menu / dissecado' },
+  { id: 'p3', rotulo: 'Guias', titulo: 'Do zero ao ar' },
+  { id: 'p4', rotulo: 'Guias', titulo: 'Personalizar' },
+  { id: 'p5', rotulo: 'Guias', titulo: 'Escalar' },
+  { id: 'p6', rotulo: 'Guias', titulo: 'Construir produtos de verdade' },
+  { id: 'p7', rotulo: 'Guias', titulo: 'Cases de mercado' },
 ];
 
 const e = (id: string, parte: string, titulo: string, curto = titulo): Estacao => ({ id, parte, titulo, curto });
@@ -107,7 +107,10 @@ export const TRILHAS: Record<TrilhaId, { titulo: string; resumo: string; ids: st
 
 export const estacao = (id: string) => ESTACOES.find((s) => s.id === id);
 export const parteDe = (id: string) => PARTES.find((p) => p.id === estacao(id)?.parte);
-export const rotulo = (id: string) => id.toUpperCase();
+// Estações antigas (guias de referência) não usam mais código: aparecem como "Guia" e pelo nome.
+export const ehGuia = (id: string) => /^(m\d+|r\d+|c\d+|pf)$/.test(id);
+export const rotulo = (id: string) => (ehGuia(id) ? 'Guia' : id.toUpperCase());
+export const nome = (id: string) => (ehGuia(id) ? (estacao(id)?.curto ?? id) : id.toUpperCase());
 
 export function vizinhos(id: string) {
   const i = ESTACOES.findIndex((s) => s.id === id);

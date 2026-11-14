@@ -71,7 +71,7 @@ Para gerenciar:
 | **Projeto** (`--scope project`) | Só neste projeto | **Sim**, pelo git | `.mcp.json` na raiz |
 | **Usuário** (`--scope user`) | Todos os seus projetos | Não | `~/.claude.json` |
 
-Cuidado com o nome: o "local" do MCP **não** é o `settings.local.json` do [M7](../m7/). Servidores locais ficam no seu `~/.claude.json`. Quando o mesmo nome aparece em mais de um escopo, vale **uma** definição inteira, sem mistura de campos: local, depois projeto, depois usuário, depois plugins e conectores do claude.ai.
+Cuidado com o nome: o "local" do MCP **não** é o `settings.local.json` do [guia “Configurações, permissões e segurança”](../m7/). Servidores locais ficam no seu `~/.claude.json`. Quando o mesmo nome aparece em mais de um escopo, vale **uma** definição inteira, sem mistura de campos: local, depois projeto, depois usuário, depois plugins e conectores do claude.ai.
 
 O `.mcp.json` do projeto é o jeito de dar ao time as mesmas ferramentas. Ele pode usar variáveis de ambiente, e é para **isso** que serve guardar segredos fora do arquivo.
 
@@ -97,7 +97,7 @@ O que as ferramentas **devolvem** também custa. O Claude Code avisa quando uma 
 
 ### Confiança e segurança
 
-Um servidor MCP é **código que roda e texto que o Claude lê**. A documentação avisa: servidores que buscam conteúdo externo expõem você a prompt injection ([M7](../m7/)), e a Anthropic revisa conectores contra critérios de listagem, mas **não audita** servidor nenhum. As proteções de que você dispõe:
+Um servidor MCP é **código que roda e texto que o Claude lê**. A documentação avisa: servidores que buscam conteúdo externo expõem você a prompt injection ([guia “Configurações, permissões e segurança”](../m7/)), e a Anthropic revisa conectores contra critérios de listagem, mas **não audita** servidor nenhum. As proteções de que você dispõe:
 
 - **Aprovação do `.mcp.json`.** Numa sessão interativa, o Claude Code pede aprovação antes de usar servidores do `.mcp.json` do projeto. Até aprovar, o estado é `⏸ Pending approval`.
 - **Regras de permissão por ferramenta.** Libere só o que o fluxo precisa, com `mcp__servidor__ferramenta`. Um `deny` numa ferramenta MCP a **remove** do contexto do Claude (Ficha 3).
@@ -139,7 +139,7 @@ Organizações controlam servidores por **configuração MCP gerenciada**: lista
 
 ### Claude Code como servidor MCP
 
-O próprio Claude Code pode ser um servidor MCP para outros clientes. O [M17](../m17/) trata disso com o Agent SDK.
+O próprio Claude Code pode ser um servidor MCP para outros clientes. O [guia “Agent SDK”](../m17/) trata disso com o Agent SDK.
 
 </Camada>
 
@@ -197,7 +197,7 @@ git commit -m "Ponto de partida"
 npm test
 ```
 
-O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [M4](../m4/). **As fichas só usam o escopo de projeto (`.mcp.json`) e não tocam no seu `~/.claude.json`.**
+O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [guia “Git e GitHub do zero”](../m4/). **As fichas só usam o escopo de projeto (`.mcp.json`) e não tocam no seu `~/.claude.json`.**
 
 <Nota rotulo="O que foi testado">
 Executei as Fichas 1, 2 e 3 com `claude -p`, em Sonnet 5.5. O `claude mcp list` testa **todos** os servidores que você tem, inclusive os de plugins e conectores da sua conta, então pode demorar e mostrar mais linhas do que as nossas. A tela do `/mcp` e o fluxo de login OAuth só existem na interface interativa, e a Ficha 4 (n8n e Playwright) segue a documentação sem execução.
@@ -392,7 +392,7 @@ passo 2 sem a flag:               (os dois, mais todos os conectores da conta, a
 
 <Gabarito>
 
-Duas defesas diferentes. O `deny` age **por ferramenta**: o mesmo mecanismo do [M7](../m7/), em que negar uma ferramenta pelo nome a remove do que o Claude vê. O `--strict-mcp-config` age **por servidor**: a sessão só carrega o que você nomeou, o que fecha a brecha de `claude -p` carregar o `.mcp.json` de um repositório sem aprovação.
+Duas defesas diferentes. O `deny` age **por ferramenta**: o mesmo mecanismo do [guia “Configurações, permissões e segurança”](../m7/), em que negar uma ferramenta pelo nome a remove do que o Claude vê. O `--strict-mcp-config` age **por servidor**: a sessão só carrega o que você nomeou, o que fecha a brecha de `claude -p` carregar o `.mcp.json` de um repositório sem aprovação.
 
 </Gabarito>
 
@@ -492,7 +492,7 @@ Depois de conectar o n8n, peça ao Claude que liste os workflows **sem executar 
 
 </Saida>
 
-**Próxima estação:** o [M11, Planejar e verificar](../m11/): do pedido ao plano, e como provar que o trabalho está pronto.
+**Próxima estação:** o [guia “Planejar e verificar”](../m11/): do pedido ao plano, e como provar que o trabalho está pronto.
 
 <Fontes>
 

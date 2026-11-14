@@ -53,7 +53,7 @@ Compare os dois pedidos abaixo. São do nosso laboratório, e os dois foram exec
 
 O pedido vago não deu errado. Deu **outra coisa**, e você só descobre lendo o diff. Quando estiver explorando ("o que você melhoraria neste arquivo?"), ser vago é legítimo. Quando souber o que quer, diga.
 
-Frases como "pense passo a passo" ou "seja minucioso" são texto comum, não palavras mágicas. Quem controla quanto o Claude raciocina é o nível de esforço, assunto do [M2](../m2/).
+Frases como "pense passo a passo" ou "seja minucioso" são texto comum, não palavras mágicas. Quem controla quanto o Claude raciocina é o nível de esforço, assunto do [guia “Como o Claude Code pensa”](../m2/).
 
 ### Entregue o material em vez de descrevê-lo
 
@@ -92,7 +92,7 @@ O modo de permissão decide **o que roda sem perguntar**. Você troca de modo co
   <CicloModos />
 </Figura>
 
-Dois modos ficam fora do ciclo normal: `dontAsk`, feito para scripts e CI, e `bypassPermissions`, que só faz sentido dentro de contêiner ou máquina virtual. O [M7](../m7/) trata dos dois com o cuidado que merecem.
+Dois modos ficam fora do ciclo normal: `dontAsk`, feito para scripts e CI, e `bypassPermissions`, que só faz sentido dentro de contêiner ou máquina virtual. O [guia “Configurações, permissões e segurança”](../m7/) trata dos dois com o cuidado que merecem.
 
 <Nota rotulo="Em que modo começo?">
 Depende do plano e da organização. A partir da v2.1.283, o modo inicial embutido pode ser o auto. Olhe a barra de status antes da primeira mensagem.
@@ -180,7 +180,7 @@ O Claude opera o git pela ferramenta de shell. Peça em português:
 Leia o diff, faça um commit só com as mudanças de prioridade e escreva a mensagem em português, no imperativo.
 ```
 
-No modo Manual ele pede permissão antes de cada `git add` e `git commit`. Leia o que ele vai commitar antes de dizer sim. O [M4](../m4/) aprofunda git do zero.
+No modo Manual ele pede permissão antes de cada `git add` e `git commit`. Leia o que ele vai commitar antes de dizer sim. O [guia “Git e GitHub do zero”](../m4/) aprofunda git do zero.
 
 <Camada tipo="capo" titulo="Checkpoints, fila e sessões por dentro">
 
@@ -210,7 +210,7 @@ Rodando com `-p`, o plano é escrito num arquivo em `~/.claude/plans/` e a sess�
 
 ### Quanto custa retomar
 
-Retomar não é de graça: o histórico volta para o contexto. Na Ficha 3, uma pergunta de uma frase sobre a sessão retomada registrou US$ 0,19 no campo `total_cost_usd` da saída JSON. No plano por assinatura isso consome limite de uso, não dinheiro. O [M18](../m18/) ensina a medir.
+Retomar não é de graça: o histórico volta para o contexto. Na Ficha 3, uma pergunta de uma frase sobre a sessão retomada registrou US$ 0,19 no campo `total_cost_usd` da saída JSON. No plano por assinatura isso consome limite de uso, não dinheiro. O [guia “Custos e uso”](../m18/) ensina a medir.
 
 </Camada>
 
@@ -241,7 +241,7 @@ Retomar a mesma sessão em dois terminais sem ramificar mistura as mensagens das
 
 ### @arquivo passa por fora dos hooks de leitura
 
-Um arquivo incluído com `@` não gera chamada de ferramenta, então hooks de `PreToolUse` não rodam para ele. Quem depende de hook para proteger arquivo precisa de uma regra de negação de leitura. O [M7](../m7/) mostra como.
+Um arquivo incluído com `@` não gera chamada de ferramenta, então hooks de `PreToolUse` não rodam para ele. Quem depende de hook para proteger arquivo precisa de uma regra de negação de leitura. O [guia “Configurações, permissões e segurança”](../m7/) mostra como.
 
 </Camada>
 
@@ -268,7 +268,7 @@ O `npm test` deve terminar com `pass 5` e `fail 0`. O projeto não tem dependên
   titulo="Uma tarefa em modo plano"
   objetivo="Adicionar prioridade às pendências, planejando antes de editar."
   minutos={20}
-  pre="M1, laboratório baixado"
+  pre="guia “Instalação e primeiro contato”, laboratório baixado"
 >
 
 1. Abra o Claude Code já em modo plano:
@@ -540,7 +540,7 @@ Reescreva o pedido vago em três versões, acrescentando um elemento por vez: ob
 
 </Saida>
 
-**Próxima estação:** a Parte II abre o menu `/` comando por comando. Se você está na trilha rápida, vá direto ao [R3, Conduzir a sessão](../r3/), que aprofunda o que você acabou de usar.
+**Próxima estação:** a Parte II abre o menu `/` comando por comando. Se você está na trilha rápida, vá direto ao [guia “Conduzir a sessão”](../r3/), que aprofunda o que você acabou de usar.
 
 <Fontes>
 

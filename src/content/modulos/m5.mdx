@@ -20,7 +20,7 @@ verificado_em_data: 13/11/2026
 status: estável
 trilhas: [rapida, completa]
 exercicios:
-  - { id: m5-e1, titulo: Publicar o site do M1, minutos: 25, custo: gratis }
+  - { id: m5-e1, titulo: Publicar o site do guia “Instalação e primeiro contato”, minutos: 25, custo: gratis }
   - { id: m5-e2, titulo: Errar de propósito e voltar atrás, minutos: 15, custo: gratis }
   - { id: m5-e3, titulo: Domínio próprio, minutos: 30, custo: opcional-pago }
 ---
@@ -33,9 +33,9 @@ Até aqui, tudo que você fez mora no seu computador. Este módulo leva uma pág
 
 Um **site estático** é uma pasta com arquivos prontos: HTML, CSS, JavaScript, imagens. O servidor só os entrega, do jeito que estão. Não roda código seu, não consulta banco, não guarda cadastro.
 
-Isso cobre mais do que parece: portfólio, landing page, documentação, este curso. Quando você precisar de login, banco ou formulário que grava dados, entra o servidor, e o [M20](../m20/) trata disso. A boa notícia é que o estático é a hospedagem mais barata que existe, porque é o trabalho mais simples para quem hospeda.
+Isso cobre mais do que parece: portfólio, landing page, documentação, este curso. Quando você precisar de login, banco ou formulário que grava dados, entra o servidor, e o [guia “Backend, banco, webhooks e hospedagem”](../m20/) trata disso. A boa notícia é que o estático é a hospedagem mais barata que existe, porque é o trabalho mais simples para quem hospeda.
 
-**Build** é a etapa que transforma o seu projeto nessa pasta final. O site do [M1](../m1/) não precisa: o `index.html` já é a pasta. Projetos com framework (como o deste curso) rodam um comando, `npm run build`, que gera uma pasta pronta (aqui, `dist/`). **Só essa pasta vai para a internet.**
+**Build** é a etapa que transforma o seu projeto nessa pasta final. O site do [guia “Instalação e primeiro contato”](../m1/) não precisa: o `index.html` já é a pasta. Projetos com framework (como o deste curso) rodam um comando, `npm run build`, que gera uma pasta pronta (aqui, `dist/`). **Só essa pasta vai para a internet.**
 
 ### Onde publicar de graça
 
@@ -50,7 +50,7 @@ Quatro opções comuns, conferidas na documentação de cada uma em 13/11/2026:
 
 A página inicial do Cloudflare Pages traz um aviso que pergunta se você tem certeza de que quer usar o Pages e recomenda o Workers para projetos novos. Confira esse aviso antes de escolher.
 
-O curso usa o **GitHub Pages**: você já tem a conta, o repositório e o `gh` do [M4](../m4/). E o site deste manual foi montado para ser publicado assim.
+O curso usa o **GitHub Pages**: você já tem a conta, o repositório e o `gh` do [guia “Git e GitHub do zero”](../m4/). E o site deste manual foi montado para ser publicado assim.
 
 Duas ressalvas do GitHub Pages, ambas da documentação:
 
@@ -58,7 +58,7 @@ Duas ressalvas do GitHub Pages, ambas da documentação:
 - **Tem tetos.** Site publicado de até 1 GB, tráfego mensal de cerca de 100 GB (limite brando), deploy que passa de 10 minutos é cancelado.
 
 <Nota rotulo="Para um cliente de verdade">
-Projeto comercial pede hospedagem de plano pago ou um provedor cujos termos aceitem uso comercial. Leia os termos antes de prometer o endereço. O [C4](../c4/) volta a isso.
+Projeto comercial pede hospedagem de plano pago ou um provedor cujos termos aceitem uso comercial. Leia os termos antes de prometer o endereço. O [guia “Landing page de conversão”](../c4/) volta a isso.
 </Nota>
 
 ### Publicar no GitHub Pages, passo a passo
@@ -72,7 +72,7 @@ O GitHub Pages publica de dois jeitos, que você escolhe em **Settings, Pages, B
 
 O caminho com Actions tem quatro peças, e o Claude escreve a terceira para você:
 
-1. Um repositório no GitHub com o projeto (o `gh repo create` do [M4](../m4/)).
+1. Um repositório no GitHub com o projeto (o `gh repo create` do [guia “Git e GitHub do zero”](../m4/)).
 2. **Settings, Pages, Source: GitHub Actions.**
 3. Um arquivo `.github/workflows/pages.yml`. Peça: "crie o workflow que publica esta pasta no GitHub Pages por GitHub Actions".
 4. Um `git push` no `main`.
@@ -128,7 +128,7 @@ Num site estático, **todo arquivo publicado é legível por qualquer pessoa**: 
 
 Por isso:
 
-- **Chave de API no código do site não é segredo.** Quem abre o site a vê. Chaves que dão acesso a dinheiro ou a dados ficam em um servidor ou função (a documentação da Netlify manda usar função serverless ou edge para valores sensíveis). O [M20](../m20/) mostra como.
+- **Chave de API no código do site não é segredo.** Quem abre o site a vê. Chaves que dão acesso a dinheiro ou a dados ficam em um servidor ou função (a documentação da Netlify manda usar função serverless ou edge para valores sensíveis). O [guia “Backend, banco, webhooks e hospedagem”](../m20/) mostra como.
 - **Segredo só do build** (um token para baixar dados antes de gerar as páginas) mora nos **segredos do repositório**: Settings, Secrets and variables, Actions, New repository secret. Pela linha de comando, `gh secret set NOME`. No workflow, o valor entra com `${{ secrets.NOME }}`.
 - **Configuração não secreta** (um nome de site, um endereço de API pública) vai em **variáveis**, na aba Variables do mesmo lugar, e entra com `${{ vars.NOME }}`.
 
@@ -142,7 +142,7 @@ Uma **prévia** (*preview*) é uma cópia temporária do site para cada pull req
 
 | Hospedagem | Como volta |
 |---|---|
-| GitHub Pages | `git revert` do commit ruim e push. O workflow publica a versão anterior (o [M4](../m4/) ensinou o `revert`) |
+| GitHub Pages | `git revert` do commit ruim e push. O workflow publica a versão anterior (o [guia “Git e GitHub do zero”](../m4/) ensinou o `revert`) |
 | Cloudflare Pages | Rollback para um deploy de produção anterior. Prévias não servem de alvo |
 | Netlify | **Publish Deploy** num deploy anterior. Um novo push no repositório **sobrescreve** o rollback |
 | Vercel | Instant Rollback. Ele desliga a atribuição automática dos domínios de produção, então novos pushes não entram no ar até você desfazer o rollback |
@@ -222,7 +222,7 @@ Ele só faz o site público voltar à versão anterior. O código quebrado conti
 
 ## Fichas de campo
 
-As fichas usam o site do [M1](../m1/): uma pasta com um único `index.html`. Se você não a tem, peça ao Claude: "crie index.html com título Olá e um parágrafo, em UTF-8".
+As fichas usam o site do [guia “Instalação e primeiro contato”](../m1/): uma pasta com um único `index.html`. Se você não a tem, peça ao Claude: "crie index.html com título Olá e um parágrafo, em UTF-8".
 
 <Nota rotulo="O que foi testado">
 Nenhuma ficha foi executada de ponta a ponta: criar o repositório público e ligar o Pages exigem a conta do GitHub, e a publicação do curso ainda aguarda autorização. O que **foi** executado: servir a pasta localmente, gerar o workflow com o Claude e validar o YAML, e consultar o DNS e o HTTPS de um site público existente. Os passos de GitHub seguem a documentação oficial de 13/11/2026.
@@ -231,14 +231,14 @@ Nenhuma ficha foi executada de ponta a ponta: criar o repositório público e li
 <Ficha
   id="m5-e1"
   n={1}
-  titulo="Publicar o site do M1"
+  titulo="Publicar o site do guia “Instalação e primeiro contato”"
   objetivo="Colocar o index.html no ar em um endereço github.io."
   minutos={25}
-  pre="M1, M4, gh autenticado"
+  pre="guia “Instalação e primeiro contato”, guia “Git e GitHub do zero”, gh autenticado"
   verificacao="nao-testado"
 >
 
-1. Teste local antes de publicar. Abra o arquivo no navegador, como no [M1](../m1/):
+1. Teste local antes de publicar. Abra o arquivo no navegador, como no [guia “Instalação e primeiro contato”](../m1/):
 
    <SO mac="open index.html" win="start index.html" linux="xdg-open index.html" />
 
@@ -322,7 +322,7 @@ Peça ao Claude: "confira na documentação oficial do GitHub as versões atuais
 
 2. Espere o workflow ficar verde e confira que o site mostra "Quebrado".
 
-3. Volte atrás com o `revert` do [M4](../m4/):
+3. Volte atrás com o `revert` do [guia “Git e GitHub do zero”](../m4/):
 
    ```bash
    git revert --no-edit HEAD
@@ -333,7 +333,7 @@ Peça ao Claude: "confira na documentação oficial do GitHub as versões atuais
 
 <Prova>
 
-Depois do passo 3, o `git log --oneline -3` mostra o commit `Revert "Quebra o título de propósito"` no topo. Depois do deploy, o site volta a mostrar "Olá". (Não executado aqui: depende do GitHub; o `revert` em si foi exercitado no M4.)
+Depois do passo 3, o `git log --oneline -3` mostra o commit `Revert "Quebra o título de propósito"` no topo. Depois do deploy, o site volta a mostrar "Olá". (Não executado aqui: depende do GitHub; o `revert` em si foi exercitado no guia “Git e GitHub do zero”.)
 
 </Prova>
 
@@ -436,7 +436,7 @@ Configure também o domínio raiz (sem `www`) e confirme que um acesso a ele che
 
 </Saida>
 
-**Próxima estação:** o [M6, Memória e CLAUDE.md](../m6/): como ensinar o projeto ao Claude uma vez só.
+**Próxima estação:** o [guia “Memória e CLAUDE.md”](../m6/): como ensinar o projeto ao Claude uma vez só.
 
 <Fontes>
 

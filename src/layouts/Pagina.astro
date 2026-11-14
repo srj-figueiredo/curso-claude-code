@@ -3,7 +3,7 @@
 import Base from './Base.astro';
 import Selo from '../components/Selo.astro';
 import Icone from '../components/Icone.astro';
-import { estacao, parteDe, rotulo, vizinhos, TRILHAS } from '../data/curso';
+import { estacao, parteDe, rotulo, nome, ehGuia, vizinhos, TRILHAS } from '../data/curso';
 import { pagina } from '../lib/url';
 import { paginasEscritas, type Pagina } from '../lib/paginas';
 
@@ -14,7 +14,7 @@ const { dados } = Astro.props;
 const parte = parteDe(dados.id)!;
 const { anterior, proximo } = vizinhos(dados.id);
 const escritas = await paginasEscritas();
-const numeral = /^m\d+$/.test(dados.id) ? dados.id.slice(1).padStart(2, '0') : rotulo(dados.id);
+const numeral = ehGuia(dados.id) ? 'GUIA' : rotulo(dados.id);
 const nomesTrilhas = dados.trilhas.map((t) => TRILHAS[t].titulo).join(' · ');
 ---
 
@@ -40,7 +40,7 @@ const nomesTrilhas = dados.trilhas.map((t) => TRILHAS[t].titulo).join(' · ');
               : dados.pre_requisitos.map((p, i) => (
                   <>
                     {i > 0 && ', '}
-                    {escritas.has(p) ? <a href={pagina(p)}>{rotulo(p)}</a> : rotulo(p)}
+                    {escritas.has(p) ? <a href={pagina(p)}>{nome(p)}</a> : nome(p)}
                   </>
                 ))
           }
@@ -78,12 +78,12 @@ const nomesTrilhas = dados.trilhas.map((t) => TRILHAS[t].titulo).join(' · ');
         class="botao"
         type="button"
         data-marca={dados.id}
-        data-rotulo-pendente={`Concluí ${rotulo(dados.id)}`}
-        data-rotulo-feito={`${rotulo(dados.id)} concluído`}
+        data-rotulo-pendente={`Concluí ${nome(dados.id)}`}
+        data-rotulo-feito={`${nome(dados.id)} concluído`}
         aria-pressed="false"
       >
         <Icone nome="feito" tamanho={18} />
-        <span data-marca-rotulo>Concluí {rotulo(dados.id)}</span>
+        <span data-marca-rotulo>Concluí {nome(dados.id)}</span>
       </button>
       <button class="botao botao--vazado" type="button" onclick="window.print()">
         <Icone nome="imprimir" tamanho={18} /> Imprimir ou salvar em PDF

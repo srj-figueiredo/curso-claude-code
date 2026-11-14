@@ -38,7 +38,7 @@ Toda sessão do Claude Code começa do zero: ele não lembra de ontem. O que dá
 | Alcance | Projeto, usuário ou organização | Um repositório, compartilhado entre os worktrees dele |
 | Quando carrega | Toda sessão | Toda sessão (só as primeiras 200 linhas ou 25 KB do índice) |
 
-A documentação faz um aviso que vale decorar: **as duas são contexto, não configuração imposta.** O Claude lê e tenta seguir, mas não há garantia. Se algo **precisa** acontecer sempre, como rodar os testes antes de cada commit, o caminho é um *hook*, que executa por conta própria (o [M9](../m9/) ensina). CLAUDE.md orienta; hook obriga.
+A documentação faz um aviso que vale decorar: **as duas são contexto, não configuração imposta.** O Claude lê e tenta seguir, mas não há garantia. Se algo **precisa** acontecer sempre, como rodar os testes antes de cada commit, o caminho é um *hook*, que executa por conta própria (o [guia “Hooks”](../m9/) ensina). CLAUDE.md orienta; hook obriga.
 
 ### Onde o CLAUDE.md mora
 
@@ -83,7 +83,7 @@ A regra de ouro cabe numa frase: **escreva o que você explicaria de novo a cada
 - você digitou a mesma correção que digitou na sessão passada;
 - uma pessoa nova no time precisaria do mesmo contexto.
 
-O que entra: **comandos** (como testar, como subir), **convenções que fogem do padrão**, **decisões e seus motivos**, **armadilhas**. O que não entra: tudo que o Claude lê no código em dois segundos (lista de pastas, dependências, resumo da arquitetura) e procedimentos longos de várias etapas, que são trabalho para uma *skill* ([M8](../m8/)).
+O que entra: **comandos** (como testar, como subir), **convenções que fogem do padrão**, **decisões e seus motivos**, **armadilhas**. O que não entra: tudo que o Claude lê no código em dois segundos (lista de pastas, dependências, resumo da arquitetura) e procedimentos longos de várias etapas, que são trabalho para uma *skill* ([guia “Skills”](../m8/)).
 
 Para as frases funcionarem, faça-as **verificáveis**:
 
@@ -120,8 +120,8 @@ Quando o `CLAUDE.md` cresce, a saída não é escrever mais fino: é **dividir p
 |---|---|
 | Vale sempre, em todo o projeto | `CLAUDE.md` |
 | Vale só para alguns arquivos (ex.: os da API) | **Regra com caminho**: um `.md` em `.claude/rules/` com `paths:` no cabeçalho. Só carrega quando o Claude mexe num arquivo que casa |
-| É um procedimento com etapas, chamado de vez em quando | **Skill** ([M8](../m8/)) |
-| Precisa acontecer sempre, sem depender do Claude | **Hook** ([M9](../m9/)) |
+| É um procedimento com etapas, chamado de vez em quando | **Skill** ([guia “Skills”](../m8/)) |
+| Precisa acontecer sempre, sem depender do Claude | **Hook** ([guia “Hooks”](../m9/)) |
 
 Uma regra com caminho tem este formato:
 
@@ -165,7 +165,7 @@ O comando **`/memory`** lista os arquivos de memória de usuário e de projeto, 
 
 ### Memória e compactação
 
-O que acontece com cada coisa quando a conversa é compactada ([M2](../m2/)):
+O que acontece com cada coisa quando a conversa é compactada ([guia “Como o Claude Code pensa”](../m2/)):
 
 - **`CLAUDE.md` da raiz e regras sem `paths:`**: relidos do disco.
 - **Memória automática**: relida do disco.
@@ -187,7 +187,7 @@ O `.claude/` do projeto guarda a configuração que vai para o git; o `~/.claude
 | Definir um subagente com ferramentas próprias | `agents/*.md` |
 | Conectar ferramentas externas por MCP | `.mcp.json` |
 
-Os [M7](../m7/) a [M10](../m10/) e o [M12](../m12/) abrem cada um.
+Os [guia “Configurações, permissões e segurança”](../m7/) a [guia “MCP”](../m10/) e o [guia “Subagentes e trabalho paralelo”](../m12/) abrem cada um.
 
 ### Em projeto grande
 
@@ -211,7 +211,7 @@ Pastas adicionadas com `--add-dir` **não** têm o `CLAUDE.md` carregado por pad
 
 ### Instruções do próprio Claude Code competindo com as suas
 
-O Claude Code traz regras próprias de commit e de PR. Se o seu CLAUDE.md define outras, desligue as embutidas com `includeGitInstructions` e ajuste o texto de atribuição com `attribution` (veja o [M4](../m4/)).
+O Claude Code traz regras próprias de commit e de PR. Se o seu CLAUDE.md define outras, desligue as embutidas com `includeGitInstructions` e ajuste o texto de atribuição com `attribution` (veja o [guia “Git e GitHub do zero”](../m4/)).
 
 ### Importação externa
 
@@ -243,7 +243,7 @@ Dois arquivos pedindo coisas opostas (um manda 2 espaços, outro manda tabs) faz
 
 ### Editar o CLAUDE.md e esperar efeito na hora
 
-O arquivo é lido na abertura. A versão nova entra no `/clear`, no `/compact` ou num reinício, como o [M2](../m2/) mostrou.
+O arquivo é lido na abertura. A versão nova entra no `/clear`, no `/compact` ou num reinício, como o [guia “Como o Claude Code pensa”](../m2/) mostrou.
 
 ### Esperar obediência de ferro
 
@@ -251,7 +251,7 @@ O arquivo é lido na abertura. A versão nova entra no `/clear`, no `/compact` o
 
 ### Segredo no CLAUDE.md
 
-O arquivo vai para o git. Chave, senha e token nunca entram ali ([M4](../m4/)).
+O arquivo vai para o git. Chave, senha e token nunca entram ali ([guia “Git e GitHub do zero”](../m4/)).
 
 ### Pedir ao Claude para "lembrar" e achar que está no CLAUDE.md
 
@@ -269,7 +269,7 @@ Basta existir um `CLAUDE.md` na pasta ou acima, mesmo um `CLAUDE.local.md`, para
 
 ## Fichas de campo
 
-As três fichas usam o laboratório **Pendências**, no estado em que o [M3](../m3/) o deixou.
+As três fichas usam o laboratório **Pendências**, no estado em que o [guia “Conduzindo no dia a dia”](../m3/) o deixou.
 
 - [Ponto de partida: `m6-inicio.zip`](../lab/m6-inicio.zip)
 
@@ -281,7 +281,7 @@ git commit -m "Ponto de partida"
 npm test
 ```
 
-O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [M4](../m4/).
+O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [guia “Git e GitHub do zero”](../m4/).
 
 <Nota rotulo="O que foi testado">
 Executei as três fichas com `claude -p`. A tela interativa do `/memory`, a versão interativa do `/init` (`CLAUDE_CODE_NEW_INIT=1`) e a conferência da lista **Memory files** em tela são descritas pela documentação. Os resultados abaixo são da nossa execução, em Sonnet 5.5.
@@ -293,7 +293,7 @@ Executei as três fichas com `claude -p`. A tela interativa do `/memory`, a vers
   titulo="Escrever o CLAUDE.md e testar a obediência"
   objetivo="Gerar um CLAUDE.md, enxugá-lo e provar com um teste A/B o que ele muda."
   minutos={30}
-  pre="M2, M3, laboratório baixado"
+  pre="guia “Como o Claude Code pensa”, guia “Conduzindo no dia a dia”, laboratório baixado"
 >
 
 1. **Gere o rascunho.** Na pasta `pendencias`, abra uma sessão e rode:
@@ -531,7 +531,7 @@ Peça: "aplique só as correções dos achados 1 e 2". Depois rode a auditoria d
 
 </Saida>
 
-**Próxima estação:** o [M7, Configurações, permissões e segurança](../m7/): o que o Claude pode fazer sem perguntar, e como garantir.
+**Próxima estação:** o [guia “Configurações, permissões e segurança”](../m7/): o que o Claude pode fazer sem perguntar, e como garantir.
 
 <Fontes>
 

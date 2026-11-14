@@ -130,7 +130,7 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 
 - **Regra:** as páginas do formato novo não citam M1, M2, M3 etc. Citam o guia pelo nome (`o guia "Git e GitHub do zero"`); termos técnicos (skills, agentes, hooks, MCP) continuam. O componente `<Conceitos>` mostra "Referência: Título" sem código. O código das estações novas (T1A...) é a nomenclatura nova.
 - **Feito:** T1A a T1D e o piloto do guia de segurança limpos (0 ocorrências de `M<número>`). `pre_requisitos` da T1A ficou vazio.
-- **Fica para a reorganização do mapa:** os guias antigos ainda aparecem com o código M0 a M10 no mapa do metrô e na navegação lateral; os textos internos deles também. Renomear quando as Temporadas existirem.
+- **Feito em 13/11/2026 (pedido do autor):** os guias antigos também perderam o código. `rotulo(id)` devolve "Guia" para M, R, C e PF; `nome(id)` devolve o nome curto. O mapa, a navegação, o cabeçalho (numeral "GUIA"), os pré-requisitos e o botão "Concluí" mostram o nome. As Partes antigas viraram "Guias · Título". As 118 menções no texto dos guias viraram `guia “Título”` (script único, não mantido). A home começa pela Temporada 1.
 - Todas as regras estão consolidadas em `docs/REGRAS-DO-CURSO.md`.
 
 ## D020 · Temporada 2 (Sistema do cliente) (13/11/2026)

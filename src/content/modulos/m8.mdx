@@ -28,7 +28,7 @@ exercicios:
 
 ## Essencial
 
-No [M6](../m6/) você viu que o `CLAUDE.md` guarda **fatos** que valem em toda sessão. Mas há coisas que não são fatos: são **procedimentos**, com etapas, que você só quer de vez em quando. "Faça o commit do meu jeito." "Revise este PR com a nossa lista." Para isso existem as **skills**.
+No [guia “Memória e CLAUDE.md”](../m6/) você viu que o `CLAUDE.md` guarda **fatos** que valem em toda sessão. Mas há coisas que não são fatos: são **procedimentos**, com etapas, que você só quer de vez em quando. "Faça o commit do meu jeito." "Revise este PR com a nossa lista." Para isso existem as **skills**.
 
 ### O que é uma skill
 
@@ -59,9 +59,9 @@ A própria documentação dá os gatilhos para adicionar cada uma:
 
 - O Claude errou a mesma convenção duas vezes: **CLAUDE.md**.
 - Você digita o mesmo pedido para começar uma tarefa, ou cola o mesmo passo a passo pela terceira vez: **skill**.
-- Uma tarefa lateral enche a conversa de saída que você não vai reler: **subagente** ([M12](../m12/)).
-- Você quer que algo aconteça sempre, sem pedir: **hook** ([M9](../m9/)).
-- Um segundo repositório precisa da mesma configuração: **plugin** ([M13](../m13/)).
+- Uma tarefa lateral enche a conversa de saída que você não vai reler: **subagente** ([guia “Subagentes e trabalho paralelo”](../m12/)).
+- Você quer que algo aconteça sempre, sem pedir: **hook** ([guia “Hooks”](../m9/)).
+- Um segundo repositório precisa da mesma configuração: **plugin** ([guia “Plugins, marketplaces e mods”](../m13/)).
 
 Se você notou que uma seção do seu `CLAUDE.md` virou procedimento em vez de fato, é hora de ela ser skill.
 
@@ -147,15 +147,15 @@ A sintaxe `` !`comando` `` roda um comando de shell **antes** de o Claude ler a 
 
 Detalhes que importam: **se o comando falha, a skill inteira falha** (o Claude nem vê o conteúdo), com a mensagem `Shell command failed for pattern ...`; qualquer código de saída diferente de zero conta como falha (use `|| true` num comando que pode sair com 1); e o `!` precisa estar no começo da linha ou depois de um espaço. No Windows sem Git Bash, a doc mostra o erro `requires bash`, e o campo `shell: powershell` troca o shell. Para proibir esse recurso, a configuração `disableSkillShellExecution`.
 
-<Nota rotulo="Segurança, ligada ao M7">
-O campo `allowed-tools` de uma skill **de projeto** vale mesmo em pasta nunca confiada e em `claude -p`. Uma skill pode, portanto, liberar ferramentas por conta própria. Leia o `allowed-tools` de skills de um repositório que você não escreveu antes de rodar o Claude Code nele ([M7](../m7/)).
+<Nota rotulo="Segurança, ligada ao guia “Configurações, permissões e segurança”">
+O campo `allowed-tools` de uma skill **de projeto** vale mesmo em pasta nunca confiada e em `claude -p`. Uma skill pode, portanto, liberar ferramentas por conta própria. Leia o `allowed-tools` de skills de um repositório que você não escreveu antes de rodar o Claude Code nele ([guia “Configurações, permissões e segurança”](../m7/)).
 </Nota>
 
 ### Vida e custo de uma skill
 
 Quando você ou o Claude invocam uma skill, o corpo entra na conversa **como uma mensagem e fica lá** nos turnos seguintes. O arquivo não é relido. Por isso escreva instruções para a tarefa inteira ("rode os testes depois de toda edição"), não passos de uma vez só. Se o Claude parar de seguir a skill no meio da sessão, a documentação sugere três saídas: mover a regra que **tem** que valer sempre para um hook, redigir a orientação para a tarefa toda, ou reinvocar a skill depois de uma compactação.
 
-A compactação ([M2](../m2/)) leva as skills adiante com orçamento: guarda os **5.000 primeiros tokens** de cada skill invocada e **25.000** no total, começando pelas mais recentes. Ponha o mais importante **no topo** do `SKILL.md`.
+A compactação ([guia “Como o Claude Code pensa”](../m2/)) leva as skills adiante com orçamento: guarda os **5.000 primeiros tokens** de cada skill invocada e **25.000** no total, começando pelas mais recentes. Ponha o mais importante **no topo** do `SKILL.md`.
 
 O custo fixo é a **lista**: nome e descrição de cada skill, a cada turno. O orçamento da lista é 1% da janela de contexto, e quando estoura o Claude Code corta descrições, começando pelas skills menos usadas, o que tira dali as palavras que fazem o Claude achar a skill. Três ferramentas medem e controlam:
 
@@ -174,7 +174,7 @@ Skills de **plugin** não são afetadas por `skillOverrides`: desligue o plugin 
 
 ### Distribuir
 
-Uma skill de projeto vai com o repositório. Para reusar em outros projetos ou entregar a terceiros, o caminho é o **plugin** e o **marketplace** ([M13](../m13/)). Se você pretende subir a skill para o claude.ai ou para a API de Skills, use **só os seis campos do padrão** (`name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`): qualquer outro campo, como `argument-hint`, faz o envio **falhar** com `Unexpected key(s) in SKILL.md frontmatter`. Os recursos de corpo exclusivos do Claude Code, como o `!` de contexto vivo, não funcionam no chat do claude.ai nem na API.
+Uma skill de projeto vai com o repositório. Para reusar em outros projetos ou entregar a terceiros, o caminho é o **plugin** e o **marketplace** ([guia “Plugins, marketplaces e mods”](../m13/)). Se você pretende subir a skill para o claude.ai ou para a API de Skills, use **só os seis campos do padrão** (`name`, `description`, `license`, `compatibility`, `metadata`, `allowed-tools`): qualquer outro campo, como `argument-hint`, faz o envio **falhar** com `Unexpected key(s) in SKILL.md frontmatter`. Os recursos de corpo exclusivos do Claude Code, como o `!` de contexto vivo, não funcionam no chat do claude.ai nem na API.
 
 <Camada tipo="capo" titulo="Nomes, descrições e limites">
 
@@ -200,7 +200,7 @@ A pasta da skill pode ter scripts e referências, citados no corpo, que só carr
 
 ### Dica de design
 
-O Claude Code traz uma dica embutida que sugere o plugin `frontend-design`. Plugins de design e front-end são distribuídos como qualquer outro, e o [C4](../c4/) volta a eles no case da landing page.
+O Claude Code traz uma dica embutida que sugere o plugin `frontend-design`. Plugins de design e front-end são distribuídos como qualquer outro, e o [guia “Landing page de conversão”](../c4/) volta a eles no case da landing page.
 
 </Camada>
 
@@ -224,7 +224,7 @@ Cada linha da skill é custo recorrente depois que ela carrega. Diga o que fazer
 
 ### Instrução que tem que valer toda vez, escrita só na skill
 
-O Claude pode deixar de segui-la no meio da sessão. Regra obrigatória vai para um hook ([M9](../m9/)).
+O Claude pode deixar de segui-la no meio da sessão. Regra obrigatória vai para um hook ([guia “Hooks”](../m9/)).
 
 ### Dezenas de skills com descrições longas
 
@@ -254,7 +254,7 @@ git commit -m "Ponto de partida"
 npm test
 ```
 
-O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [M4](../m4/). As skills das fichas ficam em `.claude/skills/` **da pasta do laboratório**, sem tocar na sua configuração pessoal.
+O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [guia “Git e GitHub do zero”](../m4/). As skills das fichas ficam em `.claude/skills/` **da pasta do laboratório**, sem tocar na sua configuração pessoal.
 
 <Nota rotulo="O que foi testado">
 Executei as quatro fichas com `claude -p`, em Sonnet 5.5. Uma skill pode ser chamada em `claude -p` com `/nome` no começo do pedido. A tela interativa (`/skills`, o menu `/` e a aba Stats do `/plugin`) é descrita pela documentação. Nas execuções, o `/context` e o `/skill-doctor` do autor traziam as skills de plugins pessoais dele, então os números absolutos variam: confie na **diferença** antes e depois.
@@ -472,7 +472,7 @@ npm test: 11 testes, 0 falhas
 
 <Gabarito>
 
-O `paths: ["test/**/*.js"]` mantém a skill **fora** do contexto até o Claude ler ou editar um arquivo que casa. Quando ele tocou em `test/pendencias.test.js`, a skill carregou e a convenção entrou. É o equivalente, para procedimentos, da regra com `paths:` do [M6](../m6/): carga sob demanda, sem peso nos pedidos que não têm a ver. A marca "Cenário:" é arbitrária de propósito, para que o acerto não possa ser acaso.
+O `paths: ["test/**/*.js"]` mantém a skill **fora** do contexto até o Claude ler ou editar um arquivo que casa. Quando ele tocou em `test/pendencias.test.js`, a skill carregou e a convenção entrou. É o equivalente, para procedimentos, da regra com `paths:` do [guia “Memória e CLAUDE.md”](../m6/): carga sob demanda, sem peso nos pedidos que não têm a ver. A marca "Cenário:" é arbitrária de propósito, para que o acerto não possa ser acaso.
 
 </Gabarito>
 
@@ -580,7 +580,7 @@ Rode o `/doctor` completo no laboratório (numa sessão interativa, pois ele ped
 
 </Saida>
 
-**Próxima estação:** o [M9, Hooks](../m9/): o que precisa acontecer toda vez, sem depender de o Claude lembrar.
+**Próxima estação:** o [guia “Hooks”](../m9/): o que precisa acontecer toda vez, sem depender de o Claude lembrar.
 
 <Fontes>
 

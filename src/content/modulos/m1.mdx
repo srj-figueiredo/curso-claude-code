@@ -154,7 +154,7 @@ O plano gratuito do claude.ai **não** inclui o Claude Code. Os tipos de conta a
 | Claude Console | Cobrança por uso de API, com créditos pré-pagos | Suas credenciais do Console |
 | Provedor de nuvem | Empresas que já contratam Amazon Bedrock, Google Cloud Agent Platform (antigo Vertex AI) ou Microsoft Foundry | Variáveis de ambiente; sem login no navegador |
 
-Preços mudam, então não os repetimos aqui: consulte [claude.com/pricing](https://claude.com/pricing). O [M0](../m0/) explica o que é pago e o que não é; o [M19](../m19/) cuida do cenário de empresa.
+Preços mudam, então não os repetimos aqui: consulte [claude.com/pricing](https://claude.com/pricing). O [guia “Mapa do Claude Code e regras do jogo”](../m0/) explica o que é pago e o que não é; o [guia “Claude Code na empresa”](../m19/) cuida do cenário de empresa.
 
 Dentro da sessão, `/status` mostra a credencial em uso, `/login` troca de conta e `/logout` sai. Fora dela, `claude auth status` responde em JSON se há login ativo.
 
@@ -167,7 +167,7 @@ O terminal não é a única porta. A documentação descreve duas alternativas g
 - **App desktop.** Disponível para Mac e Windows, e em beta para Linux. O Claude Code fica na aba **Code**. O app já traz o Claude Code embutido: não exige instalar a CLI. Pede assinatura Pro, Max, Ultra, Team ou Enterprise.
 - **Extensão do VS Code.** Procure "Claude Code" na aba de extensões (VS Code 1.94 ou mais novo). Ela abre um painel de conversa dentro do editor.
 
-Nenhuma das duas coloca o comando `claude` no seu terminal. O curso segue pelo terminal porque é nele que tudo aparece primeiro e é ele que os exercícios usam. O [M15](../m15/) volta às outras superfícies.
+Nenhuma das duas coloca o comando `claude` no seu terminal. O curso segue pelo terminal porque é nele que tudo aparece primeiro e é ele que os exercícios usam. O [guia “Claude Code em todo lugar”](../m15/) volta às outras superfícies.
 
 ### Tour da interface
 
@@ -183,7 +183,7 @@ Entre numa pasta de projeto e rode `claude`. Numa pasta nova, ele pergunta antes
 | <kbd>Esc</kbd> | Interrompe o Claude. O que já foi feito fica. |
 | `/exit`, ou <kbd>Ctrl</kbd>+<kbd>D</kbd> duas vezes | Sai. A conversa fica gravada. |
 
-Quando o Claude quer editar um arquivo ou rodar um comando e o modo de permissão exige, ele para e pergunta. Leia o que ele mostra e escolha **Yes** para aprovar. Essa pausa é o seu cinto de segurança; o [M3](../m3/) ensina a regulá-lo.
+Quando o Claude quer editar um arquivo ou rodar um comando e o modo de permissão exige, ele para e pergunta. Leia o que ele mostra e escolha **Yes** para aprovar. Essa pausa é o seu cinto de segurança; o [guia “Conduzindo no dia a dia”](../m3/) ensina a regulá-lo.
 
 <Replay id="m1-ola" legenda="O pedido da Ficha 2, executado de verdade: um pedido, uma chamada de ferramenta, um arquivo criado." />
 
@@ -197,7 +197,7 @@ Repare na última frase da resposta: o Claude avisa que **não** abriu a página
 | `claude "pedido"` | Abre a sessão interativa já com o pedido enviado. | Você sabe a primeira frase antes de entrar. |
 | `claude -p "pedido"` | Responde uma vez, imprime e devolve o terminal. | Pergunta rápida, scripts, encadear com outros comandos. |
 
-O `-p` também aceita texto vindo de outro comando: `cat erro.log | claude -p "explique"`. O [M14](../m14/) constrói automações inteiras sobre ele.
+O `-p` também aceita texto vindo de outro comando: `cat erro.log | claude -p "explique"`. O [guia “Automação sem você”](../m14/) constrói automações inteiras sobre ele.
 
 <Camada tipo="capo" titulo="Onde as coisas ficam, canais de versão e credenciais">
 
@@ -205,7 +205,7 @@ O `-p` também aceita texto vindo de outro comando: `cat erro.log | claude -p "e
 
 - **Mac e Linux:** `~/.local/bin/claude` é um atalho que aponta para a versão em uso, guardada em `~/.local/share/claude/versions/`.
 - **Windows:** `%USERPROFILE%\.local\bin\claude.exe`. Conferimos com `where.exe claude`.
-- **Configuração e histórico:** a pasta `~/.claude/`. O [M6](../m6/) abre essa pasta gaveta por gaveta.
+- **Configuração e histórico:** a pasta `~/.claude/`. O [guia “Memória e CLAUDE.md”](../m6/) abre essa pasta gaveta por gaveta.
 
 ### Atualizações e canais
 
@@ -235,7 +235,7 @@ Uma chamada com `-p` lê os mesmos arquivos de configuração de uma sessão int
 
 ### Quanto custou o "Olá"
 
-Na nossa execução da Ficha 2, o campo `total_cost_usd` da saída registrou US$ 0,006, em dois turnos e cinco segundos, com o modelo que a conta usava no momento. Em plano por assinatura esse número vira consumo de limite, não cobrança. O [M18](../m18/) ensina a medir.
+Na nossa execução da Ficha 2, o campo `total_cost_usd` da saída registrou US$ 0,006, em dois turnos e cinco segundos, com o modelo que a conta usava no momento. Em plano por assinatura esse número vira consumo de limite, não cobrança. O [guia “Custos e uso”](../m18/) ensina a medir.
 
 </Camada>
 
@@ -277,7 +277,7 @@ No Windows PowerShell, `curl` é um apelido de outro comando e recusa as opçõe
 
 ## Fichas de campo
 
-O laboratório Pendências só começa no [M3](../m3/). Aqui você trabalha numa pasta sua, chamada `ola`, criada do zero. Não há nada para baixar.
+O laboratório Pendências só começa no [guia “Conduzindo no dia a dia”](../m3/). Aqui você trabalha numa pasta sua, chamada `ola`, criada do zero. Não há nada para baixar.
 
 <Ficha
   id="m1-e1"
@@ -285,7 +285,7 @@ O laboratório Pendências só começa no [M3](../m3/). Aqui você trabalha numa
   titulo="Instalar e verificar"
   objetivo="Ter o comando claude respondendo no terminal, com login feito."
   minutos={15}
-  pre="M0: conta com acesso ao Claude Code"
+  pre="guia “Mapa do Claude Code e regras do jogo”: conta com acesso ao Claude Code"
   verificacao="nao-testado"
 >
 
@@ -509,7 +509,7 @@ Os passos 1 e 2 da Ficha 3 foram executados e a Prova mostra a saída real. Os p
 
 </Saida>
 
-**Próxima estação:** o [M2, Como o Claude Code pensa](../m2/), abre o capô: o ciclo de coletar, agir e verificar que rodou por baixo do seu "Olá".
+**Próxima estação:** o [guia “Como o Claude Code pensa”](../m2/), abre o capô: o ciclo de coletar, agir e verificar que rodou por baixo do seu "Olá".
 
 <Fontes>
 

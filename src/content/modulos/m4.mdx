@@ -32,7 +32,7 @@ Este módulo não faz de você especialista em git. Faz o suficiente para **trab
 
 ### Por que git vem antes de tudo
 
-O Claude Code tem o `/rewind`, que você viu no [M3](../m3/). Ele desfaz edições de arquivos feitas pelas ferramentas de edição. A documentação avisa o limite: um arquivo que **só** comandos de terminal mudaram não é rastreado, e a própria doc manda usar controle de versão para reverter. Os checkpoints servem a recuperação rápida dentro da sessão. Histórico de verdade é do git.
+O Claude Code tem o `/rewind`, que você viu no [guia “Conduzindo no dia a dia”](../m3/). Ele desfaz edições de arquivos feitas pelas ferramentas de edição. A documentação avisa o limite: um arquivo que **só** comandos de terminal mudaram não é rastreado, e a própria doc manda usar controle de versão para reverter. Os checkpoints servem a recuperação rápida dentro da sessão. Histórico de verdade é do git.
 
 Regra de bolso: **comece qualquer tarefa do Claude com a pasta limpa no git**. Se `git status` não mostra nada, tudo que aparecer depois é obra da sessão, e você desfaz com um comando.
 
@@ -69,7 +69,7 @@ Ele sabe git e roda os comandos pela ferramenta `Bash`. Basta pedir: "faça um c
 2. **Diga o que não entra.** "Não inclua arquivos de segredo." Ele respeita, mas o `.gitignore` é a garantia real.
 3. **Confira o resultado.** `git log --oneline` e `git show` levam dois segundos.
 
-No modo manual, o Claude pede licença para cada `git commit`. Quando isso cansar, você pode liberar o subcomando de forma estreita, com a regra `Bash(git commit *)`. Nunca libere `git push` junto sem pensar: publicar é a ação que não se desfaz com a mesma facilidade. O [M7](../m7/) explica a sintaxe das regras.
+No modo manual, o Claude pede licença para cada `git commit`. Quando isso cansar, você pode liberar o subcomando de forma estreita, com a regra `Bash(git commit *)`. Nunca libere `git push` junto sem pensar: publicar é a ação que não se desfaz com a mesma facilidade. O [guia “Configurações, permissões e segurança”](../m7/) explica a sintaxe das regras.
 
 **O trailer.** O Claude Code acrescenta por padrão uma linha `Co-Authored-By` ao fim da mensagem dos commits que ele faz, e um texto simples nas descrições de PR. A configuração `attribution` muda ou esconde isso. Para os cursos e projetos de cliente, vale decidir conscientemente se o trailer fica.
 
@@ -155,7 +155,7 @@ Um commit é um retrato completo do projeto, mais ponteiros para o commit anteri
 
 ### Regras de permissão para git
 
-A regra `Bash(git commit *)` casa com `git commit -m "..."`. Segundo a documentação, o `*` deve vir **depois do subcomando**, e regras como `Bash(git * main)` casam também com opções que executam programas (`git -c ...`). Prefira o subcomando explícito. Detalhes no [M7](../m7/).
+A regra `Bash(git commit *)` casa com `git commit -m "..."`. Segundo a documentação, o `*` deve vir **depois do subcomando**, e regras como `Bash(git * main)` casam também com opções que executam programas (`git -c ...`). Prefira o subcomando explícito. Detalhes no [guia “Configurações, permissões e segurança”](../m7/).
 
 ### Instruções de git que o Claude já traz
 
@@ -163,7 +163,7 @@ O Claude Code carrega instruções embutidas de commit e PR. A configuração `i
 
 ### Worktrees
 
-`git worktree` cria outra pasta de trabalho ligada ao mesmo repositório, em outro branch. O Claude Code usa isso para sessões paralelas, assunto do [M12](../m12/).
+`git worktree` cria outra pasta de trabalho ligada ao mesmo repositório, em outro branch. O Claude Code usa isso para sessões paralelas, assunto do [guia “Subagentes e trabalho paralelo”](../m12/).
 
 </Camada>
 
@@ -205,7 +205,7 @@ O aviso `LF will be replaced by CRLF` é só o git avisando da diferença de fim
 
 ## Fichas de campo
 
-As quatro fichas usam o laboratório **Pendências**, no estado em que o [M3](../m3/) o deixou.
+As quatro fichas usam o laboratório **Pendências**, no estado em que o [guia “Conduzindo no dia a dia”](../m3/) o deixou.
 
 - [Ponto de partida: `m4-inicio.zip`](../lab/m4-inicio.zip)
 
@@ -226,7 +226,7 @@ Executei as Fichas 1, 3 e 4 por inteiro, e a 2 com um remoto local (pasta criada
   titulo="Repositório, commits e o diff antes"
   objetivo="Criar o repositório e deixar o Claude fazer um commit depois de ler o diff."
   minutos={20}
-  pre="M1, laboratório baixado"
+  pre="guia “Instalação e primeiro contato”, laboratório baixado"
 >
 
 1. Crie o repositório e o primeiro commit. Defina seu nome só para este projeto:
@@ -584,7 +584,7 @@ Peça ao Claude: "Quero remover `segredos.txt` do histórico inteiro, e entender
 
 </Saida>
 
-**Próxima estação:** o [M5, Do computador para a internet](../m5/): publicar o que você construiu num site de verdade.
+**Próxima estação:** o [guia “Do computador para a internet”](../m5/): publicar o que você construiu num site de verdade.
 
 <Fontes>
 

@@ -60,7 +60,7 @@ A cada pedido, o Claude Code entra num laço. Ele **coleta** contexto, **age** e
 
 Quem raciocina é o **modelo**. Quem age é o conjunto de **ferramentas**. O Claude Code é a camada que fornece as ferramentas e controla o que o modelo vê. Cada resultado de ferramenta volta para o modelo e informa o passo seguinte. Por isso um pedido simples pode virar dezenas de chamadas, e por isso o contexto enche.
 
-Você faz parte do laço. Esc interrompe e preserva o que já foi feito. É a forma mais barata de corrigir o rumo, e o [M3](../m3/) mostra como.
+Você faz parte do laço. Esc interrompe e preserva o que já foi feito. É a forma mais barata de corrigir o rumo, e o [guia “Conduzindo no dia a dia”](../m3/) mostra como.
 
 ### As ferramentas que ele tem
 
@@ -76,7 +76,7 @@ A documentação agrupa as ferramentas embutidas em cinco categorias:
 
 Há ainda ferramentas de orquestração, como `Agent` (cria um subagente) e `AskUserQuestion` (pergunta algo a você). A lista completa fica em [Tools reference](https://code.claude.com/docs/en/tools-reference.md).
 
-Os nomes importam porque são as palavras que você escreve nas **regras de permissão** do [M7](../m7/). Duas regras úteis desde já:
+Os nomes importam porque são as palavras que você escreve nas **regras de permissão** do [guia “Configurações, permissões e segurança”](../m7/). Duas regras úteis desde já:
 
 - **Ler não pede licença; mexer pede.** Na tabela da documentação, `Read`, `Glob` e `Grep` não exigem permissão. `Edit`, `Write`, `Bash`, `WebFetch` e `WebSearch` exigem, no modo manual.
 - **Em macOS, Linux e WSL, `Glob` e `Grep` não vêm por padrão.** O Claude procura com `find` e `grep` pelo `Bash`. No Windows nativo elas vêm. Se a busca do seu sistema parecer diferente da de um colega, é isso.
@@ -120,7 +120,7 @@ As larguras da figura são ilustrativas. Os números reais você mede com **`/co
 | Instruções que você deu **só na conversa** | Resumidas. Podem perder detalhe |
 | Saídas de comandos, leituras antigas | Resumidas |
 
-A lição prática cabe numa linha: **regra que precisa durar vai no `CLAUDE.md`**, não na conversa. O [M6](../m6/) ensina a escrever um bom.
+A lição prática cabe numa linha: **regra que precisa durar vai no `CLAUDE.md`**, não na conversa. O [guia “Memória e CLAUDE.md”](../m6/) ensina a escrever um bom.
 
 **Quando enche.** O Claude Code compacta sozinho perto do limite, então a sessão não morre. Mas você pode agir antes, e é melhor:
 
@@ -184,7 +184,7 @@ Na API da Anthropic, em 13/11/2026, a documentação resolve `sonnet` para Sonne
 
 **Raciocínio.** Nesses mesmos modelos você **não consegue desligar** o raciocínio: o esforço é o controle. A frase "pense com calma" no pedido é texto comum. Mexa no `/effort`.
 
-Esse conjunto também explica o limite de uso do plano. Raciocínio, leituras e releituras de contexto consomem tokens, e `/usage` mostra quanto do plano você gastou. O [M18](../m18/) trata de medir e economizar.
+Esse conjunto também explica o limite de uso do plano. Raciocínio, leituras e releituras de contexto consomem tokens, e `/usage` mostra quanto do plano você gastou. O [guia “Custos e uso”](../m18/) trata de medir e economizar.
 
 <Camada tipo="capo" titulo="Cache, janela e limites por dentro">
 
@@ -212,7 +212,7 @@ A API limita imagens e PDFs por pedido. Ao chegar perto, o Claude Code remove as
 
 ### O que o laço faz com permissões
 
-Antes de executar uma ferramenta que exige permissão, o Claude Code consulta o modo de permissão e suas regras. É o assunto do [M7](../m7/). O que importa aqui: uma ferramenta negada não executa, e o laço continua com a recusa como informação nova.
+Antes de executar uma ferramenta que exige permissão, o Claude Code consulta o modo de permissão e suas regras. É o assunto do [guia “Configurações, permissões e segurança”](../m7/). O que importa aqui: uma ferramenta negada não executa, e o laço continua com a recusa como informação nova.
 
 </Camada>
 
@@ -271,7 +271,7 @@ Executei as três fichas com `claude -p` e `/context`, `/compact` em modo não i
   titulo="Encher o contexto de propósito"
   objetivo="Medir com /context quanto uma leitura grande custa."
   minutos={15}
-  pre="M1, laboratório baixado"
+  pre="guia “Instalação e primeiro contato”, laboratório baixado"
 >
 
 1. Gere um log falso de uns 100 KB:
@@ -387,7 +387,7 @@ A resposta veio do **resumo**, não do arquivo: foi a instrução do `/compact` 
 
 - **O Claude relê o arquivo.** Ele pode fazer isso por zelo. Repita a pergunta frisando "sem usar ferramentas".
 - **`/compact` não mexe nos números.** Havia pouco para compactar. Rode a Ficha 1 antes.
-- **Você perdeu um detalhe no resumo.** Esperado. Compacte de novo com instruções mais específicas, ou volte atrás com `/rewind` (Ficha 2 do [M3](../m3/)).
+- **Você perdeu um detalhe no resumo.** Esperado. Compacte de novo com instruções mais específicas, ou volte atrás com `/rewind` (Ficha 2 do [guia “Conduzindo no dia a dia”](../m3/)).
 
 </DeuErro>
 
@@ -481,7 +481,7 @@ Repita só o passo 4 depois de esperar mais de cinco minutos (ou mais de uma hor
 
 </Saida>
 
-**Próxima estação:** o [M3, Conduzindo no dia a dia](../m3/): como pedir, escolher a rédea e desfazer o que deu errado.
+**Próxima estação:** o [guia “Conduzindo no dia a dia”](../m3/): como pedir, escolher a rédea e desfazer o que deu errado.
 
 <Fontes>
 
