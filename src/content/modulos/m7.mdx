@@ -61,7 +61,7 @@ Leia assim: "a ferramenta `Read` (que lê arquivos) está proibida de abrir `./.
 E se duas regras discordarem? Imagine que uma lista diz "pode rodar `git`" e outra diz "não pode fazer `git push`". A ordem de leitura é **deny, depois ask, depois allow**, e a primeira que casa decide. Logo, o `git push` é barrado, mesmo com o `git` liberado. Isso vale **entre arquivos**: um `deny` seu bloqueia um `allow` do projeto, e nenhuma regra mais específica abre exceção a um `deny` mais amplo.
 
 <Nota rotulo="Quem cumpre a regra">
-As regras são aplicadas pelo **Claude Code**, não pelo modelo. O pedido e o `CLAUDE.md` moldam o que o Claude tenta fazer, mas não mudam o que o Claude Code deixa ele fazer. Para garantia, use regra, modo de permissão ou hook ([M9](../m9/)).
+As regras são aplicadas pelo **Claude Code**, não pelo modelo. O pedido e o `CLAUDE.md` moldam o que o Claude tenta fazer, mas não mudam o que o Claude Code deixa ele fazer. Para garantia, use regra, modo de permissão ou hook (os hooks entram na Temporada 2).
 </Nota>
 
 ### Onde guardar as listas
@@ -113,7 +113,7 @@ Um detalhe: um arquivo `.claudeignore` **não tem efeito**. A doc manda passar e
 
 ### Modos de permissão: quanto você confia hoje
 
-Regras são o ajuste fino. Os **modos de permissão** são o botão geral, como um controle de velocidade: de "pergunta tudo" até "faz tudo". O [M3](../m3/) mostrou os do ciclo do Shift+Tab. Aqui está o cardápio completo:
+Regras são o ajuste fino. Os **modos de permissão** são o botão geral, como um controle de velocidade: de "pergunta tudo" até "faz tudo". O [guia "Conduzindo no dia a dia"](../m3/) mostrou os do ciclo do Shift+Tab. Aqui está o cardápio completo:
 
 | Modo | Roda sem perguntar | Para quê |
 |---|---|---|
@@ -235,7 +235,7 @@ Em vez do bypass, monte uma allowlist estreita. A skill embutida **`/fewer-permi
 
 ### Confiança em MCP e plugins
 
-Servidor MCP e plugin rodam código e entregam texto que o Claude lê: são superfície de ataque e de injeção. A doc sugere escrever os seus ou usar de quem você confia, e lembra que a Anthropic revisa conectores contra critérios de listagem, mas **não audita** nenhum. Olhar o `.mcp.json` não mostra todos os servidores de uma sessão: os de outros escopos e os de plugins ficam fora dele. O [M10](../m10/) e o [M13](../m13/) detalham.
+Servidor MCP e plugin rodam código e entregam texto que o Claude lê: são superfície de ataque e de injeção. A doc sugere escrever os seus ou usar de quem você confia, e lembra que a Anthropic revisa conectores contra critérios de listagem, mas **não audita** nenhum. Olhar o `.mcp.json` não mostra todos os servidores de uma sessão: os de outros escopos e os de plugins ficam fora dele. O guia [MCP](../m10/) detalha, e plugins ganham estação própria mais adiante.
 
 ### O bypass e o dev container
 
@@ -290,7 +290,7 @@ Sem contêiner nem VM, nada contém o estrago. E dentro do contêiner, o que est
 
 ### Instrução no `CLAUDE.md` como controle de acesso
 
-É contexto, não regra de ferro ([M6](../m6/)). Para bloquear, `deny`; para impedir sempre, hook.
+É contexto, não regra de ferro ([guia "Memória e CLAUDE.md"](../m6/)). Para bloquear, `deny`; para impedir sempre, hook.
 
 ### Settings com erro de sintaxe
 
@@ -298,7 +298,7 @@ O Claude Code pode ignorar o arquivo inteiro, e as regras de bloqueio somem junt
 
 ### Chave de API colada na conversa
 
-Ela vai para a transcrição local em texto puro e para o contexto. Rotacione a chave ([M4](../m4/)).
+Ela vai para a transcrição local em texto puro e para o contexto. Rotacione a chave ([guia "Git e GitHub do zero"](../m4/)).
 
 </Camada>
 
@@ -318,7 +318,7 @@ git commit -m "Ponto de partida"
 npm test
 ```
 
-O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [M4](../m4/). **Nenhuma ficha mexe no seu `~/.claude/settings.json`**: tudo vive na pasta do laboratório.
+O `npm test` deve terminar com `pass 10` e `fail 0`. Se o `git commit` reclamar de identidade, veja o passo 1 da Ficha 1 do [guia "Git e GitHub do zero"](../m4/). **Nenhuma ficha mexe no seu `~/.claude/settings.json`**: tudo vive na pasta do laboratório.
 
 <Nota rotulo="O que foi testado">
 Executei as Fichas 1, 2 e 3 com `claude -p`, em Sonnet 5.5. O modo `-p` **nega** o que exigiria pergunta, então os bloqueios aparecem como "negado" em vez de uma janela de confirmação. As regras `allow` ficam em `settings.local.json` por causa da confiança da pasta. O `/permissions` e o diálogo de confiança só existem na tela interativa, e o sandbox não roda no Windows nativo: a Ficha 4 é descrita pela documentação.
@@ -614,7 +614,7 @@ Libere um domínio em `sandbox.network.allowedDomains` e repita o passo 4. Depoi
 
 </Saida>
 
-**Próxima estação:** o [M8, Skills](../m8/): ensinar ao Claude procedimentos que ele só carrega quando precisa.
+**Próxima estação:** o guia [Skills](../m8/): ensinar ao Claude procedimentos que ele só carrega quando precisa.
 
 <Fontes>
 

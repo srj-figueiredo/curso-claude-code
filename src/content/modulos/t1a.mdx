@@ -4,7 +4,7 @@ titulo: "Seu primeiro cliente: o site no navegador"
 parte: p8
 ordem: 101
 minutos: 75
-pre_requisitos: [m0]
+pre_requisitos: []
 objetivos:
   - Explicar com suas palavras o que o Claude Code faz que o chat não faz.
   - Abrir o terminal na pasta certa e iniciar uma sessão do Claude Code.
@@ -70,7 +70,7 @@ A segunda linha é a que importa. O Claude trabalha na pasta em que você o abri
 
 ### Instalar, uma vez só
 
-A instalação é um comando, e a Ficha 1 mostra o passo a passo. Para entrar no Claude Code, você precisa de uma conta paga da Anthropic (um plano Pro ou superior, ou uma conta de API). O [M0 (Mapa do Claude Code e regras do jogo)](../m0/) explica as opções e os custos. Se o terminal reclamar do comando `claude`, o [M1 (Instalação e primeiro contato)](../m1/) tem a lista dos tropeços mais comuns.
+A instalação é um comando, e a Ficha 1 mostra o passo a passo. Para entrar no Claude Code, você precisa de uma conta paga da Anthropic (um plano Pro ou superior, ou uma conta de API). O [guia "Mapa do Claude Code e regras do jogo"](../m0/) explica as opções e os custos. Se o terminal reclamar do comando `claude`, o [guia "Instalação e primeiro contato"](../m1/) tem a lista dos tropeços mais comuns.
 
 ### O pedido: o briefing já é quase tudo
 
@@ -97,7 +97,7 @@ O pedido da Ficha 2 é este:
 Leia o briefing.md e crie o site da Doce Esquina em uma página só, pronto para abrir no navegador. Siga o briefing à risca, inclusive as regras do que não fazer.
 ```
 
-Três coisas num só pedido: **o que fazer** (criar o site), **de onde tirar as informações** (o briefing) e **o que não pode acontecer** (as regras de não fazer). O [M3 (Conduzindo no dia a dia)](../m3/) destrincha isso.
+Três coisas num só pedido: **o que fazer** (criar o site), **de onde tirar as informações** (o briefing) e **o que não pode acontecer** (as regras de não fazer). O [guia "Conduzindo no dia a dia"](../m3/) destrincha isso.
 
 ### Quando ele pede licença
 
@@ -129,7 +129,7 @@ O que você acabou de fazer é um serviço vendável: transformar o que um peque
 
 ### As ferramentas dele
 
-Quando você pede "crie o site", o Claude não "escreve de uma vez". Ele usa **ferramentas**: uma para **ler** arquivos (o `briefing.md`), uma para **escrever** (o `index.html`) e, quando preciso, uma para **rodar comandos**. Entre uma e outra, ele olha o resultado e decide o próximo passo. Esse vaivém se chama laço agêntico, e o [M2 (Como o Claude Code pensa)](../m2/) o mostra com um desenho animado.
+Quando você pede "crie o site", o Claude não "escreve de uma vez". Ele usa **ferramentas**: uma para **ler** arquivos (o `briefing.md`), uma para **escrever** (o `index.html`) e, quando preciso, uma para **rodar comandos**. Entre uma e outra, ele olha o resultado e decide o próximo passo. Esse vaivém se chama laço agêntico, e o [guia "Como o Claude Code pensa"](../m2/) o mostra com um desenho animado.
 
 ### Por que o resultado varia
 
@@ -137,7 +137,7 @@ Peça a mesma coisa duas vezes e o site sairá um pouco diferente: outro tom na 
 
 ### Instalação e login em detalhe
 
-O instalador nativo é o caminho recomendado. Há também Homebrew, WinGet e instalação por npm, e a conta pode ser de assinatura ou de API. Tudo isso, mais a verificação do PATH, está no [M1 (Instalação e primeiro contato)](../m1/).
+O instalador nativo é o caminho recomendado. Há também Homebrew, WinGet e instalação por npm, e a conta pode ser de assinatura ou de API. Tudo isso, mais a verificação do PATH, está no [guia "Instalação e primeiro contato"](../m1/).
 
 </Camada>
 
@@ -177,7 +177,7 @@ As fichas desta temporada giram em torno de um mesmo cliente fictício, a Doce E
   titulo="Instalar e conferir"
   objetivo="Ter o Claude Code funcionando no seu computador e confirmar com um comando."
   minutos={15}
-  pre="Conta com acesso ao Claude Code (veja o M0)"
+  pre={'Conta com acesso ao Claude Code (veja o guia "Mapa do Claude Code e regras do jogo")'}
   verificacao="ilustrativo"
   versao="2.1.325"
 >
@@ -218,9 +218,9 @@ O `claude --version` só prova que o programa existe e que o terminal o encontra
 
 <DeuErro>
 
-- **`claude` não é reconhecido.** O terminal não achou o programa. Feche e abra um terminal novo. Se continuar, siga a seção "Verificar, e o tal do PATH" do [M1 (Instalação e primeiro contato)](../m1/).
+- **`claude` não é reconhecido.** O terminal não achou o programa. Feche e abra um terminal novo. Se continuar, siga a seção "Verificar, e o tal do PATH" do [guia "Instalação e primeiro contato"](../m1/).
 - **A linha de instalação não funciona.** No Windows, ela só vale no PowerShell. Se a linha de comando começa com `C:\>`, você está no CMD.
-- **Entrei, mas diz que não tenho acesso.** O plano gratuito do Claude não inclui o Claude Code. Veja os planos no [M0 (Mapa do Claude Code e regras do jogo)](../m0/).
+- **Entrei, mas diz que não tenho acesso.** O plano gratuito do Claude não inclui o Claude Code. Veja os planos no [guia "Mapa do Claude Code e regras do jogo"](../m0/).
 
 </DeuErro>
 

@@ -125,3 +125,10 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
   - O rótulo "Desafio extra" passou a **"Vá além"**.
 - **Honestidade do teste:** o Claude acha armadilhas que não plantamos (contraste, ambiguidade do plano mensal) e às vezes aplica a mudança de cor e horário mas ignora o tom de voz; ambos viraram lições na página.
 - **Linguagem neutra:** o texto não presume o gênero de quem lê; "cliente" genérico virou "quem contratou".
+
+## D019 · Sem códigos da nomenclatura antiga no texto novo (13/11/2026, pedido do autor)
+
+- **Regra:** as páginas do formato novo não citam M1, M2, M3 etc. Citam o guia pelo nome (`o guia "Git e GitHub do zero"`); termos técnicos (skills, agentes, hooks, MCP) continuam. O componente `<Conceitos>` mostra "Referência: Título" sem código. O código das estações novas (T1A...) é a nomenclatura nova.
+- **Feito:** T1A a T1D e o piloto do guia de segurança limpos (0 ocorrências de `M<número>`). `pre_requisitos` da T1A ficou vazio.
+- **Fica para a reorganização do mapa:** os guias antigos ainda aparecem com o código M0 a M10 no mapa do metrô e na navegação lateral; os textos internos deles também. Renomear quando as Temporadas existirem.
+- Todas as regras estão consolidadas em `docs/REGRAS-DO-CURSO.md`.

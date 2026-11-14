@@ -118,7 +118,7 @@ Repare no que isso significa: mesmo publicando só a pasta `docs`, **o repositó
 
 Com o site separado, são três passos:
 
-1. **Enviar o repositório ao GitHub.** Você precisa de uma conta e do programa `gh` (o [M4 (Git e GitHub do zero)](../m4/) ensina). Depois, peça ao Claude: "Crie um repositório público no meu GitHub chamado doce-esquina e envie este projeto para lá."
+1. **Enviar o repositório ao GitHub.** Você precisa de uma conta e do programa `gh` (o [guia "Git e GitHub do zero"](../m4/) ensina). Depois, peça ao Claude: "Crie um repositório público no meu GitHub chamado doce-esquina e envie este projeto para lá."
 2. **Ligar o Pages.** No GitHub, abra o repositório: **Settings**, **Pages**, em **Build and deployment** escolha **Deploy from a branch**, depois a branch `main` e a pasta `/docs`, e clique em **Save**.
 3. **Esperar uns minutos e abrir o endereço**, que tem este formato:
 
@@ -126,10 +126,10 @@ Com o site separado, são três passos:
 https://SEU-USUARIO.github.io/doce-esquina/
 ```
 
-Sua página só tem um arquivo e nenhum caminho relativo, então funciona dentro de `/doce-esquina/` sem ajuste. O [M5 (Do computador para a internet)](../m5/) explica o que muda quando o site cresce.
+Sua página só tem um arquivo e nenhum caminho relativo, então funciona dentro de `/doce-esquina/` sem ajuste. O [guia "Do computador para a internet"](../m5/) explica o que muda quando o site cresce.
 
 <Nota rotulo="Cuidado: vitrine ou loja?">
-Os termos do GitHub não permitem usar o Pages como hospedagem gratuita para um negócio comercial. Uma página-vitrine de portfólio ou demonstração é uma coisa; o site oficial de uma confeitaria que recebe pedidos é outra. Para clientes reais, leia os termos e considere uma hospedagem própria (o [M5](../m5/) discute as opções).
+Os termos do GitHub não permitem usar o Pages como hospedagem gratuita para um negócio comercial. Uma página-vitrine de portfólio ou demonstração é uma coisa; o site oficial de uma confeitaria que recebe pedidos é outra. Para clientes reais, leia os termos e considere uma hospedagem própria (o [guia "Do computador para a internet"](../m5/) discute as opções).
 </Nota>
 
 ### O pacote de entrega
@@ -147,14 +147,14 @@ Isso é o que separa "alguém que fez uma página" de "um profissional que entre
 
 - **Mostre o pacote, não só o link.** "Seu site está no ar, o histórico está guardado e dá para voltar atrás se algo quebrar" justifica o valor e dá confiança.
 - **Ofereça manutenção.** Atualizar preços e horários todo mês, com conferência, é um serviço recorrente e fácil de explicar.
-- **Seja claro sobre os custos.** O Pages é grátis. O domínio próprio (`www.doceesquina.com.br`) tem custo anual, e quem paga deve estar combinado desde o início. O [M5 (Do computador para a internet)](../m5/) mostra como funciona.
+- **Seja claro sobre os custos.** O Pages é grátis. O domínio próprio (`www.doceesquina.com.br`) tem custo anual, e quem paga deve estar combinado desde o início. O [guia "Do computador para a internet"](../m5/) mostra como funciona.
 - **Informe o que a IA fez.** Alguns clientes querem saber. A transparência é uma vantagem competitiva, não um problema.
 
 <Camada tipo="capo" titulo="Por baixo do capô: o que o git guarda de verdade">
 
 ### Três lugares
 
-O git trabalha com **três lugares**: a pasta onde você edita, uma "sala de espera" onde você escolhe o que vai no próximo commit, e o histórico. O [M4 (Git e GitHub do zero)](../m4/) desenha esse modelo mental e mostra branches, conflitos e como recuperar um commit perdido.
+O git trabalha com **três lugares**: a pasta onde você edita, uma "sala de espera" onde você escolhe o que vai no próximo commit, e o histórico. O [guia "Git e GitHub do zero"](../m4/) desenha esse modelo mental e mostra branches, conflitos e como recuperar um commit perdido.
 
 ### Por que o Claude consegue operar o git
 
@@ -200,7 +200,7 @@ As fichas começam da pasta da estação anterior. Se você fez a T1C, siga com 
 
 - [Ponto de partida: `t1c-gabarito.zip`](../lab/t1c-gabarito.zip) (briefing, site com formulário, `conferir.mjs` e `CLAUDE.md`)
 
-Você precisa do **git** instalado (o [M4 (Git e GitHub do zero)](../m4/) mostra como). Confirme com `git --version`.
+Você precisa do **git** instalado (o [guia "Git e GitHub do zero"](../m4/) mostra como). Confirme com `git --version`.
 
 <Ficha
   id="t1d-e1"
@@ -247,13 +247,13 @@ O código é diferente no seu computador. O Claude também avisou do LF/CRLF e q
 
 <Gabarito>
 
-O que importa: o histórico existe e o commit tem nome claro. Se o git reclamar de "identidade" (`Please tell me who you are`), siga o passo 1 da Ficha 1 do [M4 (Git e GitHub do zero)](../m4/): ele pede seu nome e e-mail uma vez.
+O que importa: o histórico existe e o commit tem nome claro. Se o git reclamar de "identidade" (`Please tell me who you are`), siga o passo 1 da Ficha 1 do [guia "Git e GitHub do zero"](../m4/): ele pede seu nome e e-mail uma vez.
 
 </Gabarito>
 
 <DeuErro>
 
-- **`git` não é reconhecido.** O git não está instalado. Siga o [M4 (Git e GitHub do zero)](../m4/).
+- **`git` não é reconhecido.** O git não está instalado. Siga o [guia "Git e GitHub do zero"](../m4/).
 - **O commit falhou pedindo identidade.** Veja o Gabarito: configurar nome e e-mail uma vez resolve.
 - **O Claude pediu licença para comandos além do git.** Leia antes de aprovar. Para o primeiro commit, só o git é necessário.
 
@@ -392,11 +392,11 @@ Peça ao Claude um `.gitignore` que mantenha o `briefing.md` **fora** do reposit
   titulo="Colocar no ar"
   objetivo="Enviar o projeto ao GitHub, ligar o Pages e abrir o endereço público."
   minutos={20}
-  pre="Ficha 3, conta no GitHub e o gh instalado e conectado (M4)"
+  pre={'Ficha 3, conta no GitHub e o gh instalado e conectado (veja o guia "Git e GitHub do zero")'}
   verificacao="nao-testado"
 >
 
-Esta ficha **não foi executada aqui**: ela exige criar um repositório e publicar na conta de quem faz, o que o nosso ambiente de teste não faz. Os passos seguem a documentação do GitHub e o [M5 (Do computador para a internet)](../m5/).
+Esta ficha **não foi executada aqui**: ela exige criar um repositório e publicar na conta de quem faz, o que o nosso ambiente de teste não faz. Os passos seguem a documentação do GitHub e o [guia "Do computador para a internet"](../m5/).
 
 1. No Claude, na pasta do projeto, peça:
 
@@ -431,7 +431,7 @@ O que prova a publicação é um terceiro conseguir abrir o endereço. Se só vo
 
 - **Erro 404 ao abrir o endereço.** O Pages ainda está publicando ou apontou para a pasta errada. Confira em Settings, Pages: branch `main`, pasta `/docs`.
 - **A página abriu sem estilo.** O arquivo `index.html` na pasta `docs` está incompleto. Confira com `conferir.mjs`.
-- **O `gh` pede login.** Rode `gh auth login` e siga a tela, como no [M4 (Git e GitHub do zero)](../m4/).
+- **O `gh` pede login.** Rode `gh auth login` e siga a tela, como no [guia "Git e GitHub do zero"](../m4/).
 
 </DeuErro>
 
@@ -543,12 +543,12 @@ Responda **sem olhar a página**, em voz alta, como se explicasse a quem contrat
 
 </Saida>
 
-**Próxima estação:** a Temporada 2, em construção: um sistema com login e dados reais para a clínica de um cliente. Quando ela sair, você vai precisar de segurança, e o que esta temporada só apresentou volta com profundidade. Enquanto isso, os módulos de referência já aprofundam o que você viu: o [M4 (Git e GitHub do zero)](../m4/), o [M5 (Do computador para a internet)](../m5/) e o [M6 (Memória e CLAUDE.md)](../m6/).
+**Próxima estação:** a Temporada 2, em construção: um sistema com login e dados reais para a clínica de um cliente. Quando ela sair, você vai precisar de segurança, e o que esta temporada só apresentou volta com profundidade. Enquanto isso, os módulos de referência já aprofundam o que você viu: o [guia "Git e GitHub do zero"](../m4/), o [guia "Do computador para a internet"](../m5/) e o [guia "Memória e CLAUDE.md"](../m6/).
 
 <Fontes>
 
 - [Common workflows](https://code.claude.com/docs/en/common-workflows.md): o Claude operando git e commits.
 - [Permission modes](https://code.claude.com/docs/en/permission-modes.md): licenças e modos de permissão.
-- Execuções locais registradas em `VERIFICATION/t1d.md`. A publicação no GitHub Pages segue o [M5 (Do computador para a internet)](../m5/) e a documentação do GitHub, e não foi testada aqui.
+- Execuções locais registradas em `VERIFICATION/t1d.md`. A publicação no GitHub Pages segue o [guia "Do computador para a internet"](../m5/) e a documentação do GitHub, e não foi testada aqui.
 
 </Fontes>

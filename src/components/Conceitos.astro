@@ -2,7 +2,7 @@
 // Aviso de abertura de cada estação das Temporadas: o que a pessoa vai aprender (em palavras simples)
 // e o que vai ouvir mas só aprofunda depois, com o link para o módulo de referência.
 import Mascote from './Mascote.astro';
-import { estacao, rotulo } from '../data/curso';
+import { estacao } from '../data/curso';
 import { pagina } from '../lib/url';
 import { paginasEscritas } from '../lib/paginas';
 
@@ -56,11 +56,11 @@ const escritas = await paginasEscritas();
                     {' '}
                     {escritas.has(e.id) ? (
                       <a href={pagina(e.id)}>
-                        Referência: {rotulo(e.id)} ({e.titulo})
+                        Referência: {e.titulo}
                       </a>
                     ) : (
                       <span>
-                        Referência: {rotulo(e.id)} ({e.titulo}, em obras)
+                        Referência: {e.titulo} (em obras)
                       </span>
                     )}
                   </>
