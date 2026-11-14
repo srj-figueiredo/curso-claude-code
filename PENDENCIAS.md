@@ -133,7 +133,7 @@ Conferidas na documentação, mas nunca executadas, porque eu rodo em modo não 
 - **7.10** T2D: o `iniciar.cmd` (atalho de dois cliques no Windows) não foi verificado; o teste travou o terminal. Testar em máquina limpa.
 - **7.11** T2: instalação do sistema em outro computador (Node do zero) e hook sem Git para Windows não foram testados.
 - **7.12** T2: texto da LGPD não conferido em fonte oficial; modelos de aviso de privacidade, manual, ficha de acessos e termo de aceite não validados com cliente real nem profissional jurídico.
-- **7.13** Teste axe local: a primeira rodada depois de um build novo às vezes falha em uma página (baralho, m7, t1d) e passa na repetição; o CI ficou verde. Investigar a causa (provável corrida no servidor de pré-visualização).
+- **7.13** ~~Teste axe local intermitente~~ **Resolvido em 14/11/2026:** a causa era um servidor de desenvolvimento esquecido na porta 4321, reaproveitado pelo teste (`reuseExistingServer`). Com a porta livre, 54 de 54 passam, duas vezes. Regra: antes de rodar `npm run teste:a11y`, não deixar `npm run dev` ligado.
 - **7.14** T3: o provedor da IA nunca foi chamado na API real (sem chave). Antes de usar com cliente, testar com chave de verdade, conversa curta, e conferir o formato da resposta.
 - **7.15** T3: formato do pacote do WhatsApp Business, regras e custos da plataforma oficial e hospedagem 24 horas não verificados.
 - **7.16** T3: falta no atendente a função de apagar as conversas de um número (a página diz); `reativar.mjs` imprime o telefone inteiro.

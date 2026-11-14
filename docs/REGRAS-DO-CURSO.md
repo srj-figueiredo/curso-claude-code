@@ -63,3 +63,8 @@ Detalhes de cada regra: `DECISIONS.md` (D015 a D018), `docs/ROTEIRO-V2.md`, `doc
 35. O e-mail do autor não vai a serviços externos nem às páginas do curso. Nenhum segredo, nem de teste, é publicado.
 36. **Conversa com o autor:** citar guias e estações **pelo nome**, sem código ("o guia Memória e CLAUDE.md", "a estação Seu primeiro cliente"). Respostas formatadas conforme o `CLAUDE.md` da pasta pai.
 37. Pendências que dependem do autor ficam em `PENDENCIAS.md`; decisões, em `DECISIONS.md`; estado e fila, em `PROGRESS.md`.
+38. **Pedidos de execução dizem quando parar.** Se a ficha quer mostrar a nota "antes" de uma correção, o pedido manda parar na falha e explicar, sem corrigir. Sem isso o Claude corrige sozinho e a prova se perde (descoberto na T3D).
+39. **Nada de preço de memória nas páginas.** Preços e modelos de serviços pagos só entram com fonte e data. Exemplo de conta usa valores inventados e rotulados, e o aluno consulta a página oficial.
+40. **O que não pôde ser testado aparece na página**, numa nota ou no selo "não testado", e em `VERIFICATION/`. API real, WhatsApp oficial, hospedagem e publicação na conta do aluno entram aqui.
+41. **O tempo do cabeçalho é o total:** leitura do Essencial, soma das fichas e teste de domínio (mais o projeto nas últimas estações de cada temporada).
+42. **Revisão geral:** a cada três estações ou temporada, rodar `VERIFICATION/revisao-geral-*.md` como roteiro: códigos antigos, gênero marcado, "em construção" desatualizado, tempo do cabeçalho, termos sem definição, rolagem horizontal no celular, erros de console e acessibilidade.

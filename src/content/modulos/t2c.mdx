@@ -3,7 +3,7 @@ id: t2c
 titulo: "Receitas e travas automáticas"
 parte: p9
 ordem: 203
-minutos: 130
+minutos: 145
 pre_requisitos: [t2b]
 objetivos:
   - Explicar a diferença entre pedir ao Claude e garantir com um hook.
@@ -74,7 +74,7 @@ Você não precisa entender cada linha. Precisa **ler o que ele faz**: recebe da
 
 ### Um aviso sério: leia antes de instalar
 
-Um hook é **um programa que roda no seu computador sem pedir licença**. Isso o torna poderoso e perigoso. Um hook escrito por outra pessoa (ou copiado de um projeto que você baixou) poderia fazer qualquer coisa que você mesmo poderia fazer.
+Um hook é **um programa que roda no seu computador sem pedir licença**. Isso o torna poderoso e perigoso. Um hook escrito por outra pessoa (ou copiado de um projeto que você baixou) poderia fazer qualquer coisa que você poderia fazer.
 
 Por isso, mesmo quando o Claude escreve o hook, **leia antes de instalar**. Peça: "explique cada arquivo em linguagem simples". É o mesmo cuidado que você teria com um arquivo anexado a um e-mail.
 
@@ -258,7 +258,7 @@ Para não haver dúvida, **abra uma sessão nova** para cada teste (o Claude Cod
    Em banco.mjs, faça toda ordem nova começar com status 'pronta' em vez de 'aberta'. Só isso.
    ```
 
-4. Leia o que o Claude diz sobre a conferência. Rode você mesmo `node conferir.mjs` e conte quantas verificações falharam.
+4. Leia o que o Claude diz sobre a conferência. Rode `node conferir.mjs` por conta própria e conte quantas verificações falharam.
 5. **Desfaça** o estrago:
 
    <SO unix="cp banco.original banco.mjs" win="Copy-Item banco.original banco.mjs" />

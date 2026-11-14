@@ -3,7 +3,7 @@ id: t2b
 titulo: "Quem entra e o que o Claude pode ver"
 parte: p9
 ordem: 202
-minutos: 130
+minutos: 140
 pre_requisitos: [t2a]
 objetivos:
   - Explicar por que esconder um dado na tela não protege e onde a regra precisa morar.
@@ -326,7 +326,7 @@ Erre a senha do antonio 5 vezes e tente a sexta, certa. O que acontece? Espere 1
   versao="2.1.325"
 >
 
-1. Crie a regra de bloqueio. A pasta `.claude` é protegida e o Claude não escreve nela: crie você mesmo.
+1. Crie a regra de bloqueio. A pasta `.claude` é protegida e o Claude não escreve nela: crie por conta própria.
 
    <SO unix={`mkdir -p .claude && echo '{"permissions":{"deny":["Read(./.env)"]}}' > .claude/settings.json`} win={`New-Item -ItemType Directory -Force .claude | Out-Null; Set-Content .claude/settings.json '{"permissions":{"deny":["Read(./.env)"]}}' -Encoding ascii`} />
 
@@ -452,7 +452,7 @@ Modelo da **ficha de acessos**, para entregar junto com o sistema:
 - O arquivo `.env` não deve ser copiado nem enviado a ninguém.
 ```
 
-E uma **lista de conferência de segurança** que você mesmo confere antes de entregar:
+E uma **lista de conferência de segurança** que você confere antes de entregar:
 
 - O `.env` está no `.gitignore` e **nunca** foi commitado (confira com `git log --all -- .env`).
 - Não existe nenhuma cópia do `.env` (`.env.bak`, `.env.antigo`).

@@ -264,6 +264,12 @@ pre {
 }
 
 /* ---------- Detalhes ---------- */
+/* Código em linha dentro da nota na margem quebra a linha em vez de sair da tela. */
+.nota code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 /* O botão de copiar acompanha os cantos do bloco de código. */
 .copiar {
   border-radius: 0 var(--raio-p) 0 var(--raio-p);

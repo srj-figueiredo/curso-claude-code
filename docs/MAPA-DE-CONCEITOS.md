@@ -6,7 +6,7 @@ Regra do curso: todo conceito dos módulos de referência (M0 a M8 e M10, os já
 No início de cada estação nova, o componente `<Conceitos>` avisa o que a pessoa vai aprender e aponta a referência dos conceitos que só virão depois.
 Ao final do curso, nenhuma linha pode ficar em "Planejado".
 
-**Progresso:** 30 de 146 conceitos já ensinados nas estações escritas (T1A a T2D).
+**Progresso:** 31 de 146 conceitos já ensinados nas estações escritas (T1A a T3D).
 
 Os módulos ainda não escritos (M9 Hooks, M11 Planejar e verificar, M12 a M19, M20 a M22, R1 a R8, C0 a C6 e o projeto final) entram na ordem do roteiro v2 (`docs/ROTEIRO-V2.md`). Os conceitos deles serão acrescentados aqui quando as páginas existirem.
 
@@ -151,7 +151,7 @@ Os módulos ainda não escritos (M9 Hooks, M11 Planejar e verificar, M12 a M19, 
 | Como escrever uma regra que realmente pega | **T2B (parcial)** (escrito) |
 | O .env: a regra que parece cofre e não é | **T2B** (escrito) |
 | Modos de permissão: quanto você confia hoje | Planejado: T2 |
-| Prompt injection: o bilhete escondido no livro | Planejado: T2 |
+| Prompt injection: o bilhete escondido no livro | **T3B (parcial)** (escrito) |
 | O sandbox: a cerca de verdade | **T2B (parcial)** (escrito) |
 | Resumo: as camadas, do mais fraco ao mais forte | **T2B (parcial)** (escrito) |
 | Regras de Bash em detalhe | Planejado: T2 |

@@ -1,6 +1,6 @@
 # Roteiro v2 (rascunho para aprovação)
 
-Data: 13/11/2026. Estado: **proposta**, ainda não aprovada. Nada aqui foi aplicado ao site.
+Data: 13/11/2026 (revisado em 14/11/2026). Estado: **aprovado pelo autor**. Temporadas 1 a 3 escritas; a T4 e a T5 seguem o roteiro. Diferenças da proposta: o cliente da T2 virou uma oficina (não uma clínica, para evitar dado de saúde) e a T3 usa simulador local, com a troca para a API paga orientada e testada só contra servidor falso (D021).
 
 ## 1. Para quem é
 

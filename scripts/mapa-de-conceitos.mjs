@@ -64,6 +64,7 @@ const FEITO = {
     ['O .env: a regra que parece cofre', 'T2B'],
     ['O sandbox', 'T2B (parcial)'],
     ['Resumo: as camadas', 'T2B (parcial)'],
+    ['Prompt injection', 'T3B (parcial)'],
   ],
   m8: [
     ['O que é uma skill', 'T2C (parcial)'],
@@ -105,7 +106,7 @@ Regra do curso: todo conceito dos módulos de referência (M0 a M8 e M10, os já
 No início de cada estação nova, o componente \`<Conceitos>\` avisa o que a pessoa vai aprender e aponta a referência dos conceitos que só virão depois.
 Ao final do curso, nenhuma linha pode ficar em "Planejado".
 
-**Progresso:** ${feitos} de ${total} conceitos já ensinados nas estações escritas (T1A a T2D).
+**Progresso:** ${feitos} de ${total} conceitos já ensinados nas estações escritas (T1A a T3D).
 
 Os módulos ainda não escritos (M9 Hooks, M11 Planejar e verificar, M12 a M19, M20 a M22, R1 a R8, C0 a C6 e o projeto final) entram na ordem do roteiro v2 (\`docs/ROTEIRO-V2.md\`). Os conceitos deles serão acrescentados aqui quando as páginas existirem.
 ${linhas.join('\n')}

@@ -3,7 +3,7 @@ id: t3c
 titulo: "Trocar o simulador pela IA: o provedor da API paga"
 parte: p10
 ordem: 303
-minutos: 160
+minutos: 135
 pre_requisitos: [t3b]
 objetivos:
   - Explicar o que muda quando o atendente passa de regras para uma IA.
@@ -73,7 +73,7 @@ Três escolhas dele merecem atenção, porque são as que um profissional faz.
 2. **A chave nunca aparece em log nem em erro.** Ela vem de uma variável, e o código foi escrito para nunca mostrá-la.
 3. **Qualquer falha vira repasse.** Se a internet cair, se a resposta demorar mais de **15 segundos**, se a IA devolver algo que não seja o formato pedido, se a resposta vier cortada: o cliente recebe a mensagem de repasse, e a conversa vai para uma pessoa com o motivo `erro_provedor`. **Nunca** uma resposta inventada para "tapar o buraco".
 
-Repare também no que **não** está no código: nenhum pacote de terceiros. A IA é chamada com um pedido HTTP direto, o que o Node já sabe fazer. A Anthropic também oferece um pacote oficial (`@anthropic-ai/sdk`), que é o caminho usual quando o projeto aceita dependências. Aqui ficamos sem pacote por coerência com o resto do projeto.
+Repare também no que **não** está no código: nenhum pacote de terceiros. A IA é chamada com um pedido pela internet (o HTTP, a linguagem que os programas usam para conversar pela rede), o que o Node já sabe fazer. A Anthropic também oferece um pacote oficial (`@anthropic-ai/sdk`), que é o caminho usual quando o projeto aceita dependências. Aqui ficamos sem pacote por coerência com o resto do projeto.
 
 ### Testar sem gastar: o servidor falso
 
