@@ -4,7 +4,7 @@ interface Props {
   oque: string;
   gatilho: string;
   custo: string;
-  data: string;
+  data?: string;
   como: string;
 }
 const { oque, gatilho, custo, data, como } = Astro.props;
@@ -15,7 +15,7 @@ const { oque, gatilho, custo, data, como } = Astro.props;
   <dl class="troca__dados">
     <div><dt>O que trocar</dt><dd>{oque}</dd></div>
     <div><dt>Quando</dt><dd>{gatilho}</dd></div>
-    <div><dt>Custo</dt><dd>{custo} <span class="troca__data">(conferido em {data})</span></dd></div>
+    <div><dt>Custo</dt><dd>{custo} {data && <span class="troca__data">(conferido em {data})</span>}</dd></div>
     <div><dt>Como</dt><dd>{como}</dd></div>
   </dl>
   <slot />

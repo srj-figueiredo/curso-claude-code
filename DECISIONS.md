@@ -140,3 +140,14 @@ Registro de decisões relevantes. Formato: decisão · alternativas · motivo.
 - **Clientes:** Oficina Boa Estrada (ordens de serviço) e Studio Lia (agenda de aulas experimentais, teste de domínio e projeto final). Evitado cliente de saúde para não tratar dado sensível num curso de iniciantes.
 - **Honestidade:** o que não deu para executar foi dito na página (`iniciar.cmd`, instalação em outro computador, passos finais na agenda, texto da LGPD). Dois erros do próprio texto foram corrigidos na rechecagem (hooks "só em sessão nova" e comandos que não rodam no PowerShell 5.1).
 - **Cor da linha:** `--linha-9` `#7a4b1e` (contraste 7,36:1 com branco).
+
+## D021 · Temporada 3 (Atendimento com IA) com simulador local e troca orientada para a API paga (14/11/2026, decisão do autor)
+
+- **Escolha do autor:** simulador local, com orientação de como trocar pela API paga. O curso não gasta dinheiro nem cria conta.
+- **Desenho:** o atendente tem um **provedor trocável** (variável `PROVEDOR`). Provedor `local` (regras, sem IA), `claude` (HTTP puro, sem pacote, modelo em `CLAUDE_MODELO` **sem padrão**) e `teste-ruim` (só com `PATAS_TESTE=1`, para provar os guardrails). Proteções no núcleo valem para qualquer provedor.
+- **Por que HTTP puro:** o projeto não aceita pacotes de terceiros; a referência da API admite HTTP puro nesse caso e a página menciona o SDK oficial como alternativa.
+- **O que ficou provado:** o provedor da IA só contra um **servidor falso** que confere cabeçalhos, corpo e finge erros 401, 429 e 500. Nenhuma chamada real. A página diz isso na nota "O que ainda não foi provado".
+- **Custo:** nenhum preço é citado. A página ensina a conta (tokens medidos x preço por milhão que o aluno consulta, com data) e traz um exemplo com valores **inventados e rotulados**. `Troca` ganhou `data` opcional.
+- **Método:** a avaliação manda parar na falha e mostrar a nota **antes** de corrigir (85%), depois corrigir (100%) e rodar a conferência anterior. Sem essa frase, o Claude corrige sozinho e a prova do "antes" se perde.
+- **Dois clientes:** Pet Shop Patas Felizes (modelo) e Studio Lia (teste de domínio e projeto final); evitado dado de saúde humana.
+- **Cor da linha:** `--linha-10` `#5f6f00` (contraste 5,58:1 com branco).

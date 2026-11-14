@@ -11,6 +11,7 @@ export const PARTES: Parte[] = [
   { id: 'p0', rotulo: 'Guias', titulo: 'Antes de começar' },
   { id: 'p8', rotulo: 'Temporada 1', titulo: 'Primeiro cliente' },
   { id: 'p9', rotulo: 'Temporada 2', titulo: 'Sistema do cliente' },
+  { id: 'p10', rotulo: 'Temporada 3', titulo: 'Atendimento com IA' },
   { id: 'p1', rotulo: 'Guias', titulo: 'Fundamentos' },
   { id: 'p2', rotulo: 'Guias', titulo: 'O menu / dissecado' },
   { id: 'p3', rotulo: 'Guias', titulo: 'Do zero ao ar' },
@@ -32,6 +33,10 @@ export const ESTACOES: Estacao[] = [
   e('t2b', 'p9', 'Quem entra e o que o Claude pode ver', 'Acesso'),
   e('t2c', 'p9', 'Receitas e travas automáticas', 'Travas'),
   e('t2d', 'p9', 'Testar, guardar e entregar o sistema', 'Entrega'),
+  e('t3a', 'p10', 'O atendente do pet shop: base, simulador e primeiro atendimento', 'Atendente'),
+  e('t3b', 'p10', 'Regras de proteção: guardrails, limite e privacidade', 'Proteção'),
+  e('t3c', 'p10', 'Trocar o simulador pela IA: o provedor da API paga', 'IA paga'),
+  e('t3d', 'p10', 'Medir, entregar e manter o atendente', 'Medir'),
   e('m1', 'p1', 'Instalação e primeiro contato', 'Instalação'),
   e('m2', 'p1', 'Como o Claude Code pensa', 'Como pensa'),
   e('m3', 'p1', 'Conduzindo no dia a dia', 'Dia a dia'),
@@ -91,7 +96,7 @@ export const TRILHAS: Record<TrilhaId, { titulo: string; resumo: string; ids: st
   rapida: {
     titulo: 'Rápida para Cases',
     resumo: 'O mínimo para entregar um projeto de cliente.',
-    ids: [...faixa('m', 0, 3), 't1a', 't1b', 't1c', 't1d', 't2a', 't2b', 't2c', 't2d', 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)],
+    ids: [...faixa('m', 0, 3), 't1a', 't1b', 't1c', 't1d', 't2a', 't2b', 't2c', 't2d', 't3a', 't3b', 't3c', 't3d', 'r3', ...faixa('m', 4, 8), 'm10', 'm11', ...faixa('m', 20, 22), ...faixa('c', 0, 6)],
   },
   completa: {
     titulo: 'Completa',
